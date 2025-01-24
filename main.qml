@@ -151,6 +151,41 @@ Window {
         }
     }
 
+    // 顶部菜单
+    Item {
+        id: topMenu
+        anchors.top: mainWindow.top
+        anchors.left: mainWindow.left
+        width: mainWindow.width
+        height: 30
+        Rectangle {
+            anchors.fill: topMenu
+            color: "transparent"
+
+            // 图片
+            Image {
+                id: top_icon
+                source: "qrc:/desktop/images/top_icon.png"
+                anchors.left: parent.left
+                anchors.leftMargin: 0
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
+            // 删除 netText 后，直接将 displayCpuTemp 锚定到 top_icon 的右侧
+            Text {
+                id: displayCpuTemp
+                anchors.verticalCenter: top_icon.verticalCenter
+                anchors.left: top_icon.right // 锚定到 top_icon 的右侧
+                anchors.leftMargin: 20 // 左边距
+                text: qsTr("CPU:50℃")
+                color: "white"
+                font.bold: true
+                font.pixelSize: 20
+            }
+        }
+    }
+
+    // 返回主菜单按钮
     RoundButton {
         id: backBtn
         z: 109
@@ -162,7 +197,7 @@ Window {
         visible: mainSwipeView.currentIndex !== 0
         hoverEnabled: enabled
         opacity: hovered ? 1 : 0.5
-        background: Rectangle {
+        background: Rectangle{
             color: "#55ffffff"
             radius: parent.width / 2
         }
@@ -178,16 +213,99 @@ Window {
             drag.minimumY: 0
             drag.maximumX: mainWindow.width - 60
             drag.maximumY: mainWindow.height - 60
+
             onClicked: {
-                if (mainSwipeView.currentIndex === 3)
-                    mainSwipeView.currentIndex = 0
-                if (mainSwipeView.currentIndex !== 0 && mainSwipeView.currentIndex !== 3 && backFlag !== true)
-                    WINStyle ? mainSwipeView.currentIndex = 0 : mainSwipeView.currentIndex = 3
-                if (backFlag)
-                    mainSwipeView.currentIndex = 0
+                if (mainSwipeView.currentIndex === 3) {
+                    mainSwipeView.currentIndex = 0; // 如果当前是第 4 页，返回首页
+                } else if (mainSwipeView.currentIndex !== 0 && !backFlag) {
+                    mainSwipeView.currentIndex = WINStyle ? 0 : 3; // 根据条件切换页面
+                } else if (backFlag) {
+                    mainSwipeView.currentIndex = 0; // 如果 backFlag 为 true，返回首页
+                }
             }
         }
     }
+
+
+    // 系统音量
+    Button {
+        id: desktop_bell
+        //visible: WINStyle ? menuBt.visible : false
+        visible: false
+        anchors.top: menuBt.bottom
+        anchors.horizontalCenter: menuBt.horizontalCenter
+        anchors.topMargin: 8
+        width: 22
+        height: 26
+        checked: false
+        style: ButtonStyle {
+            background: Rectangle {
+                color: "transparent"
+                Image {
+                    anchors.fill: parent
+                    source: "qrc:/desktop/images/bell.png"
+                    opacity: desktop_bell.hovered ? 1 : 0.8
+                }
+            }
+        }
+
+        onClicked: {
+            volume_timer.start()
+            checked = !checked
+            if (checked)
+                myDesktop.getSystemVolume()
+        }
+    }
+
+    Rectangle {
+        anchors.centerIn: parent
+        width: 300
+        height: 80
+        radius: 20
+        visible: desktop_bell.checked
+        color: "#424242"
+        Slider {
+            id: system_volume_slider
+            height: 50
+            width: 280
+            anchors.centerIn: parent
+            updateValueWhileDragging: true
+            stepSize: 1
+            maximumValue: 127
+            property bool handled: false
+            onPressedChanged: {
+                handled = !handled
+                volume_timer.start()
+                if (!handled)
+                    myDesktop.setSystemVolume(value)
+            }
+
+            onValueChanged: {
+                volume_timer.stop()
+            }
+
+            style: SliderStyle {
+                groove: Rectangle {
+                    width: control.width
+                    height: 3
+                    radius: 1
+                    color: "white"
+                    Rectangle {
+                        width: styleData.handlePosition
+                        height: 3
+                        color: "#27e0fb"
+                        radius: 1
+                    }
+                }
+                handle: Rectangle {
+                    width: 1
+                    height: 30
+                    color: "transparent"
+                }
+            }
+        }
+    }
+
 
     Item {
         id: menuItem
@@ -196,6 +314,7 @@ Window {
         visible: false
         anchors.fill: parent
 
+        // 设置里的三个选项
         Rectangle {
             id: menuButtonsBg
             color: "transparent"
@@ -207,6 +326,7 @@ Window {
             Item {
                 visible: menuButtonsBg.x < menuBt.x - 50
                 anchors.fill: parent
+
                 Image {
                     id: closeImage
                     source: "qrc:/desktop/images/close.png"
@@ -224,6 +344,7 @@ Window {
                         onExited: closeImage.opacity = 0.8
                     }
                 }
+
                 Image {
                     id: rebootImage
                     source: "qrc:/desktop/images/reboot.png"
@@ -264,203 +385,101 @@ Window {
                 }
             }
         }
-        PropertyAnimation {
-            id: showMenu
-            target: menuButtonsBg
-            properties: "width"
-            from: 0
-            to: 180
-            duration: 500
-        }
-        PropertyAnimation {
-            id: hideMenu
-            target: menuButtonsBg
-            properties: "width"
-            from: 180
-            to: 0
-            duration: 500
-        }
-        PropertyAnimation {
-            id: xMoveLeft
-            target: menuButtonsBg
-            properties: "x"
-            from: menuBt.x
-            to: menuBt.x - 190
-            duration: 500
-        }
+    }
 
-        PropertyAnimation {
-            id: xMoveRight
-            target: menuButtonsBg
-            properties: "x"
-            from: menuBt.x - 190
-            to: menuBt.x
-            duration: 500
-        }
+    PropertyAnimation {
+        id: showMenu
+        target: menuButtonsBg
+        properties: "width"
+        from: 0
+        to: 180
+        duration: 500
+    }
 
-        PropertyAnimation {
-            id: opacityAnShow
-            target: menuButtonsBg
-            properties: "opacity"
-            from: 0.0
-            to: 0.8
-            duration: 500
-        }
+    PropertyAnimation {
+        id: hideMenu
+        target: menuButtonsBg
+        properties: "width"
+        from: 180
+        to: 0
+        duration: 500
+    }
 
-        PropertyAnimation {
-            id: opacityAnHide
-            target: menuButtonsBg
-            properties: "opacity"
-            from: 0.8
-            to: 0.0
-            duration: 500
-        }
+    PropertyAnimation {
+        id: xMoveLeft
+        target: menuButtonsBg
+        properties: "x"
+        from: menuBt.x
+        to: menuBt.x - 190
+        duration: 500
+    }
 
-        Button {
-            id: menuBt
-            anchors.right: parent.right
-            anchors.rightMargin: 20
-            anchors.topMargin: 5
-            anchors.top: parent.top
-            width: 40
-            height: 20
-            checked: false
-            style: ButtonStyle {
-                background: Rectangle {
-                    color: "transparent"
-                }
-            }
-            Text {
-                id: menuText
-                text: qsTr("…")
-                anchors.centerIn: parent
-                color: menuBt.hovered ? "white" : "#ccffffff"
-                font.pixelSize: 30
-            }
-            onClicked: {
-                menu_timer.start()
-                if (!checked) {
-                    showMenu.start()
-                    xMoveLeft.start()
-                    opacityAnShow.start()
-                } else {
-                    hideMenu.start()
-                    xMoveRight.start()
-                    opacityAnHide.start()
-                }
-                checked = !checked
+    PropertyAnimation {
+        id: xMoveRight
+        target: menuButtonsBg
+        properties: "x"
+        from: menuBt.x - 190
+        to: menuBt.x
+        duration: 500
+    }
+
+    PropertyAnimation {
+        id: opacityAnShow
+        target: menuButtonsBg
+        properties: "opacity"
+        from: 0.0
+        to: 0.8
+        duration: 500
+    }
+
+    PropertyAnimation {
+        id: opacityAnHide
+        target: menuButtonsBg
+        properties: "opacity"
+        from: 0.8
+        to: 0.0
+        duration: 500
+    }
+
+
+    Button {
+        id: menuBt
+        anchors.right: parent.right
+        anchors.rightMargin: 20
+        anchors.topMargin: 5
+        anchors.top: parent.top
+        width: 40
+        height: 20
+        checked: false
+        style: ButtonStyle {
+            background: Rectangle {
+                color: "transparent"
             }
         }
 
-        Button {
-            id: desktop_bell
-            //visible: WINStyle ? menuBt.visible : false
-            visible: false
-            anchors.top: menuBt.bottom
-            anchors.horizontalCenter: menuBt.horizontalCenter
-            anchors.topMargin: 8
-            width: 22
-            height: 26
-            checked: false
-            style: ButtonStyle {
-                background: Rectangle {
-                    color: "transparent"
-                    Image {
-                        anchors.fill: parent
-                        source: "qrc:/desktop/images/bell.png"
-                        opacity: desktop_bell.hovered ? 1 : 0.8
-                    }
-                }
-            }
-            onClicked: {
-                volume_timer.start()
-                checked = !checked
-                if (checked)
-                    myDesktop.getSystemVolume()
-            }
-        }
-
-        Rectangle {
+        Text {
+            id: menuText
+            text: qsTr("…")
             anchors.centerIn: parent
-            width: 300
-            height: 80
-            radius: 20
-            visible: desktop_bell.checked
-            color: "#424242"
-            Slider {
-                id: system_volume_slider
-                height: 50
-                width: 280
-                anchors.centerIn: parent
-                updateValueWhileDragging: true
-                stepSize: 1
-                maximumValue: 127
-                property bool handled: false
-                onPressedChanged: {
-                    handled = !handled
-                    volume_timer.start()
-                    if (!handled)
-                        myDesktop.setSystemVolume(value)
-                }
-                onValueChanged: {
-                    volume_timer.stop()
-                }
-                style: SliderStyle {
-                    groove: Rectangle {
-                        width: control.width
-                        height: 3
-                        radius: 1
-                        color: "white"
-                        Rectangle {
-                            width: styleData.handlePosition
-                            height: 3
-                            color: "#27e0fb"
-                            radius: 1
-                        }
-                    }
-                    handle: Rectangle {
-                        width: 1
-                        height: 30
-                        color: "transparent"
-                    }
-                }
+            color: menuBt.hovered ? "white" : "#ccffffff"
+            font.pixelSize: 30
+        }
+
+        onClicked: {
+            menu_timer.start()
+            if (!checked) {
+                showMenu.start()
+                xMoveLeft.start()
+                opacityAnShow.start()
+            } else {
+                hideMenu.start()
+                xMoveRight.start()
+                opacityAnHide.start()
             }
+            checked = !checked
         }
     }
 
-    // 顶部菜单
-    Item {
-        id: topMenu
-        anchors.top: mainWindow.top
-        anchors.left: mainWindow.left
-        width: mainWindow.width
-        height: 30
-        Rectangle {
-            anchors.fill: topMenu
-            color: "transparent"
-
-            // 图片
-            Image {
-                id: top_icon
-                source: "qrc:/desktop/images/top_icon.png"
-                anchors.left: parent.left
-                anchors.leftMargin: 0
-                anchors.verticalCenter: parent.verticalCenter
-            }
-
-            // 删除 netText 后，直接将 displayCpuTemp 锚定到 top_icon 的右侧
-            Text {
-                id: displayCpuTemp
-                anchors.verticalCenter: top_icon.verticalCenter
-                anchors.left: top_icon.right // 锚定到 top_icon 的右侧
-                anchors.leftMargin: 20 // 左边距
-                text: qsTr("CPU:50℃")
-                color: "white"
-                font.bold: true
-                font.pixelSize: 20
-            }
-        }
-    }
 
     // 多页面切换
     Rectangle {
@@ -565,7 +584,7 @@ Window {
         anchors.top: mainTimeText.bottom
         anchors.topMargin: 5
         anchors.horizontalCenter: mainTimeText.horizontalCenter
-        color: "#99eeeeee"
+        color: "#99eeee"
         font.pixelSize: 15
         font.bold: true
     }
