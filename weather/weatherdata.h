@@ -12,8 +12,8 @@ class IndexData : public QObject
     Q_PROPERTY(QString state READ state WRITE setState NOTIFY stateChanged)
 
 public:
-    IndexData(QObject *parent = nullptr);
-    ~IndexData();
+    explicit IndexData(QObject *parent = nullptr);
+    ~IndexData() override;
 
     QString descript() const;
     QString tipt() const;

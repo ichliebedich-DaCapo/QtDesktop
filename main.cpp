@@ -51,14 +51,13 @@ int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);// 兼容高DPI屏幕
 
-    //QGuiApplication app(argc, argv);
     QApplication app(argc, argv);
 
-    QDir::setCurrent(QCoreApplication::applicationDirPath());
+    QDir::setCurrent(QCoreApplication::applicationDirPath());// 设置当前工作目录
 
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
 
     qmlRegisterType<IndexData>("an.weather", 1, 0, "IndexData");
     qmlRegisterType<WeatherData>("an.weather", 1, 0, "WeatherData");
@@ -104,9 +103,9 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty("appCurrtentDir", QCoreApplication::applicationDirPath());
 
-    MyModel *myModel = new MyModel();
-    MyDesktop *myDesktop = new MyDesktop();
-    photoListModel *myPhoto = new photoListModel();
+    auto *myModel = new MyModel();
+    auto *myDesktop = new MyDesktop();
+    auto *myPhoto = new photoListModel();
     engine.rootContext()->setContextProperty("myPhoto", myPhoto);
     engine.rootContext()->setContextProperty("myModel", myModel);
     engine.rootContext()->setContextProperty("myDesktop", myDesktop);
@@ -117,5 +116,5 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    return app.exec();
+    return QApplication::exec();
 }
