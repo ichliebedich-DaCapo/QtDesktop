@@ -463,145 +463,69 @@ Window {
     }
 
     // 多页面切换
-    SwipeView {
-        id: mainSwipeView
-        anchors.fill: parent
-        interactive: false
-        orientation: ListView.Vertical
+    Rectangle {
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        color: "transparent"
 
-        // 动态加载页面
-        Loader {
-            id: winStyleDesktopLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: WinStyleDesktop {
+        SwipeView {
+            id: mainSwipeView
+            anchors.fill: parent
+            interactive: false
+            orientation: ListView.Vertical
+            Component.onCompleted: {
+                contentItem.highlightMoveDuration = 0
             }
-        }
-        Loader {
-            id: musicLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Music {
+            // Desktop 与 WinStyleDesktop 只能二选一，选择DeskTop需要取消注释Applications，
+            // 这里设计两款桌面，一种是类似是安卓类型，一种是类似Win10类型
+            //DeskTop{}
+            WinStyleDesktop {
             }
-        }
-        Loader {
-            id: alarmLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Alarm {
+            Music {
             }
-        }
-        Loader {
-            id: weatherLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Weather {
+            Alarm {
             }
-        }
-        Loader {
-            id: radioLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Radio {
+            //Media{}
+            //Applications{}
+            Weather {
             }
-        }
-        Loader {
-            id: calculatorLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Calculator {
+            Radio {
             }
-        }
-        Loader {
-            id: tcpServerLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: TcpServer {
+            Calculator {
             }
-        }
-        Loader {
-            id: tcpClientLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: TcpClient {
+            TcpServer {
             }
-        }
-        Loader {
-            id: udpChatLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: UdpChat {
+            TcpClient {
             }
-        }
-        Loader {
-            id: photoViewLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: PhotoView {
+            UdpChat {
             }
-        }
-        Loader {
-            id: fileViewLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: FileView {
+            PhotoView {
             }
-        }
-        Loader {
-            id: airconditionLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Aircondition {
+            FileView {
             }
-        }
-        Loader {
-            id: iotestLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Iotest {
+            Aircondition {
             }
-        }
-        Loader {
-            id: sensorLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Sensor {
+            Iotest {
             }
-        }
-        Loader {
-            id: myWirelessLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: MyWireless {
+            Sensor {
             }
-        }
-        Loader {
-            id: systemLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: System {
+            MyWireless {
             }
-        }
-        Loader {
-            id: settingsLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: Settings {
+            System {
             }
-        }
-        Loader {
-            id: myCameraMediaLoader
-            active: false
-            asynchronous: true // 异步加载
-            sourceComponent: MyCameraMedia {
+            Settings {
             }
-        }
+            MyCameraMedia {
+            }
 
-        // 页面切换逻辑
-        onCurrentIndexChanged: {
-            console.log("Current index changed to:", currentIndex)
-            for (let i = 0; i < mainSwipeView.count; i++) {
-                mainSwipeView.itemAt(i).active = i === currentIndex;
+            onCurrentIndexChanged: {
+                mainSwipeView.currentItem.visible = true
+                for (let i = 0; i < mainSwipeView.count; i++) {
+                    if (i !== mainSwipeView.currentIndex)
+                        mainSwipeView.itemAt(i).visible = false
+                }
             }
         }
     }
@@ -707,7 +631,7 @@ Window {
 
         // 预加载资源或初始化数据
         function preloadResources() {
-            mainSwipeView.onCurrentIndexChanged();// 加载第一个页面的资源
+
         }
 
         onTriggered: {
