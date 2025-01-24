@@ -426,10 +426,9 @@ Window {
                 }
             }
         }
-
-
     }
 
+    // 顶部菜单
     Item {
         id: topMenu
         anchors.top: mainWindow.top
@@ -438,38 +437,28 @@ Window {
         height: 30
         Rectangle {
             anchors.fill: topMenu
-            //color: "#55111111"
             color: "transparent"
-            Text {
-                id: netText
-                text: qsTr("www.openedv.com")
-                color: "white"
-                font.bold: true
-                font.pixelSize: 20
-                anchors.left: alientek.right
-                anchors.leftMargin: 10
-                anchors.verticalCenter: parent.verticalCenter
-            }
+
+            // 图片
             Image {
-                id: alientek
-                source: "qrc:/desktop/images/alientek.png"
+                id: top_icon
+                source: "qrc:/desktop/images/top_icon.png"
                 anchors.left: parent.left
-                //anchors.leftMargin: mainSwipeView.currentIndex == 0 ? 5 : 40
-                anchors.leftMargin: 5
+                anchors.leftMargin: 0
                 anchors.verticalCenter: parent.verticalCenter
             }
 
+            // 删除 netText 后，直接将 displayCpuTemp 锚定到 top_icon 的右侧
             Text {
                 id: displayCpuTemp
-                anchors.verticalCenter: alientek.verticalCenter
-                anchors.left: netText.right
-                anchors.leftMargin: 10
+                anchors.verticalCenter: top_icon.verticalCenter
+                anchors.left: top_icon.right // 锚定到 top_icon 的右侧
+                anchors.leftMargin: 20 // 左边距
                 text: qsTr("CPU:50℃")
                 color: "white"
                 font.bold: true
                 font.pixelSize: 20
             }
-
         }
     }
 
@@ -484,108 +473,126 @@ Window {
         Loader {
             id: winStyleDesktopLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: WinStyleDesktop {
             }
         }
         Loader {
             id: musicLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Music {
             }
         }
         Loader {
             id: alarmLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Alarm {
             }
         }
         Loader {
             id: weatherLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Weather {
             }
         }
         Loader {
             id: radioLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Radio {
             }
         }
         Loader {
             id: calculatorLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Calculator {
             }
         }
         Loader {
             id: tcpServerLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: TcpServer {
             }
         }
         Loader {
             id: tcpClientLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: TcpClient {
             }
         }
         Loader {
             id: udpChatLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: UdpChat {
             }
         }
         Loader {
             id: photoViewLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: PhotoView {
             }
         }
         Loader {
             id: fileViewLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: FileView {
             }
         }
         Loader {
             id: airconditionLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Aircondition {
             }
         }
         Loader {
             id: iotestLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Iotest {
             }
         }
         Loader {
             id: sensorLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Sensor {
             }
         }
         Loader {
             id: myWirelessLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: MyWireless {
             }
         }
         Loader {
             id: systemLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: System {
             }
         }
         Loader {
             id: settingsLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: Settings {
             }
         }
         Loader {
             id: myCameraMediaLoader
             active: false
+            asynchronous: true // 异步加载
             sourceComponent: MyCameraMedia {
             }
         }
@@ -596,11 +603,6 @@ Window {
             for (let i = 0; i < mainSwipeView.count; i++) {
                 mainSwipeView.itemAt(i).active = i === currentIndex;
             }
-        }
-
-        // 初始化时加载第一个页面
-        Component.onCompleted: {
-            onCurrentIndexChanged() // 手动触发页面加载逻辑
         }
     }
 
@@ -694,25 +696,41 @@ Window {
         repeat: true
         running: true
         property int welcomeTimerCount: 0
+
+        // 更新时间、日期和星期信息
+        function updateDateTime() {
+            currentTimeString = currentTime();
+            currentDateString = currentDate();
+            currentWeekString = currentWeek();
+            currentTimeStringSecond = currentTimeSecond();
+        }
+
+        // 预加载资源或初始化数据
+        function preloadResources() {
+            mainSwipeView.onCurrentIndexChanged();// 加载第一个页面的资源
+        }
+
         onTriggered: {
-            currentTimeString = currentTime()
-            currentDateString = currentDate()
-            currentWeekString = currentWeek()
-            currentTimeStringSecond = currentTimeSecond()
-            if (welcomeTimerCount < 4)
-                welcomeTimerCount++
-            if (welcomeTimerCount == 2)
-                welcome_text.text = "欢迎"
-            if (welcomeTimerCount == 4) {
-                myDesktop.restoreMixerSettings()
-                welcome_display.visible = false
-                welcomeTimerCount++
+            updateDateTime(); // 更新时间、日期和星期信息
+
+            if (welcomeTimerCount < 3) { // 缩短显示时间
+                welcomeTimerCount++;
+            }
+
+            switch (welcomeTimerCount) {
+                case 1:
+                    welcome_text.text = "加载中，请稍候...";
+                    preloadResources(); // 开始预加载资源
+                    break;
+                case 3:
+                    welcome_display.visible = false; // 隐藏欢迎界面
+                    welcome_display.destroy();// 销毁欢迎界面
+                    break;
             }
         }
+
         Component.onCompleted: {
-            currentTimeString = currentTime()
-            currentDateString = currentDate()
-            currentWeekString = currentWeek()
+            updateDateTime(); // 初始化时间、日期和星期信息
         }
     }
 
@@ -727,7 +745,7 @@ Window {
             contentHeight: parent.height + 20
             Rectangle {
                 anchors.fill: parent
-                color: "#1f1e58"
+                color: "#4DB6AC"
                 Text {
                     id: welcome_text
                     text: qsTr("正在初始化，请稍候...")
@@ -738,5 +756,6 @@ Window {
                 }
             }
         }
+
     }
 }
