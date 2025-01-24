@@ -387,6 +387,46 @@ Window {
         }
     }
 
+
+    // 不知道有什么用
+    Button {
+        id: menuBt
+        anchors.right: parent.right
+        anchors.rightMargin: 80
+        anchors.topMargin: 5
+        anchors.top: parent.top
+        width: 40
+        height: 20
+        checked: false
+        style: ButtonStyle {
+            background: Rectangle {
+                color: "transparent"
+            }
+        }
+
+        Text {
+            id: menuText
+            text: qsTr("…")
+            anchors.centerIn: parent
+            color: menuBt.hovered ? "white" : "#ccffffff"
+            font.pixelSize: 30
+        }
+
+        onClicked: {
+            menu_timer.start()
+            if (!checked) {
+                showMenu.start()
+                xMoveLeft.start()
+                opacityAnShow.start()
+            } else {
+                hideMenu.start()
+                xMoveRight.start()
+                opacityAnHide.start()
+            }
+            checked = !checked
+        }
+    }
+
     PropertyAnimation {
         id: showMenu
         target: menuButtonsBg
@@ -442,51 +482,11 @@ Window {
     }
 
 
-    Button {
-        id: menuBt
-        anchors.right: parent.right
-        anchors.rightMargin: 20
-        anchors.topMargin: 5
-        anchors.top: parent.top
-        width: 40
-        height: 20
-        checked: false
-        style: ButtonStyle {
-            background: Rectangle {
-                color: "transparent"
-            }
-        }
-
-        Text {
-            id: menuText
-            text: qsTr("…")
-            anchors.centerIn: parent
-            color: menuBt.hovered ? "white" : "#ccffffff"
-            font.pixelSize: 30
-        }
-
-        onClicked: {
-            menu_timer.start()
-            if (!checked) {
-                showMenu.start()
-                xMoveLeft.start()
-                opacityAnShow.start()
-            } else {
-                hideMenu.start()
-                xMoveRight.start()
-                opacityAnHide.start()
-            }
-            checked = !checked
-        }
-    }
-
-
+    // 多页面切换
+    // 其实是多应用切换
     // 多页面切换
     Rectangle {
-        anchors.left: parent.left
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
+        anchors.fill: parent
         color: "transparent"
 
         SwipeView {
@@ -494,62 +494,128 @@ Window {
             anchors.fill: parent
             interactive: false
             orientation: ListView.Vertical
-            Component.onCompleted: {
-                contentItem.highlightMoveDuration = 0
+
+            // 动态加载页面
+            Loader {
+                id: winStyleDesktopLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: WinStyleDesktop {}
             }
-            // Desktop 与 WinStyleDesktop 只能二选一，选择DeskTop需要取消注释Applications，
-            // 这里设计两款桌面，一种是类似是安卓类型，一种是类似Win10类型
-            //DeskTop{}
-            WinStyleDesktop {
+            Loader {
+                id: musicLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Music {}
             }
-            Music {
+            Loader {
+                id: alarmLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Alarm {}
             }
-            Alarm {
+            Loader {
+                id: weatherLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Weather {}
             }
-            //Media{}
-            //Applications{}
-            Weather {
+            Loader {
+                id: radioLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Radio {}
             }
-            Radio {
+            Loader {
+                id: calculatorLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Calculator {}
             }
-            Calculator {
+            Loader {
+                id: tcpServerLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: TcpServer {}
             }
-            TcpServer {
+            Loader {
+                id: tcpClientLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: TcpClient {}
             }
-            TcpClient {
+            Loader {
+                id: udpChatLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: UdpChat {}
             }
-            UdpChat {
+            Loader {
+                id: photoViewLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: PhotoView {}
             }
-            PhotoView {
+            Loader {
+                id: fileViewLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: FileView {}
             }
-            FileView {
+            Loader {
+                id: airconditionLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Aircondition {}
             }
-            Aircondition {
+            Loader {
+                id: iotestLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Iotest {}
             }
-            Iotest {
+            Loader {
+                id: sensorLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Sensor {}
             }
-            Sensor {
+            Loader {
+                id: myWirelessLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: MyWireless {}
             }
-            MyWireless {
+            Loader {
+                id: systemLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: System {}
             }
-            System {
+            Loader {
+                id: settingsLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: Settings {}
             }
-            Settings {
-            }
-            MyCameraMedia {
+            Loader {
+                id: myCameraMediaLoader
+                active: false // 初始不加载
+                asynchronous: true // 启用异步加载
+                sourceComponent: MyCameraMedia {}
             }
 
+            // 页面切换逻辑
             onCurrentIndexChanged: {
-                mainSwipeView.currentItem.visible = true
+                // 动态激活当前页面的 Loader
                 for (let i = 0; i < mainSwipeView.count; i++) {
-                    if (i !== mainSwipeView.currentIndex)
-                        mainSwipeView.itemAt(i).visible = false
+                    mainSwipeView.itemAt(i).active = i === mainSwipeView.currentIndex;
                 }
             }
         }
     }
 
-    // 控制按钮
+    // 控制背景颜色按钮
     Button {
         id: controlButton
         text: gradientAnimation.running ? "关闭背景渐变" : "开启背景渐变"
@@ -564,6 +630,7 @@ Window {
     }
 
 
+    // 日期时间显示
     Text {
         id: mainTimeText
         visible: false // mainSwipeView.currentIndex == 0
@@ -650,13 +717,13 @@ Window {
 
         // 预加载资源或初始化数据
         function preloadResources() {
-
+            mainSwipeView.onCurrentIndexChanged();// 初始化加载页面
         }
 
         onTriggered: {
             updateDateTime(); // 更新时间、日期和星期信息
 
-            if (welcomeTimerCount < 3) { // 缩短显示时间
+            if (welcomeTimerCount < 4) { // 缩短显示时间
                 welcomeTimerCount++;
             }
 
