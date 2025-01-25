@@ -39,19 +39,23 @@ Item {
     //  配置属性
     property real iconSize: 96
 
-    // 1. 信号定义
+    // 信号定义
     signal componentClicked(string type, string path, var params)
+
+    // 1. 顶部栏
 
 
     // 2. 壁纸层
     Rectangle {
+        id: wallpaper
         anchors.fill: parent
+        z: -1  // 确保壁纸在最底层
         gradient: Gradient {
             GradientStop {
-                position: 0.0; color: "#2c3e50"
+                position: 0.0; color: "#4c6e50"
             }
             GradientStop {
-                position: 1.0; color: "#34495e"
+                position: 1.0; color: "#34497e"
             }
         }
     }
