@@ -28,14 +28,18 @@ import QtQuick.Controls 2.12
 // └── main.cpp               # 程序入口
 
 
-
+import "components"  // 导入components目录下的QML组件
 
 
 Item {
     id: desktop
-    property int currentPage: 0
+    width: 1024
+    height: 600
 
-    // 1. 壁纸层（简化）
+    // 1. 信号定义
+    signal appLaunched(string appPath, var params)
+
+    // 2. 壁纸层
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
@@ -44,68 +48,53 @@ Item {
         }
     }
 
-    // 2. 分页控制器
-    TabBar {
-        id: tabBar
-        width: parent.width
-        currentIndex: currentPage
-        TabButton { text: "Page 1" }
-        TabButton { text: "Page 2" }
-    }
-
-    // 3. 页面内容
+    // 3. 分页容器
     SwipeView {
-        id: pageView
+        id: swipeView
+        anchors.fill: parent
+        interactive: true
+
+        // 动态生成页面
+        Repeater {
+            model: pageModel.pages
+            delegate: AppPage {
+                pageData: modelData
+                iconSize: desktop.iconSize
+                onAppClicked: appLaunched(appPath, params)
+            }
+        }
+    }
+
+    // 4. 页面指示器
+    PageIndicator {
+        count: swipeView.count
+        currentIndex: swipeView.currentIndex
         anchors {
-            top: tabBar.bottom
             bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
-        currentIndex: tabBar.currentIndex
-
-        // 页面1
-        GridView {
-            id: grid1
-            cellWidth: 120
-            cellHeight: 120
-            model: pageModel.page0
-
-            delegate: Button {
-                width: 100
-                height: 100
-                text: model.name
-                icon.name: model.icon
-                onClicked: console.log("Launch:", model.qmlPath)
-            }
-        }
-
-        // 页面2
-        GridView {
-            id: grid2
-            cellWidth: 120
-            cellHeight: 120
-            model: pageModel.page1
-
-            delegate: Button {
-                width: 100
-                height: 100
-                text: model.name
-                icon.name: model.icon
-                onClicked: console.log("Launch:", model.qmlPath)
-            }
+            horizontalCenter: parent.horizontalCenter
+            margins: 20
         }
     }
 
-    // 4. 数据模型（简化）
-    QtObject {
-        id: pageModel
-        property var page0: [
-            { name: "Camera", icon: "camera", qmlPath: "CameraApp.qml" },
-            { name: "GPIO", icon: "settings", qmlPath: "GpioPanel.qml" }
+    // 5. 数据模型
+    property var pageModel: ({
+        pages: [
+            {
+                name: "Page 1",
+                apps: [
+                    { name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml" },
+                    { name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml" }
+                ]
+            },
+            {
+                name: "Page 2",
+                apps: [
+                    { name: "Settings", icon: "settings", path: "modules/SettingsApp/Settings.qml" }
+                ]
+            }
         ]
-        property var page1: [
-            { name: "Settings", icon: "settings", qmlPath: "Settings.qml" }
-        ]
-    }
+    })
+
+    // 6. 配置属性
+    property real iconSize: 96
 }

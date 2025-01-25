@@ -177,5 +177,8 @@
         <file>desktop/winstyleicons/aircondition_app.png</file>
         <file>cameramedia/MyCameraMedia.qml</file>
         <file>ui/Desktop.qml</file>
+        <file>ui/components/AppPage.qml</file>
+        <file>ui/components/AppIcon.qml</file>
+        <file>ui/components/PageIndicator.qml</file>
     </qresource>
 </RCC>

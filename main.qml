@@ -122,15 +122,21 @@ import "./cameramedia"
 Window {
     id: mainWindow
     visible: true
-    width: 800
-    height: 600
+    width: 1024  // 固定宽度
+    height: 600  // 固定高度
+    title: "Embedded Desktop"
 
-    // 1. 桌面视图容器
+    // 1. 桌面容器
     Loader {
         id: desktopLoader
         anchors.fill: parent
         source: "ui/Desktop.qml"
         active: true
+
+        onLoaded: {
+            // 连接桌面信号
+            desktopLoader.item.appLaunched.connect(startApplication)
+        }
     }
 
     // 2. 应用窗口容器
@@ -140,16 +146,11 @@ Window {
     }
 
     // 3. 应用启动器
-    function startApplication(qmlPath, initParams) {
-        console.log("Launching:", qmlPath, "with params:", initParams)
+    function startApplication(appPath, params) {
+        console.log("Launching:", appPath)
         appStack.push({
-            item: Qt.resolvedUrl(qmlPath),
-            properties: initParams
+            item: Qt.resolvedUrl(appPath),
+            properties: params
         })
-    }
-
-    // 4. 初始化完成处理
-    Component.onCompleted: {
-        console.log("Desktop initialized")
     }
 }
