@@ -74,7 +74,7 @@ Item {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        z: 1  // 确保顶部栏在最上层
+        z: 1
     }
 
     // 3. 分页容器
