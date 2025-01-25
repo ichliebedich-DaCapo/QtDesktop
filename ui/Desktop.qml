@@ -36,6 +36,8 @@ Item {
     id: desktop
     width: 1024
     height: 600
+    //  配置属性
+    property real iconSize: 96
 
     // 1. 信号定义
     signal componentClicked(string type, string path, var params)
@@ -44,8 +46,12 @@ Item {
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#2c3e50" }
-            GradientStop { position: 1.0; color: "#34495e" }
+            GradientStop {
+                position: 0.0; color: "#2c3e50"
+            }
+            GradientStop {
+                position: 1.0; color: "#34495e"
+            }
         }
     }
 
@@ -93,7 +99,11 @@ Item {
                     height: width
                     radius: width / 2
                     color: "#1abc9c"
-                    Behavior on width { NumberAnimation { duration: 200 } }
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 200
+                        }
+                    }
                 }
 
                 MouseArea {
@@ -113,9 +123,16 @@ Item {
             {
                 name: "Page 1",
                 components: [
-                    { type: "app", name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1" },
-                    { type: "app", name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1" },
-                    { type: "widget", name: "Clock", component: "ClockWidget.qml", size: "2x2" }
+                    {type: "app", name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
+                    {type: "app", name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
+                    {type: "widget", name: "Clock", component: "ClockWidget.qml", size: "2x2"}
+                ]
+            }, {
+                name: "Page 2",
+                components: [
+                    {type: "app", name: "Camera2", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
+                    {type: "app", name: "GPIO2", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
+                    {type: "widget", name: "Clock2", component: "ClockWidget.qml", size: "2x2"}
                 ]
             }
         ]
@@ -171,6 +188,5 @@ Item {
         }
     }
 
-    // 7. 配置属性
-    property real iconSize: 96
+
 }

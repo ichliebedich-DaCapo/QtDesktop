@@ -7,7 +7,7 @@ Item {
     property string label // 应用名称
     signal clicked()      // 点击事件
 
-    width: 100
+    width: 120
     height: 120  // 增加高度以容纳文本
 
     Column {
