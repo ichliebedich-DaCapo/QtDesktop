@@ -179,5 +179,8 @@
         <file>ui/Desktop.qml</file>
         <file>ui/components/AppPage.qml</file>
         <file>ui/components/AppIcon.qml</file>
+        <file>ui/components/ClockWidget.qml</file>
+        <file>ui/components/GalleryWidget.qml</file>
+
     </qresource>
 </RCC>

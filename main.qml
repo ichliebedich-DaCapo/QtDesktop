@@ -162,6 +162,11 @@ Window {
         // desktopLoader.item.deletePage(1)  // 删除Page 2
         // desktopLoader.item.deleteApp(0, 1)  // 删除Page 1的第二个应用
         // desktopLoader.item.exitEditMode()
-
+        desktopLoader.item.addComponent(0, {
+            type: "widget",
+            name: "Weather",
+            component: "WeatherWidget.qml",
+            size: "2x2"
+        })
     }
 }

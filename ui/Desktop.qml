@@ -31,24 +31,21 @@ import QtQuick.Controls 2.12
 import "components"  // 导入components目录下的QML组件
 
 
+// Desktop.qml
 Item {
     id: desktop
     width: 1024
     height: 600
 
     // 1. 信号定义
-    signal appLaunched(string appPath, var params)
+    signal componentClicked(string type, string path, var params)
 
     // 2. 壁纸层
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop {
-                position: 0.0; color: "#2c3e50"
-            }
-            GradientStop {
-                position: 1.0; color: "#34495e"
-            }
+            GradientStop { position: 0.0; color: "#2c3e50" }
+            GradientStop { position: 1.0; color: "#34495e" }
         }
     }
 
@@ -64,115 +61,87 @@ Item {
             delegate: AppPage {
                 pageData: modelData
                 iconSize: desktop.iconSize
-                onAppClicked: appLaunched(appPath, params)
+                onComponentClicked: desktop.componentClicked(type, path, params)
             }
         }
     }
 
     // 4. 页面指示器
-    // Repeater跨文件可能有问题，这里不得已直接把所有逻辑放在这
     Row {
         id: pageIndicator
-        spacing: 12  // 增加间距
+        spacing: 12
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
             margins: 20
         }
 
-        // 动态生成小圆点
         Repeater {
             model: swipeView.count
             delegate: Rectangle {
                 id: dot
-                width: 12  // 增大尺寸
+                width: 12
                 height: 12
-                radius: 6  // 完全圆形
-                color: "transparent"  // 背景透明
-                border.color: index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"  // 选中状态为绿色，未选中为灰色
+                radius: 6
+                color: "transparent"
+                border.color: index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"
                 border.width: 2
 
-                // 选中状态的填充圆
                 Rectangle {
                     anchors.centerIn: parent
-                    width: index === swipeView.currentIndex ? 8 : 0  // 选中时显示
+                    width: index === swipeView.currentIndex ? 8 : 0
                     height: width
                     radius: width / 2
-                    color: "#1abc9c"  // 绿色
-                    Behavior on width {
-                        NumberAnimation {
-                            duration: 200
-                        }
-                    }  // 平滑过渡
+                    color: "#1abc9c"
+                    Behavior on width { NumberAnimation { duration: 200 } }
                 }
 
-                // 点击切换页面
                 MouseArea {
                     anchors.fill: parent
-                    hoverEnabled: true  // 启用悬停检测
-                    onClicked: {
-                        swipeView.currentIndex = index
-                    }
-
-                    // 悬停效果
-                    onEntered: {
-                        dot.border.color = "#1abc9c"  // 悬停时变为绿色
-                    }
-                    onExited: {
-                        dot.border.color = index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"  // 恢复原色
-                    }
+                    hoverEnabled: true
+                    onClicked: swipeView.currentIndex = index
+                    onEntered: dot.border.color = "#1abc9c"
+                    onExited: dot.border.color = index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"
                 }
             }
         }
     }
-
 
     // 5. 数据模型
     property var pageModel: ({
         pages: [
             {
                 name: "Page 1",
-                apps: [
-                    {name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml"},
-                    {name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml"}
-                ]
-            },
-            {
-                name: "Page 2",
-                apps: [
-                    {name: "Settings", icon: "settings", path: "modules/SettingsApp/Settings.qml"}
+                components: [
+                    { type: "app", name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1" },
+                    { type: "app", name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1" },
+                    { type: "widget", name: "Clock", component: "ClockWidget.qml", size: "2x2" }
                 ]
             }
         ]
     })
 
-
     // --------------函数集群--------------
     // 添加新页面
     function addPage(pageName) {
-        // 添加新页面
         pageModel.pages.push({
             name: pageName,
-            apps: []  // 初始化为空
+            components: []
         })
-        pageModelChanged()  // 触发更新
+        pageModelChanged()
     }
 
-    // 添加新应用
-    function addApp(pageIndex, appName, appIcon, appPath) {
+    // 添加新组件
+    function addComponent(pageIndex, component) {
         if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
-            pageModel.pages[pageIndex].apps.push({
-                name: appName,
-                icon: appIcon,
-                path: appPath
-            })
-            pageModelChanged()  // 触发更新
+            pageModel.pages[pageIndex].components.push(component)
+            pageModelChanged()
         } else {
             console.error("Invalid page index:", pageIndex)
         }
     }
 
-    // 编辑界面和应用
+    // 编辑界面和组件
     property bool isEditMode: false
 
     function enterEditMode() {
@@ -192,29 +161,15 @@ Item {
         }
     }
 
-    function deleteApp(pageIndex, appIndex) {
+    function deleteComponent(pageIndex, componentIndex) {
         if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
-            const page = pageModel.pages[pageIndex];
-            if (appIndex >= 0 && appIndex < page.apps.length) {
-                page.apps.splice(appIndex, 1)
+            const page = pageModel.pages[pageIndex]
+            if (componentIndex >= 0 && componentIndex < page.components.length) {
+                page.components.splice(componentIndex, 1)
                 pageModelChanged()
             }
         }
     }
-
-
-    // // 数据持久化
-    // function saveConfig() {
-    //     const config = JSON.stringify(pageModel.pages);
-    //     console.log("Saving config:", config)
-    //     // 实际保存到文件
-    // }
-    //
-    // function loadConfig() {
-    //     const config = "[]";  // 从文件加载
-    //     pageModel.pages = JSON.parse(config)
-    //     pageModelChanged()
-    // }
 
     // 7. 配置属性
     property real iconSize: 96
