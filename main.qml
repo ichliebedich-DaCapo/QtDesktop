@@ -117,7 +117,6 @@ import "./cameramedia"
 //     }
 // }
 
-
 // main.qml
 Window {
     id: mainWindow
@@ -147,10 +146,14 @@ Window {
 
     // 3. 应用启动器
     function startApplication(appPath, params) {
-        console.log("Launching:", appPath)
         appStack.push({
             item: Qt.resolvedUrl(appPath),
             properties: params
         })
+    }
+
+    Component.onCompleted: {
+        desktopLoader.item.addPage("Page 3")
+        desktopLoader.item.addPage("Page 4")
     }
 }

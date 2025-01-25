@@ -66,15 +66,57 @@ Item {
     }
 
     // 4. 页面指示器
-    PageIndicator {
-        count: swipeView.count
-        currentIndex: swipeView.currentIndex
+    Row {
+        id: pageIndicator
+        spacing: 12  // 增加间距
         anchors {
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
             margins: 20
         }
+
+        // 动态生成小圆点
+        Repeater {
+            model: swipeView.count
+            delegate: Rectangle {
+                id: dot
+                width: 12  // 增大尺寸
+                height: 12
+                radius: 6  // 完全圆形
+                color: "transparent"  // 背景透明
+                border.color: index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"  // 选中状态为绿色，未选中为灰色
+                border.width: 2
+
+                // 选中状态的填充圆
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: index === swipeView.currentIndex ? 8 : 0  // 选中时显示
+                    height: width
+                    radius: width / 2
+                    color: "#1abc9c"  // 绿色
+                    Behavior on width { NumberAnimation { duration: 200 } }  // 平滑过渡
+                }
+
+                // 点击切换页面
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true  // 启用悬停检测
+                    onClicked: {
+                        swipeView.currentIndex = index
+                    }
+
+                    // 悬停效果
+                    onEntered: {
+                        dot.border.color = "#1abc9c"  // 悬停时变为绿色
+                    }
+                    onExited: {
+                        dot.border.color = index === swipeView.currentIndex ? "#1abc9c" : "#bdc3c7"  // 恢复原色
+                    }
+                }
+            }
+        }
     }
+
 
     // 5. 数据模型
     property var pageModel: ({
@@ -94,6 +136,17 @@ Item {
             }
         ]
     })
+
+
+    // 添加新页面
+    function addPage(pageName) {
+        // 添加新页面
+        pageModel.pages.push({
+            name: pageName,
+            apps: []  // 初始化为空
+        })
+        pageModelChanged()  // 触发更新
+    }
 
     // 6. 配置属性
     property real iconSize: 96

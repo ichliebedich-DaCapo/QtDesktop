@@ -179,6 +179,5 @@
         <file>ui/Desktop.qml</file>
         <file>ui/components/AppPage.qml</file>
         <file>ui/components/AppIcon.qml</file>
-        <file>ui/components/PageIndicator.qml</file>
     </qresource>
 </RCC>
