@@ -197,7 +197,7 @@ Window {
         visible: mainSwipeView.currentIndex !== 0
         hoverEnabled: enabled
         opacity: hovered ? 1 : 0.5
-        background: Rectangle{
+        background: Rectangle {
             color: "#55ffffff"
             radius: parent.width / 2
         }
@@ -494,123 +494,153 @@ Window {
             anchors.fill: parent
             interactive: false
             orientation: ListView.Vertical
+            // Component.onCompleted: {
+            //     contentItem.highlightMoveDuration = 0
+            // }
+
+            // 存储旧的页面索引，默认为0，即桌面
+            property int previousIndex: 0
 
             // 动态加载页面
             Loader {
                 id: winStyleDesktopLoader
-                active: false // 初始不加载
+                active: true // 初始加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: WinStyleDesktop {}
+                sourceComponent: WinStyleDesktop {
+                }
             }
             Loader {
                 id: musicLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Music {}
+                sourceComponent: Music {
+                }
             }
             Loader {
                 id: alarmLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Alarm {}
+                sourceComponent: Alarm {
+                }
             }
             Loader {
                 id: weatherLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Weather {}
+                sourceComponent: Weather {
+                }
             }
             Loader {
                 id: radioLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Radio {}
+                sourceComponent: Radio {
+                }
             }
             Loader {
                 id: calculatorLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Calculator {}
+                sourceComponent: Calculator {
+                }
             }
             Loader {
                 id: tcpServerLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: TcpServer {}
+                sourceComponent: TcpServer {
+                }
             }
             Loader {
                 id: tcpClientLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: TcpClient {}
+                sourceComponent: TcpClient {
+                }
             }
             Loader {
                 id: udpChatLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: UdpChat {}
+                sourceComponent: UdpChat {
+                }
             }
             Loader {
                 id: photoViewLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: PhotoView {}
+                sourceComponent: PhotoView {
+                }
             }
             Loader {
                 id: fileViewLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: FileView {}
+                sourceComponent: FileView {
+                }
             }
             Loader {
                 id: airconditionLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Aircondition {}
+                sourceComponent: Aircondition {
+                }
             }
             Loader {
                 id: iotestLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Iotest {}
+                sourceComponent: Iotest {
+                }
             }
             Loader {
                 id: sensorLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Sensor {}
+                sourceComponent: Sensor {
+                }
             }
             Loader {
                 id: myWirelessLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: MyWireless {}
+                sourceComponent: MyWireless {
+                }
             }
             Loader {
                 id: systemLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: System {}
+                sourceComponent: System {
+                }
             }
             Loader {
                 id: settingsLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: Settings {}
+                sourceComponent: Settings {
+                }
             }
             Loader {
                 id: myCameraMediaLoader
                 active: false // 初始不加载
                 asynchronous: true // 启用异步加载
-                sourceComponent: MyCameraMedia {}
+                sourceComponent: MyCameraMedia {
+                }
             }
 
             // 页面切换逻辑
             onCurrentIndexChanged: {
-                // 动态激活当前页面的 Loader
-                for (let i = 0; i < mainSwipeView.count; i++) {
-                    mainSwipeView.itemAt(i).active = i === mainSwipeView.currentIndex;
+                // 关闭旧的页面
+                if (previousIndex !== 0) {
+                    mainSwipeView.itemAt(previousIndex).active = false;
                 }
+
+                // 打开新的页面
+                mainSwipeView.itemAt(currentIndex).active = true;
+
+                // 更新旧的页面索引
+                previousIndex = currentIndex;
             }
         }
     }
@@ -727,16 +757,18 @@ Window {
                 welcomeTimerCount++;
             }
 
-            switch (welcomeTimerCount) {
-                case 1:
-                    welcome_text.text = "加载中，请稍候...";
-                    preloadResources(); // 开始预加载资源
-                    break;
-                case 3:
-                    welcome_display.visible = false; // 隐藏欢迎界面
-                    welcome_display.destroy();// 销毁欢迎界面
-                    break;
-            }
+            // switch (welcomeTimerCount) {
+            //     case 1:
+            //         welcome_text.text = "加载中，请稍候...";
+            //         preloadResources(); // 开始预加载资源
+            //         break;
+            //     case 3:
+            //         welcome_display.visible = false; // 隐藏欢迎界面
+            //         welcome_display.destroy();// 销毁欢迎界面
+            //         break;
+            // }
+
+
         }
 
         Component.onCompleted: {
@@ -747,7 +779,7 @@ Window {
     Item {
         id: welcome_display
         anchors.fill: parent
-        //visible: !WINenv
+        visible: false
         z: 120
         Flickable {
             anchors.fill: parent

@@ -1,0 +1,23 @@
+<toolSet name="外部工具">
+  <tool name="Qmake" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="E:\Tools\Develop\Embedded\Qt\5.15.2\mingw81_64\bin\qmake.exe" />
+      <option name="PARAMETERS" value="E:\Program\Embedded\Qt\imx6ull\QDesktop\QDesktop.pro -spec win32-g++ &quot;CONFIG+=debug&quot; &quot;CONFIG+=qml_debug&quot;" />
+      <option name="WORKING_DIRECTORY" value="E:/Tools/Develop/Embedded/Qt/5.15.2/mingw81_64/bin" />
+    </exec>
+  </tool>
+  <tool name="mingw32-make-clean" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="E:\Tools\Develop\Embedded\Qt\Tools\mingw810_64\bin\mingw32-make.exe" />
+      <option name="PARAMETERS" value="clean -j16" />
+      <option name="WORKING_DIRECTORY" value="E:/Program/Embedded/Qt/imx6ull/QDesktop/build/Desktop_Qt_5_15_2_MinGW_64_bit-Debug" />
+    </exec>
+  </tool>
+  <tool name="mingw32-make-jobs" description="编译程序" showInMainMenu="false" showInEditor="false" showInProject="false" showInSearchPopup="false" disabled="false" useConsole="true" showConsoleOnStdOut="false" showConsoleOnStdErr="false" synchronizeAfterRun="true">
+    <exec>
+      <option name="COMMAND" value="E:\Tools\Develop\Embedded\Qt\Tools\mingw810_64\bin\mingw32-make.exe" />
+      <option name="PARAMETERS" value="-j16" />
+      <option name="WORKING_DIRECTORY" value="E:/Program/Embedded/Qt/imx6ull/QDesktop/build/Desktop_Qt_5_15_2_MinGW_64_bit-Debug" />
+    </exec>
+  </tool>
+</toolSet>

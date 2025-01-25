@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="e918b8ac-abb0-4c10-8915-598f90b39324" name="make-qt_all" defaultType="TOOL">
+      <configuration id="4f549add-39b6-49ec-b4e1-ee00c53bc917" name="make-qt_all" toolchainName="MinGW64_Qt">
+        <build type="TOOL">
+          <tool actionId="Tool_外部工具_mingw32-make-jobs" />
+        </build>
+        <clean type="TOOL">
+          <tool actionId="Tool_外部工具_mingw32-make-clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

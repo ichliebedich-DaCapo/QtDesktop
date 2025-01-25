@@ -8,8 +8,8 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2030. All rights reserved.
 *******************************************************************/
 #include "desktop.h"
 #include <QDebug>
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>

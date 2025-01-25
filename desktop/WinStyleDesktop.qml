@@ -9,29 +9,30 @@ import QtQuick 2.4
 import an.weather 1.0
 import an.model 1.0
 import "../settings"
+
 Item {
     id: winDesktop
     property real albumImageOpacity: 1.0
-    property string albumPath: myPhoto.currentIndex != -1 ? myPhoto.getcurrentPath() : ""
+    property string albumPath: myPhoto.currentIndex !== -1 ? myPhoto.getcurrentPath() : ""
     property string weatherIconStr: "qrc:/desktop/winstyleicons/weather_app_rain.png"
     property int count: 0
     visible: true
 
     function checkWeatherType(arg) {
-        var str = arg
-        if(str.indexOf("fine") !== -1) {
+        const str = arg;
+        if (str.indexOf("fine") !== -1) {
             weatherIconStr = "qrc:/desktop/winstyleicons/weather_app_fine.png"
             return "qrc:/desktop/winstyleicons/weather_app_fine.png"
-        }else if(str.indexOf("rain") !== -1) {
+        } else if (str.indexOf("rain") !== -1) {
             weatherIconStr = "qrc:/desktop/winstyleicons/weather_app_rain.png"
             return "qrc:/desktop/winstyleicons/weather_app_rain.png"
-        }else if(str.indexOf("snow") !== -1) {
+        } else if (str.indexOf("snow") !== -1) {
             weatherIconStr = "qrc:/desktop/winstyleicons/weather_app_snow.png"
             return "qrc:/desktop/winstyleicons/weather_app_snow.png"
-        }else if(str.indexOf("cloudy") !== -1) {
+        } else if (str.indexOf("cloudy") !== -1) {
             weatherIconStr = "qrc:/desktop/winstyleicons/weather_app_cloudy.png"
             return "qrc:/desktop/winstyleicons/weather_app_cloudy.png"
-        }else
+        } else
             return "qrc:/desktop/winstyleicons/weather_app_rain.png"
     }
 
@@ -42,23 +43,23 @@ Item {
             albumTimer.stop()
     }
 
-    Timer{
+    Timer {
         id: albumTimer
         interval: 100
         running: winDesktop.visible
         repeat: true
-        onTriggered:{
+        onTriggered: {
             count += 1
             if (count >= 150 && count < 160) {
                 albumImageOpacity -= 0.1
                 if (albumImageOpacity <= 0)
                     albumImageOpacity = 0
             }
-            if (count == 160 && myPhoto.currentIndex != -1) {
+            if (count === 160 && myPhoto.currentIndex !== -1) {
                 albumImageOpacity = 0
                 myPhoto.setCurrentIndex(myPhoto.currentIndex + 1)
             }
-            if (count >= 160 && myPhoto.currentIndex != -1) {
+            if (count >= 160 && myPhoto.currentIndex !== -1) {
                 albumPath = myPhoto.getcurrentPath()
                 albumImageOpacity = albumImageOpacity + 0.1
                 if (albumImageOpacity >= 1.0)
@@ -69,6 +70,7 @@ Item {
             }
         }
     }
+
     PageIndicator {
         id: indicator
 
@@ -78,26 +80,27 @@ Item {
         anchors.bottom: swipeView_app.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }
+
     SwipeView {
         id: swipeView_app
         anchors.fill: parent
         currentIndex: 0
-        interactive: smallScreen ? false : true
+        interactive: !smallScreen
         Item {
             id: page1
             Flickable {
                 id: first
                 anchors.fill: parent
-                interactive: smallScreen ? true : false
+                interactive: smallScreen
                 contentWidth: smallScreen ? parent.width + 320 : parent.width
                 contentHeight: smallScreen ? parent.height + 208 : parent.height
                 states: [
                     State {
                         when: first.contentX > 400
-                        StateChangeScript{
-                            script:{
+                        StateChangeScript {
+                            script: {
                                 swipeView_app.setCurrentIndex(1)
-//                                print("进入页面二")
+                                //                                print("进入页面二")
                                 page1.visible = false
                                 page2.visible = true
 
@@ -111,14 +114,16 @@ Item {
                     z: 20
                     width: 5
                     hoverEnabled: true
-                    background: Rectangle {color: "#33bbbbbb"}
+                    background: Rectangle {
+                        color: "#33bbbbbb"
+                    }
                     onActiveChanged: {
                         active = true;
                     }
                     Component.onCompleted: {
                         scrollBarVertical1.active = true;
                     }
-                    contentItem: Rectangle{
+                    contentItem: Rectangle {
                         implicitWidth: 5
                         implicitHeight: 100
                         radius: 2
@@ -131,14 +136,16 @@ Item {
                     z: 20
                     height: 5
                     hoverEnabled: true
-                    background: Rectangle {color: "#33bbbbbb"}
+                    background: Rectangle {
+                        color: "#33bbbbbb"
+                    }
                     onActiveChanged: {
                         active = true;
                     }
                     Component.onCompleted: {
                         scrollBarHorizontal1.active = true;
                     }
-                    contentItem: Rectangle{
+                    contentItem: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 5
                         radius: 2
@@ -175,6 +182,7 @@ Item {
                     anchors.bottomMargin: 16
                     anchors.left: aircondition_app.left
                 }
+
                 Item {
                     id: timeRect
                     anchors.top: calc_app.top
@@ -183,7 +191,7 @@ Item {
                     width: 200
                     height: 102
                     MouseArea {
-                        anchors.fill : parent
+                        anchors.fill: parent
                         onClicked: {
                             mainSwipeView.setCurrentIndex(2)
                         }
@@ -229,7 +237,7 @@ Item {
                     width: 200
                     height: 100
                     MouseArea {
-                        anchors.fill : parent
+                        anchors.fill: parent
                         onClicked: {
                             mainSwipeView.setCurrentIndex(3)
                         }
@@ -247,7 +255,7 @@ Item {
                         mipmap: true
                         fillMode: Image.PreserveAspectFit
                         source: myModel.ready ? (dayOrNight >= 18 || dayOrNight <= 6 ? myModel.weatherData[0].nightPicture
-                                                                                     : myModel.weatherData[0].dayPicture) : ""
+                            : myModel.weatherData[0].dayPicture) : ""
                     }
                     Text {
                         id: cTemp
@@ -257,7 +265,7 @@ Item {
                         font.family: "方正"
                         color: "white"
                         font.bold: true
-                        text:myModel.ready ? myModel.cTemp + "°" : "..."
+                        text: myModel.ready ? myModel.cTemp + "°" : "..."
                     }
                     Text {
                         id: weatherType
@@ -304,7 +312,7 @@ Item {
                         border.color: "#bbbbbbbb"
                     }
                     MouseArea {
-                        anchors.fill : parent
+                        anchors.fill: parent
                         onClicked: {
                             mainSwipeView.setCurrentIndex(9)
                         }
@@ -740,19 +748,20 @@ Item {
                 }
             }
         }
+
         Item {
-            id:page2
-            visible: smallScreen ? false : true
+            id: page2
+            visible: !smallScreen
             Flickable {
                 id: second
                 anchors.fill: parent
                 contentWidth: smallScreen ? parent.width + 320 : parent.width
-                contentHeight: smallScreen ?  parent.height + 208 : parent.height
+                contentHeight: smallScreen ? parent.height + 208 : parent.height
                 states: [
                     State {
                         when: second.contentX < -40
-                        StateChangeScript{
-                            script:{
+                        StateChangeScript {
+                            script: {
                                 swipeView_app.setCurrentIndex(0)
                                 //print("返回页面一")
                                 page2.visible = false
@@ -767,14 +776,16 @@ Item {
                     z: 20
                     width: 5
                     hoverEnabled: true
-                    background: Rectangle {color: "#33bbbbbb"}
+                    background: Rectangle {
+                        color: "#33bbbbbb"
+                    }
                     onActiveChanged: {
                         active = true;
                     }
                     Component.onCompleted: {
                         scrollBarVertical2.active = true;
                     }
-                    contentItem: Rectangle{
+                    contentItem: Rectangle {
                         implicitWidth: 5
                         implicitHeight: 100
                         radius: 2
@@ -782,19 +793,21 @@ Item {
                     }
                 }
                 ScrollBar.horizontal: ScrollBar {
-                    visible: smallScreen ? true : false
+                    visible: smallScreen
                     id: scrollBarHorizontal2
                     z: 20
                     height: 5
                     hoverEnabled: true
-                    background: Rectangle {color: "#33bbbbbb"}
+                    background: Rectangle {
+                        color: "#33bbbbbb"
+                    }
                     onActiveChanged: {
                         active = true;
                     }
                     Component.onCompleted: {
                         scrollBarHorizontal2.active = true;
                     }
-                    contentItem: Rectangle{
+                    contentItem: Rectangle {
                         implicitWidth: 100
                         implicitHeight: 5
                         radius: 2
