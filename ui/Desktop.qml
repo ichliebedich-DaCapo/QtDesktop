@@ -29,7 +29,7 @@ import QtQuick.Controls 2.12
 
 
 import "components"  // 导入components目录下的QML组件
-
+import "icons"
 
 // Desktop.qml
 Item {
@@ -41,6 +41,7 @@ Item {
 
     // 1. 信号定义
     signal componentClicked(string type, string path, var params)
+
 
     // 2. 壁纸层
     Rectangle {
@@ -123,16 +124,16 @@ Item {
             {
                 name: "Page 1",
                 components: [
-                    {type: "app", name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
-                    {type: "app", name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
-                    {type: "widget", name: "Clock", component: "ClockWidget.qml", size: "2x2"}
+                    {type: "app", name: "Camera", icon: "test", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
+                    {type: "app", name: "GPIO", icon: "test", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
+                    {type: "widget", name: "Clock", component: "ui/components/ClockWidget.qml", size: "2x2"}
                 ]
             }, {
                 name: "Page 2",
                 components: [
-                    {type: "app", name: "Camera2", icon: "camera", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
-                    {type: "app", name: "GPIO2", icon: "settings", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
-                    {type: "widget", name: "Clock2", component: "ClockWidget.qml", size: "2x2"}
+                    {type: "app", name: "Camera2", icon: "test", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
+                    {type: "app", name: "GPIO2", icon: "test", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
+                    {type: "widget", name: "Clock2", component: "/components/ClockWidget.qml", size: "2x2"}
                 ]
             }
         ]
