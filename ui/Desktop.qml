@@ -33,8 +33,8 @@ import "icons"
 
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import "components"
-import "icons"
+import QtGraphicalEffects 1.15
+
 
 Item {
     id: desktop
@@ -46,34 +46,24 @@ Item {
     signal componentClicked(string type, string path, var params)
 
     // 1. 壁纸层
-    Rectangle {
-        id: wallpaper
+    Item {
         anchors.fill: parent
-        z: -1
 
-        gradient: Gradient {
-            GradientStop { id: stop1; position: 0.0; color: "#6a89cc" }  // 浅蓝色
-            GradientStop { id: stop2; position: 1.0; color: "#82ccdd" }  // 更浅的蓝色
+        Rectangle {
+            id: wallpaper
+            anchors.fill: parent
+            z: -1
+            gradient: Gradient {
+                GradientStop { position: 0.0; color: "#6a89cc" }  // 浅蓝色
+                GradientStop { position: 1.0; color: "#82ccdd" }  // 更浅的蓝色
+            }
         }
 
-        // 渐变动画
-        SequentialAnimation {
-            running: true
-            loops: Animation.Infinite
-            ColorAnimation {
-                target: stop1
-                property: "color"
-                from: "#6a89cc"
-                to: "#82ccdd"
-                duration: 5000
-            }
-            ColorAnimation {
-                target: stop2
-                property: "color"
-                from: "#82ccdd"
-                to: "#6a89cc"
-                duration: 5000
-            }
+        // 模糊效果
+        FastBlur {
+            anchors.fill: wallpaper
+            source: wallpaper
+            radius: 16  // 模糊半径，可以根据性能调整
         }
     }
 
