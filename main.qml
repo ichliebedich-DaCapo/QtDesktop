@@ -134,7 +134,7 @@ Window {
 
         onLoaded: {
             // 连接桌面信号
-            desktopLoader.item.appLaunched.connect(startApplication)
+            desktopLoader.item.appLaunched.connect(mainWindow.startApplication)
         }
     }
 

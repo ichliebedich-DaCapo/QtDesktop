@@ -29,7 +29,7 @@ Item {
             OpacityMask {
                 anchors.fill: parent
                 source: Image {
-                    source: "qrc:/ui/icons/" + icon + ".png"
+                    source:"qrc:/ui/icons/" + icon + ".png"
                     width: iconContainer.width - 10
                     height: iconContainer.height - 10
                     fillMode: Image.PreserveAspectFit
@@ -48,12 +48,6 @@ Item {
                     console.log(parent.parent.parent.label)
                     parent.parent.parent.clicked()  // 触发点击信号
                 }
-                // onPressed: {
-                //     iconContainer.color = "lightgray"
-                // }
-                // onReleased: {
-                //     iconContainer.color = "transparent"
-                // }
             }
         }
 

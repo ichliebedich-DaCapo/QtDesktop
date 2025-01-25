@@ -66,7 +66,7 @@ Item {
         Repeater {
             model: pageModel.pages
             delegate: AppPage {
-                pageData: modelData
+                pageData: modelData // 传入的是每个页面的数据，里面有相应的组件和应用
                 iconSize: desktop.iconSize
                 onComponentClicked: desktop.componentClicked(type, path, params)
             }
@@ -126,14 +126,14 @@ Item {
                 components: [
                     {type: "app", name: "Camera", icon: "test", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
                     {type: "app", name: "GPIO", icon: "test", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
-                    {type: "widget", name: "Clock", component: "ui/components/ClockWidget.qml", size: "2x2"}
+                    {type: "widget", name: "Clock", component: "qrc:/ui/components/ClockWidget.qml", size: "2x2"}
                 ]
             }, {
                 name: "Page 2",
                 components: [
                     {type: "app", name: "Camera2", icon: "test", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
                     {type: "app", name: "GPIO2", icon: "test", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
-                    {type: "widget", name: "Clock2", component: "/components/ClockWidget.qml", size: "2x2"}
+                    {type: "widget", name: "Clock2", component: "ClockWidget.qml", size: "2x2"}
                 ]
             }
         ]

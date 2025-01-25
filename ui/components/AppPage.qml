@@ -27,10 +27,10 @@ Item {
         }
     }
 
-    function getComponentSource(type) {
-        switch (type) {
+    function getComponentSource(component) {
+        switch (component.type) {
             case "app": return "AppIcon.qml"
-            case "widget": return modelData.component
+            case "widget": return component.component
             default: return "AppIcon.qml"
         }
     }
@@ -40,12 +40,12 @@ Item {
         anchors.fill: parent
         cellWidth: iconSize + 20
         cellHeight: iconSize + 40
-        model: pageData.components
+        model: pageData.components  // 页面数据里的各个组件和应用
 
         delegate: Loader {
             width: getComponentWidth(modelData.size)
             height: getComponentHeight(modelData.size)
-            source: getComponentSource(modelData.type)
+            source: getComponentSource(modelData)
 
             // 传递属性给加载的组件
             onLoaded: {
