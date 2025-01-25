@@ -44,6 +44,10 @@ Copyright © Deng Zhimao Co., Ltd. 1990-2030. All rights reserved.
 
 #include "cameramedia/cameramedia.h"
 
+// 计算器
+#include "modules/Calculator/CalculatorCtrl.h"
+
+
 #include <QDir>
 #include <QApplication>
 
@@ -90,6 +94,11 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileIO, 1>("fileIO", 1, 0, "FileIO");
 
     qmlRegisterType<CameraMedia, 1>("MyCameraMedia", 1, 0, "CameraMedia");
+
+    // 我自己的应用
+    // 注册CalculatorCtrl
+    qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
+
 
     QQmlApplicationEngine engine;
 

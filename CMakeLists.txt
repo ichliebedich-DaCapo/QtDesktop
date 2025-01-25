@@ -70,6 +70,9 @@ file(GLOB_RECURSE SRC
         "wireless/*.h"
         "core/*.cpp"
         "core/*.h"
+
+        "modules/*.h"
+        "modules/*.cpp"
 )
 
 # 定义 Qt 模块名称

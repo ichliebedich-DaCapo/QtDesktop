@@ -1,6 +1,3 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.12
-
 //     Project/
 // ├── core/                   # C++核心模块
 // │   ├── drivers/           # 硬件驱动封装
@@ -9,9 +6,9 @@ import QtQuick.Controls 2.12
 // │   ├── SystemMonitor.cpp  # 系统监控
 // │   └── AppRegistry.cpp    # 应用注册管理
 // ├── modules/               # 应用模块
-// │   ├── CameraApp/
-// │   │   ├── CameraApp.qml  # 应用主界面
-// │   │   ├── CameraCtrl.cpp # 应用专属逻辑
+// │   ├── Calculator/
+// │   │   ├── Calculator.qml  # 应用主界面
+// │   │   ├── CalculatorCtrl.cpp # 应用专属逻辑
 // │   │   └── assets/        # 应用资源
 // ├── shared/                # 公共资源
 // │   ├── components/        # 通用QML组件
