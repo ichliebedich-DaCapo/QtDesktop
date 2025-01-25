@@ -139,6 +139,7 @@ Item {
     })
 
 
+    // --------------函数集群--------------
     // 添加新页面
     function addPage(pageName) {
         // 添加新页面
@@ -149,6 +150,7 @@ Item {
         pageModelChanged()  // 触发更新
     }
 
+    // 添加新应用
     function addApp(pageIndex, appName, appIcon, appPath) {
         if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
             pageModel.pages[pageIndex].apps.push({
@@ -162,7 +164,37 @@ Item {
         }
     }
 
+    // 编辑界面和应用
+    property bool isEditMode: false
 
-    // 6. 配置属性
+    function enterEditMode() {
+        isEditMode = true
+        console.log("Entered edit mode")
+    }
+
+    function exitEditMode() {
+        isEditMode = false
+        console.log("Exited edit mode")
+    }
+
+    function deletePage(pageIndex) {
+        if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
+            pageModel.pages.splice(pageIndex, 1)
+            pageModelChanged()
+        }
+    }
+
+    function deleteApp(pageIndex, appIndex) {
+        if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
+            var page = pageModel.pages[pageIndex]
+            if (appIndex >= 0 && appIndex < page.apps.length) {
+                page.apps.splice(appIndex, 1)
+                pageModelChanged()
+            }
+        }
+    }
+
+
+    // 7. 配置属性
     property real iconSize: 96
 }
