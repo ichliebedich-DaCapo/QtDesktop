@@ -46,50 +46,34 @@ Item {
     signal componentClicked(string type, string path, var params)
 
     // 1. 壁纸层
-    ShaderEffect {
-        id: wallpaperEffect
+    Rectangle {
+        id: wallpaper
         anchors.fill: parent
-        z: -1  // 确保壁纸在最底层
+        z: -1
 
-        property real time: 0.0
-        property variant source: ShaderEffectSource {
-            sourceItem: Rectangle {
-                width: wallpaperEffect.width
-                height: wallpaperEffect.height
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "#6a89cc" }  // 浅蓝色
-                    GradientStop { position: 1.0; color: "#82ccdd" }  // 更浅的蓝色
-                }
-            }
+        gradient: Gradient {
+            GradientStop { id: stop1; position: 0.0; color: "#6a89cc" }  // 浅蓝色
+            GradientStop { id: stop2; position: 1.0; color: "#82ccdd" }  // 更浅的蓝色
         }
 
-        // 顶点着色器（可选）
-        vertexShader: "
-            uniform highp mat4 qt_Matrix;
-            attribute highp vec4 qt_Vertex;
-            attribute highp vec2 qt_MultiTexCoord0;
-            varying highp vec2 coord;
-            void main() {
-                coord = qt_MultiTexCoord0;
-                gl_Position = qt_Matrix * qt_Vertex;
-            }"
-
-        // 片段着色器
-        fragmentShader: "
-            varying highp vec2 coord;
-            uniform sampler2D source;
-            uniform highp float time;
-            void main() {
-                highp vec2 uv = coord;
-                uv.y += sin(uv.x * 10.0 + time * 2.0) * 0.05;  // 波浪效果
-                gl_FragColor = texture2D(source, uv);
-            }"
-
-        NumberAnimation on time {
-            from: 0.0
-            to: 100.0
-            duration: 5000
+        // 渐变动画
+        SequentialAnimation {
+            running: true
             loops: Animation.Infinite
+            ColorAnimation {
+                target: stop1
+                property: "color"
+                from: "#6a89cc"
+                to: "#82ccdd"
+                duration: 5000
+            }
+            ColorAnimation {
+                target: stop2
+                property: "color"
+                from: "#82ccdd"
+                to: "#6a89cc"
+                duration: 5000
+            }
         }
     }
 
