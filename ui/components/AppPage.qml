@@ -1,4 +1,3 @@
-// components/AppPage.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 
@@ -11,19 +10,19 @@ Item {
     // 定义函数
     function getComponentWidth(size) {
         switch (size) {
-            case "1x1": return iconSize
-            case "2x2": return iconSize * 2 + 20
-            case "3x3": return iconSize * 3 + 40
-            default: return iconSize
+            case "1x1": return iconSize + 20
+            case "2x2": return (iconSize + 20) * 2
+            case "3x3": return (iconSize + 20) * 3
+            default: return iconSize + 20
         }
     }
 
     function getComponentHeight(size) {
         switch (size) {
-            case "1x1": return iconSize
-            case "2x2": return iconSize * 2 + 40
-            case "3x3": return iconSize * 3 + 60
-            default: return iconSize
+            case "1x1": return iconSize + 40
+            case "2x2": return (iconSize + 40) * 2
+            case "3x3": return (iconSize + 40) * 3
+            default: return iconSize + 40
         }
     }
 
@@ -35,25 +34,28 @@ Item {
         }
     }
 
-    GridView {
-        id: gridView
+    // 使用Flow布局替代GridView
+    Flow {
+        id: flowLayout
         anchors.fill: parent
-        cellWidth: iconSize + 20
-        cellHeight: iconSize + 40
-        model: pageData.components  // 页面数据里的各个组件和应用
+        spacing: 10
 
-        delegate: Loader {
-            width: getComponentWidth(modelData.size)
-            height: getComponentHeight(modelData.size)
-            source: getComponentSource(modelData)
+        // 动态生成组件
+        Repeater {
+            model: pageData.components
+            delegate: Loader {
+                width: getComponentWidth(modelData.size)
+                height: getComponentHeight(modelData.size)
+                source: getComponentSource(modelData)
 
-            // 传递属性给加载的组件
-            onLoaded: {
-                if (item) {
-                    if (modelData.type === "app") {
-                        item.icon = modelData.icon
-                        item.label = modelData.name
-                        item.clicked.connect(() => componentClicked(modelData.type, modelData.path, {}))
+                // 传递属性给加载的组件
+                onLoaded: {
+                    if (item) {
+                        if (modelData.type === "app") {
+                            item.icon = modelData.icon
+                            item.label = modelData.name
+                            item.clicked.connect(() => componentClicked(modelData.type, modelData.path, {}))
+                        }
                     }
                 }
             }

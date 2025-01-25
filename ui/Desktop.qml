@@ -151,6 +151,7 @@ Item {
 
     // 添加新组件
     function addComponent(pageIndex, component) {
+        console.log("Adding component:", component)
         if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
             pageModel.pages[pageIndex].components.push(component)
             pageModelChanged()

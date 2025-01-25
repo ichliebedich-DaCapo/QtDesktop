@@ -157,7 +157,7 @@ Window {
         desktopLoader.item.addComponent(0, {
             type: "widget",
             name: "Weather",
-            component: "WeatherWidget.qml",
+            component: "qrc:/ui/components/GalleryWidget.qml",
             size: "2x2"
         })
     }
