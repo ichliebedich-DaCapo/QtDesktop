@@ -176,5 +176,6 @@
         <file>aircondition/images/dialbg.png</file>
         <file>desktop/winstyleicons/aircondition_app.png</file>
         <file>cameramedia/MyCameraMedia.qml</file>
+        <file>ui/Desktop.qml</file>
     </qresource>
 </RCC>
