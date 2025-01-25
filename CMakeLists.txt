@@ -71,21 +71,28 @@ file(GLOB_RECURSE SRC
 )
 
 # 定义 Qt 模块名称
-set(QT_MODULES
+#set(QT_MODULES
+#        Core Gui Widgets
+#        Multimedia
+#        Qml Network
+#)
+
+# ------------查找Qt库------------
+set(CMAKE_PREFIX_PATH "E:/Tools/Develop/Embedded/Qt/5.15.2/mingw81_64")
+find_package(Qt5 REQUIRED COMPONENTS
         Core Gui Widgets
         Multimedia
         Qml Network
 )
-
-# ------------查找Qt库------------
-set(CMAKE_PREFIX_PATH "E:/Tools/Develop/Embedded/Qt/5.15.2/mingw81_64")
-find_package(Qt5 REQUIRED COMPONENTS ${QT_MODULES}
-)
 # ------------添加可执行文件------------
 add_executable(${PROJECT_NAME} ${SRC})
 # ------------链接Qt库------------
-set(QT_LIBRARIES)
-foreach(MODULE ${QT_MODULES})
-    list(APPEND QT_LIBRARIES "Qt5::${MODULE}")
-endforeach()
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
+#set(QT_LIBRARIES)
+#foreach(modules ${QT_MODULES})
+#    list(APPEND QT_LIBRARIES "Qt5::${MODULE}")
+#endforeach()
+target_link_libraries(${PROJECT_NAME}
+        Qt5::Core Qt5::Gui Qt5::Widgets
+        Qt5::Multimedia
+        Qt5::Qml Qt5::Network
+)
