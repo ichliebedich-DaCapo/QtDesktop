@@ -188,6 +188,7 @@
         <file>ui/components/IconButton.qml</file>
         <!--        ui / icons     -->
         <file>ui/icons/test.png</file>
+        <file>ui/icons/calc.png</file>
 
         <!--        shared / styles     -->
         <file>shared/styles/Theme.qml</file>

@@ -151,8 +151,8 @@ Item {
             {
                 name: "Page 1",
                 components: [
-                    {type: "app", name: "Camera", icon: "test", path: "modules/CameraApp/CameraApp.qml", size: "1x1"},
-                    {type: "app", name: "GPIO", icon: "test", path: "modules/GpioApp/GpioPanel.qml", size: "1x1"},
+                    {type: "app", name: "计算器", icon: "calc", path: "modules/Calculator/Calculator.qml", size: "1x1"},
+                    {type: "app", name: "GPIO", icon: "test", path: "modules/Gpio/GpioPanel.qml", size: "1x1"},
                     {type: "widget", name: "Clock", component: "qrc:/ui/components/ClockWidget.qml", size: "2x2"}
                 ]
             }, {
