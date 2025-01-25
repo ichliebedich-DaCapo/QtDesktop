@@ -4,16 +4,12 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 
-ApplicationWindow {
-    id: calcWindow
+Item {
     width: 400
     height: 600
-    visible: true
-    title: "计算器"
-
-    CalculatorCtrl {
-        id: calculatorCtrl
-    }
+    // CalculatorCtrl {
+    //     id: calculatorCtrl
+    // }
 
     // 1. 背景
     Rectangle {
@@ -42,7 +38,23 @@ ApplicationWindow {
         }
     }
 
-    // 3. 按钮区域
+    // 3. 返回按钮
+    Button {
+        id: backButton
+        anchors {
+            top: parent.top
+            left: parent.left
+            margins: 10
+        }
+        text: "返回桌面"
+        onClicked: {
+            console.log("back")
+            // 触发返回桌面的信号
+            returnToDesktop()
+        }
+    }
+
+    // 4. 按钮区域
     GridLayout {
         anchors {
             top: displayArea.bottom
@@ -79,4 +91,7 @@ ApplicationWindow {
         CalcButton { text: "0"; Layout.columnSpan: 2; onClicked: calculatorCtrl.appendNumber("0") }
         CalcButton { text: "."; onClicked: calculatorCtrl.appendDecimal() }
     }
+
+    // 5. 返回桌面的信号
+    signal returnToDesktop()
 }

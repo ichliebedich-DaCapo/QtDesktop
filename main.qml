@@ -142,14 +142,26 @@ Window {
     StackView {
         id: appStack
         anchors.fill: parent
+
     }
 
     // 3. 应用启动器
-    function startApplication(appPath, params) {
-        appStack.push({
-            item: Qt.resolvedUrl(appPath),
-            properties: params
-        })
+    function startApplication(path, params) {
+        console.log("Launching application from path:", path, "with params:", params)
+        var component = Qt.createComponent(path)
+        if (component.status === Component.Ready) {
+            var item = appStack.push({
+                item: component,
+                properties: params  // 传递参数
+            })
+
+            // 手动连接returnToDesktop信号
+            if (item && item.returnToDesktop) {
+                item.returnToDesktop.connect(() => appStack.pop())
+            }
+        } else {
+            console.error("Failed to load application:", component.errorString())
+        }
     }
 
     Component.onCompleted: {

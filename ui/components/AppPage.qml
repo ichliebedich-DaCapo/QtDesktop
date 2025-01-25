@@ -61,4 +61,9 @@ Item {
             }
         }
     }
+
+    // 将componentClicked信号连接到Desktop的onComponentClicked
+    Component.onCompleted: {
+        componentClicked.connect(desktop.onComponentClicked)
+    }
 }

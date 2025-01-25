@@ -42,6 +42,14 @@ Item {
     // 信号定义
     signal componentClicked(string type, string path, var params)
 
+    // 信号定义
+    signal appLaunched(string path)  // 只传递path参数
+    // 在组件点击时触发appLaunched信号
+    function onComponentClicked(type, path, params) {
+        appLaunched(path, params)  // 传递两个参数
+    }
+
+
     // 1. 壁纸层
     Item {
         anchors.fill: parent
@@ -148,8 +156,8 @@ Item {
             {
                 name: "Page 1",
                 components: [
-                    {type: "app", name: "计算器", icon: "calc", path: "modules/Calculator/Calculator.qml", size: "1x1"},
-                    {type: "app", name: "GPIO", icon: "test", path: "modules/Gpio/GpioPanel.qml", size: "1x1"},
+                    {type: "app", name: "计算器", icon: "calc", path: "qrc:/modules/Calculator/Calculator.qml", size: "1x1"},
+                    {type: "app", name: "GPIO", icon: "test", path: "qrc:/modules/Gpio/GpioPanel.qml", size: "1x1"},
                     {type: "widget", name: "Clock", component: "qrc:/ui/components/ClockWidget.qml", size: "2x2"}
                 ]
             }, {

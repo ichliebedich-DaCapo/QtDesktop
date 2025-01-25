@@ -176,6 +176,14 @@
         <file>aircondition/images/dialbg.png</file>
         <file>desktop/winstyleicons/aircondition_app.png</file>
         <file>cameramedia/MyCameraMedia.qml</file>
+
+        <!--        modules /      -->
+        <file>modules/Calculator/Calculator.qml</file>
+        <file>modules/Calculator/CalcButton.qml</file>
+
+        <!--        shared / styles     -->
+        <file>shared/styles/Theme.qml</file>
+
         <!--        ui      -->
         <file>ui/Desktop.qml</file>
         <!--        ui / components     -->
@@ -190,8 +198,7 @@
         <file>ui/icons/test.png</file>
         <file>ui/icons/calc.png</file>
 
-        <!--        shared / styles     -->
-        <file>shared/styles/Theme.qml</file>
+
 
 
     </qresource>
