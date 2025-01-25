@@ -66,6 +66,7 @@ Item {
     }
 
     // 4. 页面指示器
+    // Repeater跨文件可能有问题，这里不得已直接把所有逻辑放在这
     Row {
         id: pageIndicator
         spacing: 12  // 增加间距
@@ -147,6 +148,20 @@ Item {
         })
         pageModelChanged()  // 触发更新
     }
+
+    function addApp(pageIndex, appName, appIcon, appPath) {
+        if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
+            pageModel.pages[pageIndex].apps.push({
+                name: appName,
+                icon: appIcon,
+                path: appPath
+            })
+            pageModelChanged()  // 触发更新
+        } else {
+            console.error("Invalid page index:", pageIndex)
+        }
+    }
+
 
     // 6. 配置属性
     property real iconSize: 96
