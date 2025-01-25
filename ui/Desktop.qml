@@ -31,46 +31,58 @@ import QtQuick.Controls 2.12
 import "components"  // 导入components目录下的QML组件
 import "icons"
 
-// Desktop.qml
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import "components"
+import "icons"
+
 Item {
     id: desktop
     width: 1024
     height: 600
-    //  配置属性
     property real iconSize: 96
 
     // 信号定义
     signal componentClicked(string type, string path, var params)
 
-    // 1. 顶部栏
-
-
-    // 2. 壁纸层
+    // 1. 壁纸层
     Rectangle {
         id: wallpaper
         anchors.fill: parent
         z: -1  // 确保壁纸在最底层
+        opacity: 0.9  // 调整透明度
         gradient: Gradient {
-            GradientStop {
-                position: 0.0; color: "#4c6e50"
-            }
-            GradientStop {
-                position: 1.0; color: "#34497e"
-            }
+            GradientStop { position: 0.0; color: "#4c6e50" }
+            GradientStop { position: 1.0; color: "#34497e" }
         }
+    }
+
+    // 2. 顶部栏
+    TopBar {
+        id: topBar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        z: 1  // 确保顶部栏在最上层
     }
 
     // 3. 分页容器
     SwipeView {
         id: swipeView
-        anchors.fill: parent
+        anchors {
+            top: topBar.bottom
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        z: 0  // 中间层
         interactive: true
 
         // 动态生成页面
         Repeater {
             model: pageModel.pages
             delegate: AppPage {
-                pageData: modelData // 传入的是每个页面的数据，里面有相应的组件和应用
+                pageData: modelData
                 iconSize: desktop.iconSize
                 onComponentClicked: desktop.componentClicked(type, path, params)
             }
@@ -193,6 +205,4 @@ Item {
             }
         }
     }
-
-
 }

@@ -176,12 +176,19 @@
         <file>aircondition/images/dialbg.png</file>
         <file>desktop/winstyleicons/aircondition_app.png</file>
         <file>cameramedia/MyCameraMedia.qml</file>
+        <!--        ui      -->
         <file>ui/Desktop.qml</file>
+        <!--        ui / components     -->
         <file>ui/components/AppPage.qml</file>
         <file>ui/components/AppIcon.qml</file>
         <file>ui/components/ClockWidget.qml</file>
         <file>ui/components/GalleryWidget.qml</file>
+        <file>ui/components/TopBar.qml</file>
+        <file>ui/components/SystemTrayItem.qml</file>
+        <file>ui/components/IconButton.qml</file>
+        <!--        ui / icons     -->
         <file>ui/icons/test.png</file>
+
 
     </qresource>
 </RCC>
