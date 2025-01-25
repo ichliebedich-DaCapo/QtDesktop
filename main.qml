@@ -153,14 +153,15 @@ Window {
     }
 
     Component.onCompleted: {
-        desktopLoader.item.addPage("Page 3")
-        desktopLoader.item.addPage("Page 4")
-        desktopLoader.item.addApp(2, "Music2", "music", "modules/MusicApp/MusicPlayer.qml")
-        desktopLoader.item.addApp(3, "Browser2", "web", "modules/BrowserApp/Browser.qml")
+        // desktopLoader.item.addPage("Page 3")
+        // desktopLoader.item.addPage("Page 4")
+        // desktopLoader.item.addApp(2, "Music2", "music", "modules/MusicApp/MusicPlayer.qml")
+        // desktopLoader.item.addApp(3, "Browser2", "web", "modules/BrowserApp/Browser.qml")
+        //
+        // desktopLoader.item.enterEditMode()
+        // desktopLoader.item.deletePage(1)  // 删除Page 2
+        // desktopLoader.item.deleteApp(0, 1)  // 删除Page 1的第二个应用
+        // desktopLoader.item.exitEditMode()
 
-        desktopLoader.item.enterEditMode()
-        desktopLoader.item.deletePage(1)  // 删除Page 2
-        desktopLoader.item.deleteApp(0, 1)  // 删除Page 1的第二个应用
-        desktopLoader.item.exitEditMode()
     }
 }

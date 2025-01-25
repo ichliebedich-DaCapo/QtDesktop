@@ -43,8 +43,12 @@ Item {
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#2c3e50" }
-            GradientStop { position: 1.0; color: "#34495e" }
+            GradientStop {
+                position: 0.0; color: "#2c3e50"
+            }
+            GradientStop {
+                position: 1.0; color: "#34495e"
+            }
         }
     }
 
@@ -95,7 +99,11 @@ Item {
                     height: width
                     radius: width / 2
                     color: "#1abc9c"  // 绿色
-                    Behavior on width { NumberAnimation { duration: 200 } }  // 平滑过渡
+                    Behavior on width {
+                        NumberAnimation {
+                            duration: 200
+                        }
+                    }  // 平滑过渡
                 }
 
                 // 点击切换页面
@@ -125,14 +133,14 @@ Item {
             {
                 name: "Page 1",
                 apps: [
-                    { name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml" },
-                    { name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml" }
+                    {name: "Camera", icon: "camera", path: "modules/CameraApp/CameraApp.qml"},
+                    {name: "GPIO", icon: "settings", path: "modules/GpioApp/GpioPanel.qml"}
                 ]
             },
             {
                 name: "Page 2",
                 apps: [
-                    { name: "Settings", icon: "settings", path: "modules/SettingsApp/Settings.qml" }
+                    {name: "Settings", icon: "settings", path: "modules/SettingsApp/Settings.qml"}
                 ]
             }
         ]
@@ -186,7 +194,7 @@ Item {
 
     function deleteApp(pageIndex, appIndex) {
         if (pageIndex >= 0 && pageIndex < pageModel.pages.length) {
-            var page = pageModel.pages[pageIndex]
+            const page = pageModel.pages[pageIndex];
             if (appIndex >= 0 && appIndex < page.apps.length) {
                 page.apps.splice(appIndex, 1)
                 pageModelChanged()
@@ -194,6 +202,19 @@ Item {
         }
     }
 
+
+    // // 数据持久化
+    // function saveConfig() {
+    //     const config = JSON.stringify(pageModel.pages);
+    //     console.log("Saving config:", config)
+    //     // 实际保存到文件
+    // }
+    //
+    // function loadConfig() {
+    //     const config = "[]";  // 从文件加载
+    //     pageModel.pages = JSON.parse(config)
+    //     pageModelChanged()
+    // }
 
     // 7. 配置属性
     property real iconSize: 96
