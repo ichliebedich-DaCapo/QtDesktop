@@ -163,6 +163,12 @@ Window {
             font.pixelSize: 24
             color: "white"
         }
+
+        // 设置初始位置
+        Component.onCompleted: {
+            floatingButton.x = mainWindow.width - floatingButton.width-20;  // 右侧
+            floatingButton.y = (mainWindow.height - floatingButton.height) / 2;  // 居中
+        }
     }
 
     // 4. 应用启动器
