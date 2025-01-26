@@ -117,6 +117,8 @@ import "./cameramedia"
 //     }
 // }
 
+import "./ui"
+
 // main.qml
 Window {
     id: mainWindow
@@ -126,17 +128,15 @@ Window {
     title: "Embedded Desktop"
 
     // 1. 桌面容器
-    Loader {
-        id: desktopLoader
+    Desktop {
+        id: desktop
         anchors.fill: parent
-        source: "/ui/Desktop.qml"
-        active: true
 
-        onLoaded: {
-            // 连接桌面信号
-            desktopLoader.item.appLaunched.connect(mainWindow.startApplication)
+        onComponentClicked: (type, path, params) => {
+            mainWindow.startApplication(path, params)
         }
     }
+
 
     // 2. 应用窗口容器
     StackView {
@@ -148,29 +148,21 @@ Window {
     // 3. 应用启动器
     function startApplication(path, params) {
         console.log("Launching application from path:", path, "with params:", params)
-        var component = Qt.createComponent(path)
-        if (component.status === Component.Ready) {
-            var item = appStack.push({
-                item: component,
-                properties: params  // 传递参数
-            })
 
-            // 手动连接returnToDesktop信号
-            if (item && item.returnToDesktop) {
-                item.returnToDesktop.connect(() => appStack.pop())
-            }
-        } else {
-            console.error("Failed to load application:", component.errorString())
-        }
+        appStack.push({
+            item: Qt.createComponent(path),
+            properties: params  // 传递参数
+        })
+
     }
 
     Component.onCompleted: {
-
-        desktopLoader.item.addComponent(0, {
-            type: "widget",
-            name: "Weather",
-            component: "qrc:/ui/components/GalleryWidget.qml",
-            size: "2x2"
-        })
+        //
+        // desktopLoader.item.addComponent(0, {
+        //     type: "widget",
+        //     name: "Weather",
+        //     component: "qrc:/ui/components/GalleryWidget.qml",
+        //     size: "2x2"
+        // })
     }
 }

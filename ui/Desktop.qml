@@ -40,14 +40,10 @@ Item {
     property real iconSize: 96
 
     // 信号定义
+    // 从AppPage里传入应用的完整信息，以便后续使用
     signal componentClicked(string type, string path, var params)
 
-    // 信号定义
-    signal appLaunched(string path)  // 只传递path参数
-    // 在组件点击时触发appLaunched信号
-    function onComponentClicked(type, path, params) {
-        appLaunched(path, params)  // 传递两个参数
-    }
+
 
 
     // 1. 壁纸层
@@ -100,6 +96,7 @@ Item {
             delegate: AppPage {
                 pageData: modelData
                 iconSize: desktop.iconSize
+                // 把AppPage里的点击事件传递给desktop
                 onComponentClicked: desktop.componentClicked(type, path, params)
             }
         }

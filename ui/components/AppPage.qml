@@ -54,6 +54,7 @@ Item {
                         if (modelData.type === "app") {
                             item.icon = modelData.icon
                             item.label = modelData.name
+                            // 点击会触发AppPage的组件点击信号
                             item.clicked.connect(() => componentClicked(modelData.type, modelData.path, {}))
                         }
                     }
@@ -62,8 +63,4 @@ Item {
         }
     }
 
-    // 将componentClicked信号连接到Desktop的onComponentClicked
-    Component.onCompleted: {
-        componentClicked.connect(desktop.onComponentClicked)
-    }
 }
