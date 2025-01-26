@@ -1,24 +1,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-
-#include "weather/mymodel.h"
-
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-
-#include "music/playlistmodel.h"
-
-#include "wireless/wirelessmodel.h"
-
-#include "tcpclient/mytcpclient.h"
-
-#include "udpchat/udpreciver.h"
-
-#include "iotest/beep.h"
-
-#include "sensor/ap3216c.h"
-
-#include "radio/radio.h"
+#include <QTextCodec>
 
 
 // 计算器

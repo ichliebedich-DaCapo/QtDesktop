@@ -22,27 +22,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    cameramedia/cameramedia.cpp \
-    fileview/fileio.cpp \
-        main.cpp \
-    weather/myjsonparse.cpp \
-    weather/mymodel.cpp \
-    weather/weatherdata.cpp \
-    music/lyricmodel.cpp \
-    music/playlistmodel.cpp \
-    media/mediaListModel.cpp \
-    wireless/wirelessmodel.cpp \
-    tcpclient/mytcpclient.cpp \
-    tcpserver/mytcpserver.cpp \
-    desktop/desktop.cpp \
-    udpchat/udpreciver.cpp \
-    udpchat/udpsend.cpp \
-    photoview/photolistmodel.cpp \
-    iotest/beep.cpp \
-    sensor/ap3216c.cpp \
-    sensor/icm20608.cpp \
-    iotest/keysthread.cpp \
-    radio/radio.cpp
+    main.cpp \
+    core/system/SystemMonitor.cpp \
+    modules/Calculator/CalculatorCtrl.cpp
+
 
 RESOURCES += qml.qrc
 
@@ -58,25 +41,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    cameramedia/cameramedia.h \
-    fileview/fileio.h \
-    weather/myjsonparse.h \
-    weather/mymodel.h \
-    weather/weatherdata.h \
-    music/lyricmodel.h \
-    music/playlistmodel.h \
-    media/mediaListModel.h \
-    wireless/wirelessmodel.h \
-    tcpclient/mytcpclient.h \
-    tcpserver/mytcpserver.h \
-    desktop/desktop.h \
-    udpchat/udpreciver.h \
-    udpchat/udpsender.h \
-    photoview/photolistmodel.h \
-    iotest/beep.h \
-    sensor/ap3216c.h \
-    sensor/icm20608.h \
-    iotest/keysthread.h \
-    radio/radio.h
+    core/system/SystemMonitor.h \
+    modules/Calculator/CalculatorCtrl.h
+
+
+
 
 DISTFILES +=
