@@ -18,11 +18,11 @@ Item {
             left: parent.left
             margins: 20
         }
+        z: 1  // 确保按钮在其他组件之上
         text: "返回桌面"
         font.pixelSize: 18
         onClicked: {
             if (mainWindow) {
-                console.log("calc back")
                 mainWindow.closeAllApplications();  // 清除所有应用
             }
         }

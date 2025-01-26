@@ -1,5 +1,4 @@
 #include "CalculatorCtrl.h"
-#include <QDebug>
 #include <cmath>
 #include <QStack>
 #include <QMap>
@@ -61,6 +60,7 @@ void CalculatorCtrl::appendToExpression(const QString &text) {
     }
     emit expressionChanged();
 }
+
 void CalculatorCtrl::calculate() {
     if (m_expression.isEmpty()) return;
 
@@ -91,7 +91,6 @@ void CalculatorCtrl::clearAll() {
     emit displayChanged();
     emit expressionChanged();
 }
-
 
 void CalculatorCtrl::toggleSign() {
     double number = m_display.toDouble();
@@ -155,28 +154,22 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
     QStack<double> numbers;
     QStringList tokens = expression.split(" ", Qt::SkipEmptyParts);
 
-    qDebug() << "Tokens:" << tokens;
-
     for (const QString &token : tokens) {
-        qDebug() << "Processing token:" << token;
         if (token == "(") {
             operators.push(token);
         } else if (token == ")") {
             while (!operators.isEmpty() && operators.top() != "(") {
-                qDebug() << "Applying operation:" << operators.top();
                 applyOperation(operators.pop(), numbers);
             }
             if (!operators.isEmpty() && operators.top() == "(") {
                 operators.pop();  // 弹出 "("
             } else {
-                qDebug() << "Mismatched parentheses";
                 return "Error";
             }
         } else if (token == "√" || token == "²") {
             operators.push(token);  // 将 √ 和 ² 作为运算符处理
         } else if (precedence.contains(token)) {
             while (!operators.isEmpty() && precedence[operators.top()] >= precedence[token]) {
-                qDebug() << "Applying operation:" << operators.top();
                 applyOperation(operators.pop(), numbers);
             }
             operators.push(token);
@@ -186,23 +179,16 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
             if (ok) {
                 numbers.push(number);
             } else {
-                qDebug() << "Invalid token:" << token;
                 return "Error";
             }
         }
-        qDebug() << "Operators stack:" << operators;
-        qDebug() << "Numbers stack:" << numbers;
     }
 
     while (!operators.isEmpty()) {
         if (operators.top() == "(" || operators.top() == ")") {
-            qDebug() << "Mismatched parentheses";
             return "Error";
         }
-        qDebug() << "Applying operation:" << operators.top();
         applyOperation(operators.pop(), numbers);
-        qDebug() << "Operators stack:" << operators;
-        qDebug() << "Numbers stack:" << numbers;
     }
 
     if (numbers.isEmpty()) {
@@ -214,25 +200,21 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
 void CalculatorCtrl::applyOperation(const QString &operation, QStack<double> &numbers) {
     if (operation == "√") {
         if (numbers.size() < 1) {
-            qDebug() << "Not enough operands for operation:" << operation;
             return;
         }
         double a = numbers.pop();
         if (a < 0) {
-            qDebug() << "Square root of negative number";
             numbers.push(0);  // 处理负数开根号
         } else {
             numbers.push(std::sqrt(a));
         }
     } else if (operation == "²") {
         if (numbers.size() < 1) {
-            qDebug() << "Not enough operands for operation:" << operation;
             return;
         }
         double a = numbers.pop();
         numbers.push(a * a);  // 计算平方
     } else if (numbers.size() < 2) {
-        qDebug() << "Not enough operands for operation:" << operation;
         return;
     } else {
         double b = numbers.pop();
@@ -247,7 +229,6 @@ void CalculatorCtrl::applyOperation(const QString &operation, QStack<double> &nu
             result = a * b;
         } else if (operation == "÷") {
             if (b == 0) {
-                qDebug() << "Division by zero";
                 result = 0;  // 处理除以零
             } else {
                 result = a / b;
@@ -255,7 +236,6 @@ void CalculatorCtrl::applyOperation(const QString &operation, QStack<double> &nu
         } else if (operation == "%") {
             result = std::fmod(a, b);  // 处理 % 运算
         } else {
-            qDebug() << "Unknown operation:" << operation;
             return;
         }
 
