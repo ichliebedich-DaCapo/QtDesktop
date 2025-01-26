@@ -1,11 +1,3 @@
-/******************************************************************
- Copyright © Deng Zhimao Co., Ltd. 1990-2030. All rights reserved.
- * @projectName   QDesktop
- * @brief         main.qml
- * @author        Deng Zhimao
- * @email         1252699831@qq.com
- * @date          2020-07-31
- *******************************************************************/
 import QtQuick 2.9
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.0
@@ -13,29 +5,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 import QtQuick.Controls 1.2
-import an.weather 1.0
-import an.model 1.0
-import myDesktop 1.0
 import Qt.labs.settings 1.0 // 确保导入 Settings 模块
-import "./calculator"
-import "./weather"
-import "./desktop"
-import "./music"
-import "./media"
-import "./wireless"
-import "./fileview"
-import "./tcpclient"
-import "./tcpserver"
-import "./alarms"
-import "./udpchat"
-import "./photoview"
-import "./aircondition"
-import "./iotest"
-import "./sensor"
-import "./system"
-import "./radio"
-import "./settings"
-import "./cameramedia"
+
 
 // // 主界面容器
 // Window {
@@ -154,11 +125,20 @@ Window {
         id: floatingButton
         width: 60
         height: 60
-        radius: 30
-        color: "lightblue"
-        border.color: "gray"
+        radius: width / 2  // 圆形按钮
+        color: "#1abc9c"  // 更现代的颜色
+        border.color: "#16a085"
         border.width: 2
-        opacity: 0.8
+        opacity: 0.9
+
+        // 阴影效果
+        layer.enabled: true
+        layer.effect: DropShadow {
+            transparentBorder: true
+            radius: 8
+            samples: 16
+            color: "#80000000"
+        }
 
         // 拖拽功能
         MouseArea {
@@ -169,15 +149,19 @@ Window {
             drag.maximumX: mainWindow.width - floatingButton.width
             drag.minimumY: 0
             drag.maximumY: mainWindow.height - floatingButton.height
+
+            // 点击功能
+            onClicked: {
+                mainWindow.returnToDesktop();  // 返回主界面
+            }
         }
 
-        // 点击返回主界面
-        Button {
+        // 图标（使用 Unicode 字符或图片）
+        Text {
             anchors.centerIn: parent
-            text: "Home"
-            onClicked: {
-                mainWindow.returnToDesktop();  // 返回主界面，但不清除应用
-            }
+            text: "🏠"  // 使用 Unicode 字符作为图标
+            font.pixelSize: 24
+            color: "white"
         }
     }
 

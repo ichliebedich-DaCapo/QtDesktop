@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.12
 
 Item {
-    property string icon  // 图标名称或路径
+    property string icon: "test"  // 图标名称或路径,默认随便指定一个
     property string label // 应用名称
     signal clicked()      // 点击事件
 
