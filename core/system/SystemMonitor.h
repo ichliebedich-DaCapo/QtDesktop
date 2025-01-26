@@ -3,13 +3,13 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QmlTypeAndRevisionsRegistration>
+#include <QQmlEngine>
+#include <QJSEngine>
 
 class SystemMonitor : public QObject
 {
 Q_OBJECT
     Q_PROPERTY(QString cpuTemp READ cpuTemp NOTIFY cpuTempChanged)
-    QML_SINGLETON // 声明为单例
 
 public:
     explicit SystemMonitor(QObject *parent = nullptr);
@@ -17,7 +17,8 @@ public:
     QString cpuTemp() const;
 
     // 提供单例实例的静态方法
-    static SystemMonitor *create(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
+    static SystemMonitor *instance();
+    static QObject *singletonProvider(QQmlEngine *qmlEngine, QJSEngine *jsEngine);
 
 signals:
     void cpuTempChanged();

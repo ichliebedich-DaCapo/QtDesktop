@@ -5,6 +5,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+// 静态单例实例
+static SystemMonitor *s_instance = nullptr;
+
 SystemMonitor::SystemMonitor(QObject *parent) : QObject(parent)
 {
     m_timer = new QTimer(this);
@@ -50,9 +53,18 @@ QString SystemMonitor::readCpuTemp()
 }
 
 // 实现单例实例的静态方法
-SystemMonitor *SystemMonitor::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+SystemMonitor *SystemMonitor::instance()
+{
+    if (!s_instance) {
+        s_instance = new SystemMonitor();
+    }
+    return s_instance;
+}
+
+// 提供单例实例的静态方法，用于 QML 注册
+QObject *SystemMonitor::singletonProvider(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
 {
     Q_UNUSED(qmlEngine);
     Q_UNUSED(jsEngine);
-    return new SystemMonitor();
+    return SystemMonitor::instance();
 }
