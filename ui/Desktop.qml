@@ -1,30 +1,3 @@
-//     Project/
-// ├── core/                   # C++核心模块
-// │   ├── drivers/           # 硬件驱动封装
-// │   │   ├── GpioDriver.cpp # GPIO控制
-// │   │   └── CameraDriver.cpp
-// │   ├── SystemMonitor.cpp  # 系统监控
-// │   └── AppRegistry.cpp    # 应用注册管理
-// ├── modules/               # 应用模块
-// │   ├── Calculator/
-// │   │   ├── Calculator.qml  # 应用主界面
-// │   │   ├── CalculatorCtrl.cpp # 应用专属逻辑
-// │   │   └── assets/        # 应用资源
-// ├── shared/                # 公共资源
-// │   ├── components/        # 通用QML组件
-// │   │   ├── AppIcon.qml
-// │   │   └── SystemTray.qml
-// │   ├── styles/            # 样式定义
-// │   │   └── Theme.qml
-// │   └── fonts/             # 字体文件
-// ├── ui/                    # 主界面体系
-// │   ├── Desktop.qml        # 桌面主界面
-// │   ├── AppContainer.qml   # 应用窗口容器
-// │   └── SplashScreen.qml   # 启动画面
-// ├── main.qml               # QML入口文件
-// └── main.cpp               # 程序入口
-
-
 import "components"  // 导入components目录下的QML组件
 import "icons"
 

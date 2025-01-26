@@ -23,7 +23,7 @@
 
 // 计算器
 #include "modules/Calculator/CalculatorCtrl.h"
-
+#include "core/system/SystemMonitor.h"
 
 #include <QDir>
 #include <QApplication>
@@ -40,9 +40,11 @@ int main(int argc, char *argv[])
 
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
 
-    // 我自己的应用
     // 注册CalculatorCtrl
     qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
+
+    // 注册SystemMonitor类
+    qmlRegisterType<SystemMonitor>("com.qdesktop.core.system.systemmonitor", 1, 0, "SystemMonitor");
 
 
     QQmlApplicationEngine engine;
