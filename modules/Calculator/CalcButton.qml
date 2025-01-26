@@ -13,20 +13,23 @@ Button {
     property color buttonColor: "#2c3e50"
     property color pressedColor: "#34495e"
     property color borderColor: "#1abc9c"
+    property int borderRadius: 5  // 圆角半径
+    property int borderWidth: 2   // 边框宽度
+    property color textColor: "#ecf0f1"  // 文字颜色
 
     // 按钮背景
     background: Rectangle {
         color: root.down ? pressedColor : buttonColor
         border.color: borderColor
-        border.width: 2
-        radius: 5
+        border.width: borderWidth
+        radius: borderRadius
     }
 
     // 按钮文字颜色
     contentItem: Text {
         text: root.text
         font: root.font
-        color: "#ecf0f1"
+        color: textColor
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
