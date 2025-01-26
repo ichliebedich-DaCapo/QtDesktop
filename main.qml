@@ -103,6 +103,7 @@ Window {
     property var appInstances: ({})  // 使用对象存储 Loader 实例，以 path 为键
     property var currentLoader: null  // 当前显示的应用
 
+
     // 1. 桌面容器
     Desktop {
         id: desktop

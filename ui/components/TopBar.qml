@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
+import com.qdesktop.core.system 1.0 // 导入单例模块
 
 Rectangle {
     id: topBar
@@ -7,6 +8,9 @@ Rectangle {
     height: 40
     color: "#40000000"  // 半透明黑色背景
     z: 100
+
+    // 直接访问单例的 CPU 温度
+    property string cpuTemp: SystemMonitor.cpuTemp
 
     // 1. 左侧：时间
     Text {
@@ -41,22 +45,22 @@ Rectangle {
             id: systemTray
             spacing: 12
 
-            // CPU温度
+            // CPU 温度
             SystemTrayItem {
                 icon: "qrc:/ui/icons/cpu.png"
-                value: SysMonitor.cpuTemp + "°C"
+                value: topBar.cpuTemp // 使用单例的 CPU 温度
             }
 
             // 网络状态
             SystemTrayItem {
                 icon: "qrc:/ui/icons/network.png"
-                value: SysMonitor.networkStatus
+                value: "Connected"
             }
 
             // 电池状态
             SystemTrayItem {
                 icon: "qrc:/ui/icons/battery.png"
-                value: SysMonitor.batteryLevel + "%"
+                value: "100%"
             }
         }
 

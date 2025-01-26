@@ -48,3 +48,11 @@ QString SystemMonitor::readCpuTemp()
     double temp_data = tempValue.toDouble() / 1000;
     return QString::number(temp_data, 'f', 2) + "°C";
 }
+
+// 实现单例实例的静态方法
+SystemMonitor *SystemMonitor::create(QQmlEngine *qmlEngine, QJSEngine *jsEngine)
+{
+    Q_UNUSED(qmlEngine);
+    Q_UNUSED(jsEngine);
+    return new SystemMonitor();
+}

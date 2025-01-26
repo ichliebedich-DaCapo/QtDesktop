@@ -43,9 +43,8 @@ int main(int argc, char *argv[])
     // 注册CalculatorCtrl
     qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
 
-    // 注册SystemMonitor类
-    qmlRegisterType<SystemMonitor>("com.qdesktop.core.system.systemmonitor", 1, 0, "SystemMonitor");
-
+    // 注册 SystemMonitor 为单例
+    qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor", SystemMonitor::create);
 
     QQmlApplicationEngine engine;
 
