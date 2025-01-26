@@ -51,9 +51,9 @@ Item {
         }
         text: "返回桌面"
         onClicked: {
-            console.log("back")
             if (mainWindow) {
-                mainWindow.closeApplication();  // 清除应用
+                console.log("calc back")
+                mainWindow.closeAllApplications();  // 清除所有应用
             }
         }
     }

@@ -120,12 +120,17 @@ import "./cameramedia"
 import "./ui"
 
 // main.qml
+
 Window {
     id: mainWindow
     visible: true
     width: 1024
     height: 600
     title: "Embedded Desktop"
+
+    // 保存所有已启动的应用实例
+    property var runningApplications: []
+    property var currentLoader: null  // 当前显示的应用
 
     // 1. 桌面容器
     Desktop {
@@ -138,11 +143,10 @@ Window {
         }
     }
 
-    // 2. 应用窗口容器（使用 Loader 替代 StackView）
-    Loader {
-        id: appLoader
+    // 2. 应用窗口容器（动态创建 Loader 实例）
+    Item {
+        id: appContainer
         anchors.fill: parent
-        visible: false  // 默认隐藏，启动应用时显示
     }
 
     // 3. 悬浮按钮（返回主界面）
@@ -181,26 +185,71 @@ Window {
     function startApplication(path, params) {
         console.log("Launching application from path:", path, "with params:", params);
 
-        // 加载应用
-        appLoader.source = path;  // 加载应用
-        appLoader.item.params = params;  // 传递参数
-        appLoader.item.mainWindow = mainWindow;  // 传递 mainWindow 的引用
+        // 动态创建 Loader
+        const loader = Qt.createQmlObject(`
+            import QtQuick 2.15
+            import QtQuick.Controls 2.15
+            Loader {
+                anchors.fill: parent
+                visible: false
+                source: "${path}"
+                onLoaded: {
+                    item.mainWindow = mainWindow;  // 将 mainWindow 传递给应用
+                }
+            }
+        `, appContainer);
+
+        // 保存 Loader 实例
+        runningApplications.push(loader);
+        currentLoader = loader;  // 设置当前显示的应用
 
         // 显示应用，隐藏桌面
-        appLoader.visible = true;
+        loader.visible = true;
         desktop.visible = false;
     }
 
     // 5. 返回主界面（不清除应用）
     function returnToDesktop() {
-        appLoader.visible = false;  // 隐藏应用
-        desktop.visible = true;     // 显示桌面
+        if (currentLoader) {
+            currentLoader.visible = false;  // 隐藏当前应用
+        }
+        desktop.visible = true;  // 显示桌面
     }
 
-    // 6. 清除应用
-    function closeApplication() {
-        appLoader.source = "";  // 清空 Loader
-        appLoader.visible = false;  // 隐藏应用
-        desktop.visible = true;     // 显示桌面
+    // 6. 清除当前应用
+    function closeCurrentApplication() {
+        console.log("Closing current application.");
+        if (currentLoader) {
+            console.log("Closing application from path:", currentLoader.source);
+            // 从列表中移除
+            const index = runningApplications.indexOf(currentLoader);
+            if (index !== -1) {
+                runningApplications.splice(index, 1);
+            }
+
+            // 销毁 Loader
+            currentLoader.source = "";  // 清空 Loader
+            currentLoader.destroy();    // 销毁实例
+            currentLoader = null;       // 清空当前应用引用
+        }
+
+        // 返回桌面
+        returnToDesktop();
+    }
+
+    // 7. 清除所有应用
+    function closeAllApplications() {
+        // 遍历并销毁所有应用
+        while (runningApplications.length > 0) {
+            const loader = runningApplications.pop();
+            loader.source = "";  // 清空 Loader
+            loader.destroy();    // 销毁实例
+        }
+
+        // 清空当前应用引用
+        currentLoader = null;
+
+        // 返回桌面
+        returnToDesktop();
     }
 }
