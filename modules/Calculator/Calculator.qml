@@ -112,13 +112,14 @@ Item {
                 CalcButton { text: "2"; onClicked: calculatorCtrl.appendNumber(text) }
                 CalcButton { text: "3"; onClicked: calculatorCtrl.appendNumber(text) }
                 CalcButton { text: "-"; buttonColor: "#3498db"; onClicked: calculatorCtrl.appendOperation(text) }
-                CalcButton { text: "="; height: 140; buttonColor: "#2ecc71"; onClicked: calculatorCtrl.calculate() }  // 跨两行
+                CalcButton { text: "="; buttonColor: "#2ecc71"; onClicked: calculatorCtrl.calculate() }  // 跨两行
 
                 // 第五行
                 CalcButton { text: "0";  onClicked: calculatorCtrl.appendNumber(text) }
                 CalcButton { text: "."; onClicked: calculatorCtrl.appendNumber(text) }
                 CalcButton { text: "C"; buttonColor: "#e74c3c"; onClicked: calculatorCtrl.clear() }
                 CalcButton { text: "+"; buttonColor: "#3498db"; onClicked: calculatorCtrl.appendOperation(text) }
+                CalcButton { text: "←"; buttonColor: "#e67e22"; onClicked: calculatorCtrl.backspace() }  // 添加“←”按钮
             }
         }
     }

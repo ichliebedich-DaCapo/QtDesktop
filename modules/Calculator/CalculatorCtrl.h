@@ -25,6 +25,7 @@ public:
     Q_INVOKABLE void clear();
     Q_INVOKABLE void clearAll();
     Q_INVOKABLE void toggleSign();
+    Q_INVOKABLE void backspace();
 
     QString display() const;
     void setDisplay(const QString &display);

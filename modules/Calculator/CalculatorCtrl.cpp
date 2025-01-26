@@ -101,6 +101,21 @@ void CalculatorCtrl::toggleSign() {
     emit expressionChanged();
 }
 
+void CalculatorCtrl::backspace() {
+    if (m_display.length() > 1) {
+        m_display.chop(1);  // 删除最后一个字符
+    } else {
+        m_display = "0";  // 如果只有一个字符，则重置为 "0"
+    }
+    emit displayChanged();
+
+    // 更新表达式显示
+    if (!m_expression.isEmpty()) {
+        m_expression.chop(1);  // 删除表达式中的最后一个字符
+        emit expressionChanged();
+    }
+}
+
 QString CalculatorCtrl::display() const {
     return m_display;
 }
