@@ -127,6 +127,9 @@ Window {
     height: 600  // 固定高度
     title: "Embedded Desktop"
 
+    // 保存已启动的应用实例
+    property var runningApplications: ({})
+
     // 1. 桌面容器
     Desktop {
         id: desktop
@@ -142,18 +145,103 @@ Window {
     StackView {
         id: appStack
         anchors.fill: parent
+        initialItem: desktop  // 将桌面设置为初始页面
 
     }
 
-    // 3. 应用启动器
+    // // 3. 应用启动器
+    // function startApplication(path, params) {
+    //     console.log("Launching application from path:", path, "with params:", params)
+    //
+    //     appStack.push({
+    //         item: Qt.createComponent(path),
+    //         properties:{
+    //             stackView: appStack,  // 将 StackView 传递给应用
+    //             params: params        // 传递其他参数
+    //         }
+    //     })
+    //
+    // }
+
+    // 3. 悬浮按钮（返回主界面）
+    Rectangle {
+        id: floatingButton
+        width: 60
+        height: 60
+        radius: 30
+        color: "lightblue"
+        border.color: "gray"
+        border.width: 2
+        opacity: 0.8
+
+        // 拖拽功能
+        MouseArea {
+            anchors.fill: parent
+            drag.target: floatingButton
+            drag.axis: Drag.XAndYAxis
+            drag.minimumX: 0
+            drag.maximumX: mainWindow.width - floatingButton.width
+            drag.minimumY: 0
+            drag.maximumY: mainWindow.height - floatingButton.height
+        }
+
+        // 点击返回主界面
+        Button {
+            anchors.centerIn: parent
+            text: "Home"
+            onClicked: {
+                mainWindow.returnToDesktop();  // 返回主界面，但不清除应用
+            }
+        }
+    }
+
+    // 4. 应用启动器
     function startApplication(path, params) {
-        console.log("Launching application from path:", path, "with params:", params)
+        // 检查是否已经存在该应用的实例
+        if (runningApplications[path]) {
+            console.log("Application already running, bringing to front.");
+            appStack.push(runningApplications[path]);  // 显示已存在的实例
+        } else {
+            // 创建新实例
+            var component = Qt.createComponent(path);
+            if (component.status === Component.Ready) {
+                var app = component.createObject(appStack, {
+                    stackView: appStack,
+                    params: params
+                });
+                runningApplications[path] = app;  // 保存应用实例
+                appStack.push(app);  // 显示新实例
+            } else {
+                console.error("Failed to load application:", component.errorString());
+            }
+        }
+    }
 
-        appStack.push({
-            item: Qt.createComponent(path),
-            properties: params  // 传递参数
-        })
+    // 5. 返回主界面（不清除应用）
+    function returnToDesktop() {
+        if (appStack.depth > 1) {
+            appStack.pop();  // 返回到桌面，但保留应用实例
+        }
+    }
 
+    // 6. 清除应用
+    function closeApplication(path) {
+        if (runningApplications[path]) {
+            console.log("Closing application:", path);
+            var app = runningApplications[path];
+            appStack.pop(app);  // 从 StackView 中移除应用
+            app.destroy();      // 销毁应用实例
+            delete runningApplications[path];  // 从字典中移除
+        }
+    }
+
+    // 3. 启动 Calculator 的按钮
+    Button {
+        text: "Launch Calculator"
+        anchors.centerIn: parent
+        onClicked: {
+            console.log("Stack depth:", appStack.depth);
+        }
     }
 
     Component.onCompleted: {

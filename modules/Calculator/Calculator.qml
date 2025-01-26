@@ -7,6 +7,11 @@ import QtQuick.Layouts 1.12
 Item {
     width: 400
     height: 600
+    // 接收 StackView 的引用
+    property var stackView: null
+
+    // 接收传递的参数
+    property var params: {}
     // CalculatorCtrl {
     //     id: calculatorCtrl
     // }
@@ -50,7 +55,13 @@ Item {
         onClicked: {
             console.log("back")
             // 触发返回桌面的信号
-            returnToDesktop()
+            // 退出应用
+            if (stackView) {
+                stackView.pop();
+            } else {
+                console.error("StackView is not defined!");
+            }
+            // returnToDesktop()
         }
     }
 
