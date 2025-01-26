@@ -152,7 +152,10 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
 
     QStack<QString> operators;
     QStack<double> numbers;
-    QStringList tokens = expression.split(" ", Qt::SkipEmptyParts);
+
+    // 由于5.12.9里没有
+//    QStringList tokens = expression.split(" ", Qt::SkipEmptyParts);
+    QStringList tokens = expression.split(" ", QString::SkipEmptyParts);
 
     for (const QString &token : tokens) {
         if (token == "(") {

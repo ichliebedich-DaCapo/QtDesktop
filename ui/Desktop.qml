@@ -3,7 +3,7 @@ import "icons"
 
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtGraphicalEffects 1.15
+// import QtGraphicalEffects 1.15
 
 
 Item {
@@ -31,11 +31,11 @@ Item {
         }
 
         // 模糊效果
-        FastBlur {
-            anchors.fill: wallpaper
-            source: wallpaper
-            radius: 16  // 模糊半径，可以根据性能调整
-        }
+        // FastBlur {
+        //     anchors.fill: wallpaper
+        //     source: wallpaper
+        //     radius: 16  // 模糊半径，可以根据性能调整
+        // }
     }
 
 

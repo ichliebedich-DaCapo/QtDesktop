@@ -180,8 +180,8 @@ Window {
         } else {
             // 动态创建 Loader
             const loader = Qt.createQmlObject(`
-                import QtQuick 2.15
-                import QtQuick.Controls 2.15
+                import QtQuick 2.9
+                import QtQuick.Controls 2.9
                 Loader {
                     anchors.fill: parent
                     visible: false
