@@ -10,8 +10,12 @@ Item {
     // 接收 StackView 的引用
     property var stackView: null
 
+    // 接收 MainWindow 的引用
+    property var mainWindow: null
+
     // 接收传递的参数
     property var params: {}
+
     // CalculatorCtrl {
     //     id: calculatorCtrl
     // }
@@ -54,14 +58,11 @@ Item {
         text: "返回桌面"
         onClicked: {
             console.log("back")
-            // 触发返回桌面的信号
-            // 退出应用
-            if (stackView) {
-                stackView.pop();
+            if (mainWindow) {
+                mainWindow.closeApplication("Calculator.qml");  // 调用 closeApplication
             } else {
-                console.error("StackView is not defined!");
+                console.error("MainWindow is not defined!");
             }
-            // returnToDesktop()
         }
     }
 

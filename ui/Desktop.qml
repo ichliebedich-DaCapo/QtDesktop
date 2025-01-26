@@ -43,9 +43,6 @@ Item {
     // 从AppPage里传入应用的完整信息，以便后续使用
     signal componentClicked(string type, string path, var params)
 
-
-
-
     // 1. 壁纸层
     Item {
         anchors.fill: parent

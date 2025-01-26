@@ -149,19 +149,6 @@ Window {
 
     }
 
-    // // 3. 应用启动器
-    // function startApplication(path, params) {
-    //     console.log("Launching application from path:", path, "with params:", params)
-    //
-    //     appStack.push({
-    //         item: Qt.createComponent(path),
-    //         properties:{
-    //             stackView: appStack,  // 将 StackView 传递给应用
-    //             params: params        // 传递其他参数
-    //         }
-    //     })
-    //
-    // }
 
     // 3. 悬浮按钮（返回主界面）
     Rectangle {
@@ -197,16 +184,19 @@ Window {
 
     // 4. 应用启动器
     function startApplication(path, params) {
+        console.log("Launching application from path:", path, "with params:", params);
+
         // 检查是否已经存在该应用的实例
         if (runningApplications[path]) {
             console.log("Application already running, bringing to front.");
             appStack.push(runningApplications[path]);  // 显示已存在的实例
         } else {
             // 创建新实例
-            var component = Qt.createComponent(path);
+            const component = Qt.createComponent(path);
             if (component.status === Component.Ready) {
-                var app = component.createObject(appStack, {
+                const app = component.createObject(appStack, {
                     stackView: appStack,
+                    mainWindow: mainWindow,  // 传递 MainWindow 的引用
                     params: params
                 });
                 runningApplications[path] = app;  // 保存应用实例
@@ -228,29 +218,15 @@ Window {
     function closeApplication(path) {
         if (runningApplications[path]) {
             console.log("Closing application:", path);
-            var app = runningApplications[path];
+            const app = runningApplications[path];
             appStack.pop(app);  // 从 StackView 中移除应用
             app.destroy();      // 销毁应用实例
             delete runningApplications[path];  // 从字典中移除
         }
     }
 
-    // 3. 启动 Calculator 的按钮
-    Button {
-        text: "Launch Calculator"
-        anchors.centerIn: parent
-        onClicked: {
-            console.log("Stack depth:", appStack.depth);
-        }
-    }
 
     Component.onCompleted: {
-        //
-        // desktopLoader.item.addComponent(0, {
-        //     type: "widget",
-        //     name: "Weather",
-        //     component: "qrc:/ui/components/GalleryWidget.qml",
-        //     size: "2x2"
-        // })
+
     }
 }
