@@ -123,32 +123,27 @@ import "./ui"
 Window {
     id: mainWindow
     visible: true
-    width: 1024  // 固定宽度
-    height: 600  // 固定高度
+    width: 1024
+    height: 600
     title: "Embedded Desktop"
-
-    // 保存已启动的应用实例
-    property var runningApplications: ({})
 
     // 1. 桌面容器
     Desktop {
         id: desktop
         anchors.fill: parent
+        visible: true  // 默认显示桌面
 
         onComponentClicked: (type, path, params) => {
-            mainWindow.startApplication(path, params)
+            mainWindow.startApplication(path, params);
         }
     }
 
-
-    // 2. 应用窗口容器
-    StackView {
-        id: appStack
+    // 2. 应用窗口容器（使用 Loader 替代 StackView）
+    Loader {
+        id: appLoader
         anchors.fill: parent
-        initialItem: desktop  // 将桌面设置为初始页面
-
+        visible: false  // 默认隐藏，启动应用时显示
     }
-
 
     // 3. 悬浮按钮（返回主界面）
     Rectangle {
@@ -186,47 +181,26 @@ Window {
     function startApplication(path, params) {
         console.log("Launching application from path:", path, "with params:", params);
 
-        // 检查是否已经存在该应用的实例
-        if (runningApplications[path]) {
-            console.log("Application already running, bringing to front.");
-            appStack.push(runningApplications[path]);  // 显示已存在的实例
-        } else {
-            // 创建新实例
-            const component = Qt.createComponent(path);
-            if (component.status === Component.Ready) {
-                const app = component.createObject(appStack, {
-                    stackView: appStack,
-                    mainWindow: mainWindow,  // 传递 MainWindow 的引用
-                    params: params
-                });
-                runningApplications[path] = app;  // 保存应用实例
-                appStack.push(app);  // 显示新实例
-            } else {
-                console.error("Failed to load application:", component.errorString());
-            }
-        }
+        // 加载应用
+        appLoader.source = path;  // 加载应用
+        appLoader.item.params = params;  // 传递参数
+        appLoader.item.mainWindow = mainWindow;  // 传递 mainWindow 的引用
+
+        // 显示应用，隐藏桌面
+        appLoader.visible = true;
+        desktop.visible = false;
     }
 
     // 5. 返回主界面（不清除应用）
     function returnToDesktop() {
-        if (appStack.depth > 1) {
-            appStack.pop();  // 返回到桌面，但保留应用实例
-        }
+        appLoader.visible = false;  // 隐藏应用
+        desktop.visible = true;     // 显示桌面
     }
 
     // 6. 清除应用
-    function closeApplication(path) {
-        if (runningApplications[path]) {
-            console.log("Closing application:", path);
-            const app = runningApplications[path];
-            appStack.pop(app);  // 从 StackView 中移除应用
-            app.destroy();      // 销毁应用实例
-            delete runningApplications[path];  // 从字典中移除
-        }
-    }
-
-
-    Component.onCompleted: {
-
+    function closeApplication() {
+        appLoader.source = "";  // 清空 Loader
+        appLoader.visible = false;  // 隐藏应用
+        desktop.visible = true;     // 显示桌面
     }
 }

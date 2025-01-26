@@ -7,14 +7,8 @@ import QtQuick.Layouts 1.12
 Item {
     width: 400
     height: 600
-    // 接收 StackView 的引用
-    property var stackView: null
-
-    // 接收 MainWindow 的引用
-    property var mainWindow: null
-
-    // 接收传递的参数
-    property var params: {}
+    property var params: {}  // 接收传递的参数
+    property var mainWindow: null  // 接收 mainWindow 的引用
 
     // CalculatorCtrl {
     //     id: calculatorCtrl
@@ -59,9 +53,7 @@ Item {
         onClicked: {
             console.log("back")
             if (mainWindow) {
-                mainWindow.closeApplication("Calculator.qml");  // 调用 closeApplication
-            } else {
-                console.error("MainWindow is not defined!");
+                mainWindow.closeApplication();  // 清除应用
             }
         }
     }
