@@ -1,24 +1,33 @@
-// modules/Calculator/CalcButton.qml
-import QtQuick 2.12
-import QtQuick.Controls 2.12
+// shared/components/CalcButton.qml
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 Button {
-    property alias radius: background.radius
-    property alias backgroundColor: background.color
+    id: root
+    width: 80
+    height: 60
+    font.pixelSize: 20
+    font.bold: true
 
-    contentItem: Text {
-        text: parent.text
-        font.pixelSize: 24
-        color: "white"
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+    // 自定义属性
+    property color buttonColor: "#2c3e50"
+    property color pressedColor: "#34495e"
+    property color borderColor: "#1abc9c"
+
+    // 按钮背景
+    background: Rectangle {
+        color: root.down ? pressedColor : buttonColor
+        border.color: borderColor
+        border.width: 2
+        radius: 5
     }
 
-    background: Rectangle {
-        id: background
-        radius: height / 2
-        color: parent.down ? "#34495e" : "#2c3e50"
-        border.color: "#1abc9c"
-        border.width: 2
+    // 按钮文字颜色
+    contentItem: Text {
+        text: root.text
+        font: root.font
+        color: "#ecf0f1"
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
     }
 }

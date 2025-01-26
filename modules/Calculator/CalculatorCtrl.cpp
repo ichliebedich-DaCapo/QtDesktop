@@ -2,73 +2,60 @@
 // Created by fairy on 2025/1/25 22:29.
 //
 #include "CalculatorCtrl.h"
+#include <QDebug>
 
-CalculatorCtrl::CalculatorCtrl(QObject *parent) : QObject(parent), m_waitingForOperand(true) {
-    clear();
-}
+CalculatorCtrl::CalculatorCtrl(QObject *parent) : QObject(parent), m_display("0"), m_currentOperation(""), m_firstNumber(0), m_secondNumber(0), m_isOperationSet(false) {}
 
 void CalculatorCtrl::appendNumber(const QString &number) {
-    if (m_waitingForOperand) {
+    if (m_display == "0" || m_isOperationSet) {
         m_display = number;
-        m_waitingForOperand = false;
+        m_isOperationSet = false;
     } else {
         m_display += number;
     }
     emit displayChanged();
 }
 
-void CalculatorCtrl::appendDecimal() {
-    if (!m_display.contains('.')) {
-        m_display += ".";
-    }
-    emit displayChanged();
+void CalculatorCtrl::setOperation(const QString &operation) {
+    m_firstNumber = m_display.toDouble();
+    m_currentOperation = operation;
+    m_isOperationSet = true;
 }
 
-void CalculatorCtrl::setOperator(const QString &op) {
-    if (!m_waitingForOperand) {
-        calculate();
+void CalculatorCtrl::calculate() {
+    m_secondNumber = m_display.toDouble();
+    double result = 0;
+
+    if (m_currentOperation == "+") {
+        result = m_firstNumber + m_secondNumber;
+    } else if (m_currentOperation == "-") {
+        result = m_firstNumber - m_secondNumber;
+    } else if (m_currentOperation == "*") {
+        result = m_firstNumber * m_secondNumber;
+    } else if (m_currentOperation == "/") {
+        result = m_firstNumber / m_secondNumber;
     }
-    m_operator = op;
-    m_firstOperand = m_display.toDouble();
-    m_waitingForOperand = true;
+
+    m_display = QString::number(result);
+    emit displayChanged();
 }
 
 void CalculatorCtrl::clear() {
     m_display = "0";
-    m_operator = "";
-    m_firstOperand = 0.0;
-    m_waitingForOperand = true;
-    emit displayChanged();
-}
-
-void CalculatorCtrl::backspace() {
-    if (m_display.length() > 1) {
-        m_display.chop(1);
-    } else {
-        m_display = "0";
-    }
-    emit displayChanged();
-}
-
-void CalculatorCtrl::calculate() {
-    double secondOperand = m_display.toDouble();
-    double result = 0.0;
-
-    if (m_operator == "+") {
-        result = m_firstOperand + secondOperand;
-    } else if (m_operator == "-") {
-        result = m_firstOperand - secondOperand;
-    } else if (m_operator == "×") {
-        result = m_firstOperand * secondOperand;
-    } else if (m_operator == "÷") {
-        result = m_firstOperand / secondOperand;
-    }
-
-    m_display = QString::number(result);
-    m_waitingForOperand = true;
+    m_currentOperation = "";
+    m_firstNumber = 0;
+    m_secondNumber = 0;
+    m_isOperationSet = false;
     emit displayChanged();
 }
 
 QString CalculatorCtrl::display() const {
     return m_display;
+}
+
+void CalculatorCtrl::setDisplay(const QString &display) {
+    if (m_display != display) {
+        m_display = display;
+        emit displayChanged();
+    }
 }
