@@ -24,8 +24,6 @@ public:
     Q_INVOKABLE void calculate();
     Q_INVOKABLE void clear();
     Q_INVOKABLE void clearAll();
-    Q_INVOKABLE void squareRoot();
-    Q_INVOKABLE void square();
     Q_INVOKABLE void toggleSign();
 
     QString display() const;

@@ -79,14 +79,14 @@ Item {
             CalcButton { text: "("; onClicked: calculatorCtrl.appendToExpression(text) }
             CalcButton { text: ")"; onClicked: calculatorCtrl.appendToExpression(text) }
             CalcButton { text: "%"; onClicked: calculatorCtrl.appendToExpression(text) }
-            CalcButton { text: "√"; onClicked: calculatorCtrl.squareRoot() }
+            CalcButton { text: "√"; onClicked: calculatorCtrl.appendOperation(text) }
 
             // 第二行：数字和操作
             CalcButton { text: "7"; onClicked: calculatorCtrl.appendNumber(text) }
             CalcButton { text: "8"; onClicked: calculatorCtrl.appendNumber(text) }
             CalcButton { text: "9"; onClicked: calculatorCtrl.appendNumber(text) }
             CalcButton { text: "÷"; onClicked: calculatorCtrl.appendOperation(text) }
-            CalcButton { text: "x²"; onClicked: calculatorCtrl.square() }
+            CalcButton { text: "x²"; onClicked: calculatorCtrl.appendOperation("²") }
 
             // 第三行
             CalcButton { text: "4"; onClicked: calculatorCtrl.appendNumber(text) }

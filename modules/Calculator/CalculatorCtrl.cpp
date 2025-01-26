@@ -33,7 +33,7 @@ void CalculatorCtrl::appendOperation(const QString &operation) {
 }
 
 void CalculatorCtrl::appendToExpression(const QString &text) {
-    if (text == "(") {
+    if (text == "(" || text == "√" || text == "²") {
         if (!m_expression.isEmpty() && !m_expression.endsWith(" ")) {
             m_expression += " ";
         }
@@ -47,12 +47,20 @@ void CalculatorCtrl::appendToExpression(const QString &text) {
             m_expression += " ";
         }
         m_expression += text;
+    } else if (text == "%") {
+        if (m_display != "0") {
+            m_expression += " " + m_display;
+            m_display = "0";  // 清空当前显示
+        }
+        if (!m_expression.isEmpty() && !m_expression.endsWith(" ")) {
+            m_expression += " ";
+        }
+        m_expression += text;
     } else {
         m_expression += text;
     }
     emit expressionChanged();
 }
-
 void CalculatorCtrl::calculate() {
     if (m_expression.isEmpty()) return;
 
@@ -84,26 +92,6 @@ void CalculatorCtrl::clearAll() {
     emit expressionChanged();
 }
 
-void CalculatorCtrl::squareRoot() {
-    double number = m_display.toDouble();
-    if (number >= 0) {
-        m_display = QString::number(std::sqrt(number));
-        m_expression = "√(" + QString::number(number) + ") = " + m_display;
-    } else {
-        m_display = "Error";
-        m_expression = "√(" + QString::number(number) + ") = Error";
-    }
-    emit displayChanged();
-    emit expressionChanged();
-}
-
-void CalculatorCtrl::square() {
-    double number = m_display.toDouble();
-    m_display = QString::number(number * number);
-    m_expression = "(" + QString::number(number) + ")² = " + m_display;
-    emit displayChanged();
-    emit expressionChanged();
-}
 
 void CalculatorCtrl::toggleSign() {
     double number = m_display.toDouble();
@@ -141,6 +129,9 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
             {"-", 1},
             {"×", 2},
             {"÷", 2},
+            {"%", 2},  // 增加 % 运算符
+            {"√", 3},  // 增加 √ 运算符，优先级较高
+            {"²", 4},  // 增加 ² 运算符，优先级最高
             {"(", 0},
             {")", 0}
     };
@@ -166,6 +157,8 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
                 qDebug() << "Mismatched parentheses";
                 return "Error";
             }
+        } else if (token == "√" || token == "²") {
+            operators.push(token);  // 将 √ 和 ² 作为运算符处理
         } else if (precedence.contains(token)) {
             while (!operators.isEmpty() && precedence[operators.top()] >= precedence[token]) {
                 qDebug() << "Applying operation:" << operators.top();
@@ -204,31 +197,53 @@ QString CalculatorCtrl::evaluateExpression(const QString &expression) {
 }
 
 void CalculatorCtrl::applyOperation(const QString &operation, QStack<double> &numbers) {
-    if (numbers.size() < 2) {
+    if (operation == "√") {
+        if (numbers.size() < 1) {
+            qDebug() << "Not enough operands for operation:" << operation;
+            return;
+        }
+        double a = numbers.pop();
+        if (a < 0) {
+            qDebug() << "Square root of negative number";
+            numbers.push(0);  // 处理负数开根号
+        } else {
+            numbers.push(std::sqrt(a));
+        }
+    } else if (operation == "²") {
+        if (numbers.size() < 1) {
+            qDebug() << "Not enough operands for operation:" << operation;
+            return;
+        }
+        double a = numbers.pop();
+        numbers.push(a * a);  // 计算平方
+    } else if (numbers.size() < 2) {
         qDebug() << "Not enough operands for operation:" << operation;
         return;
-    }
-    double b = numbers.pop();
-    double a = numbers.pop();
-    double result = 0;
-
-    if (operation == "+") {
-        result = a + b;
-    } else if (operation == "-") {
-        result = a - b;
-    } else if (operation == "×") {
-        result = a * b;
-    } else if (operation == "÷") {
-        if (b == 0) {
-            qDebug() << "Division by zero";
-            result = 0;  // 处理除以零
-        } else {
-            result = a / b;
-        }
     } else {
-        qDebug() << "Unknown operation:" << operation;
-        return;
-    }
+        double b = numbers.pop();
+        double a = numbers.pop();
+        double result = 0;
 
-    numbers.push(result);
+        if (operation == "+") {
+            result = a + b;
+        } else if (operation == "-") {
+            result = a - b;
+        } else if (operation == "×") {
+            result = a * b;
+        } else if (operation == "÷") {
+            if (b == 0) {
+                qDebug() << "Division by zero";
+                result = 0;  // 处理除以零
+            } else {
+                result = a / b;
+            }
+        } else if (operation == "%") {
+            result = std::fmod(a, b);  // 处理 % 运算
+        } else {
+            qDebug() << "Unknown operation:" << operation;
+            return;
+        }
+
+        numbers.push(result);
+    }
 }
