@@ -24,7 +24,8 @@ struct AlarmItem {
     }
 };
 
-// AlarmManager.h
+
+
 class AlarmManager : public QObject {
 Q_OBJECT
 public:

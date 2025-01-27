@@ -9,6 +9,10 @@ Item {
     width: 1024
     height: 600
 
+    AlarmManager {
+        id: alarmManager
+    }
+
     SwipeView {
         id: view
         anchors.fill: parent
