@@ -2,7 +2,6 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import com.example.FileExplorer 1.0
-import "qrc:/shared/styles" as Theme  // 引入主题
 
 Item {
     id: root
@@ -27,7 +26,7 @@ Item {
     // 主背景
     Rectangle {
         anchors.fill: parent
-        color: Theme.Theme.background
+        color: "#2E2E2E"  // 深灰色背景
     }
 
     // 顶部栏
@@ -35,7 +34,7 @@ Item {
         id: topBar
         width: parent.width
         height: 60
-        color: Theme.Theme.surface
+        color: "#404040"  // 浅灰色背景
         z: 1  // 确保顶部栏在最上层
 
         RowLayout {
@@ -49,7 +48,7 @@ Item {
                 Layout.preferredWidth: 60
                 Layout.preferredHeight: 40
                 background: Rectangle {
-                    color: Theme.Theme.primary
+                    color: "#4CAF50"  // 绿色按钮
                     radius: 5
                 }
                 onClicked: fileExplorerCtrl.goUp()
@@ -59,8 +58,8 @@ Item {
             Text {
                 id: currentPathText
                 text: fileExplorerCtrl.getCurrentPath()
-                font: Theme.Theme.bodyFont
-                color: Theme.Theme.text
+                font.pixelSize: 18
+                color: "#FFFFFF"  // 白色文字
                 Layout.fillWidth: true
                 elide: Text.ElideMiddle  // 路径过长时显示省略号
             }
@@ -69,11 +68,11 @@ Item {
             TextField {
                 id: searchBox
                 placeholderText: "Search..."
-                font: Theme.Theme.bodyFont
-                color: Theme.Theme.text
+                font.pixelSize: 16
+                color: "#FFFFFF"  // 白色文字
                 Layout.preferredWidth: 200
                 background: Rectangle {
-                    color: Theme.Theme.background
+                    color: "#2E2E2E"  // 深灰色背景
                     radius: 5
                 }
             }
@@ -94,7 +93,7 @@ Item {
             id: fileItem
             width: fileList.width
             height: 60
-            color: mouseArea.containsMouse ? Qt.darker(Theme.Theme.surface, 1.2) : Theme.Theme.surface
+            color: mouseArea.containsMouse ? "#505050" : "#404040"  // 悬停时颜色加深
             radius: 5
 
             // 图标和文件名布局
@@ -112,16 +111,16 @@ Item {
                 // 文件名
                 Text {
                     text: modelData
-                    font: Theme.Theme.bodyFont
-                    color: Theme.Theme.text
+                    font.pixelSize: 18
+                    color: "#FFFFFF"  // 白色文字
                     Layout.fillWidth: true
                 }
 
                 // 文件大小（如果是文件）
                 Text {
                     text: fileExplorerCtrl.getFileSize(modelData)
-                    font: Theme.Theme.bodyFont
-                    color: Theme.Theme.divider
+                    font.pixelSize: 16
+                    color: "#757575"  // 灰色文字
                     visible: !modelData.endsWith("/")
                 }
             }
@@ -168,6 +167,12 @@ Item {
             id: newNameField
             placeholderText: "New name"
             width: parent.width
+            font.pixelSize: 16
+            color: "#FFFFFF"  // 白色文字
+            background: Rectangle {
+                color: "#2E2E2E"  // 深灰色背景
+                radius: 5
+            }
         }
 
         standardButtons: Dialog.Ok | Dialog.Cancel
