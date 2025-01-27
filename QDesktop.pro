@@ -24,7 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     core/system/SystemMonitor.cpp \
-    modules/Calculator/CalculatorCtrl.cpp
+    modules/Calculator/CalculatorCtrl.cpp \
+    modules/FileExplorer/FileExplorerCtrl.cpp
 
 
 RESOURCES += qml.qrc
@@ -42,7 +43,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     core/system/SystemMonitor.h \
-    modules/Calculator/CalculatorCtrl.h
+    modules/Calculator/CalculatorCtrl.h \
+    modules/FileExplorer/FileExplorerCtrl.h \
 
 
 

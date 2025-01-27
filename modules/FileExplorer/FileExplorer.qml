@@ -1,6 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.15
+import QtQuick.Layouts 1.12
 import com.qdesktop.modules.FileExplorer 1.0
 
 Item {

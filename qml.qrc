@@ -4,6 +4,7 @@
 
         <!--        modules /      -->
         <file>modules/Calculator/Calculator.qml</file>
+        <file>modules/Calculator/CalcButton.qml</file>
         <file>modules/FileExplorer/FileExplorer.qml</file>
         <file>modules/FileExplorer/assets/file.png</file>
         <file>modules/FileExplorer/assets/folder.png</file>
