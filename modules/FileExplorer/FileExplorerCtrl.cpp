@@ -9,10 +9,12 @@ QVariantList FileExplorerCtrl::getFileModel() {
     QVariantList fileList;
     QStringList files = currentDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
+    // 添加返回上一级的选项
     if (currentDir != QDir::homePath()) {
-        fileList.append(QVariantMap{{"name", ".."}, {"type", "folder"}});  // 返回上一级
+        fileList.append(QVariantMap{{"name", ".."}, {"type", "folder"}});
     }
 
+    // 添加文件和文件夹
     for (const QString &file : files) {
         QFileInfo fileInfo(currentDir, file);
         QString type = fileInfo.isDir() ? "folder" : "file";
@@ -24,17 +26,21 @@ QVariantList FileExplorerCtrl::getFileModel() {
 
 void FileExplorerCtrl::openFile(const QString &filePath) {
     QFileInfo fileInfo(currentDir, filePath);
+
     if (fileInfo.isDir()) {
+        // 如果是文件夹，进入该文件夹
         currentDir.cd(filePath);
-        emit fileModelChanged();
+        emit fileModelChanged(); // 通知 QML 更新文件列表
     } else {
+        // 如果是文件，执行打开操作
         qDebug() << "Opening file:" << fileInfo.absoluteFilePath();
+        // 在这里实现打开文件的逻辑
     }
 }
 
 void FileExplorerCtrl::goUp() {
     if (currentDir.cdUp()) {
-        emit fileModelChanged();
+        emit fileModelChanged(); // 通知 QML 更新文件列表
     }
 }
 
@@ -53,15 +59,56 @@ QString FileExplorerCtrl::getFileSize(const QString &fileName) {
 void FileExplorerCtrl::deleteFile(const QString &fileName) {
     QFile file(currentDir.filePath(fileName));
     if (file.remove()) {
-        emit fileModelChanged();
+        emit fileModelChanged(); // 通知 QML 更新文件列表
     }
 }
 
 void FileExplorerCtrl::renameFile(const QString &oldName, const QString &newName) {
     QFile file(currentDir.filePath(oldName));
     if (file.rename(newName)) {
-        emit fileModelChanged();
+        emit fileModelChanged(); // 通知 QML 更新文件列表
     }
+}
+
+QVariantList FileExplorerCtrl::searchFiles(const QString &keyword) {
+    QVariantList result;
+    QStringList files = currentDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (const QString &file : files) {
+        if (file.contains(keyword, Qt::CaseInsensitive)) {
+            QFileInfo fileInfo(currentDir, file);
+            QString type = fileInfo.isDir() ? "folder" : "file";
+            result.append(QVariantMap{{"name", file}, {"type", type}});
+        }
+    }
+
+    return result;
+}
+
+QStringList FileExplorerCtrl::getBreadcrumbPaths() {
+    QStringList breadcrumbs;
+    QDir dir = currentDir;
+
+    // 从当前目录向上遍历，直到主目录
+    while (dir != QDir::homePath() && dir.cdUp()) {
+        breadcrumbs.prepend(dir.dirName());
+    }
+
+    breadcrumbs.prepend("Home");  // 添加根目录
+    return breadcrumbs;
+}
+
+void FileExplorerCtrl::navigateToBreadcrumb(int index) {
+    QDir dir = QDir::homePath();
+    QStringList breadcrumbs = getBreadcrumbPaths();
+
+    // 根据索引跳转到对应目录
+    for (int i = 1; i <= index; i++) {
+        dir.cd(breadcrumbs[i]);
+    }
+
+    currentDir = dir;
+    emit fileModelChanged(); // 通知 QML 更新文件列表
 }
 
 QString FileExplorerCtrl::formatFileSize(qint64 bytes) {

@@ -54,14 +54,31 @@ Item {
                 onClicked: fileExplorerCtrl.goUp()
             }
 
-            // 当前路径显示
-            Text {
-                id: currentPathText
-                text: fileExplorerCtrl.getCurrentPath()
-                font.pixelSize: 18
-                color: "#FFFFFF"  // 白色文字
+            // 面包屑导航
+            RowLayout {
+                spacing: 5
                 Layout.fillWidth: true
-                elide: Text.ElideMiddle  // 路径过长时显示省略号
+
+                Repeater {
+                    model: fileExplorerCtrl.getBreadcrumbPaths()
+                    delegate: Button {
+                        text: modelData
+                        font.pixelSize: 16
+                        flat: true
+                        contentItem: Text {
+                            text: parent.text
+                            font: parent.font
+                            color: "#FFFFFF"  // 白色文字
+                            horizontalAlignment: Text.AlignLeft
+                        }
+                        background: Rectangle {
+                            color: "transparent"
+                        }
+                        onClicked: {
+                            fileExplorerCtrl.navigateToBreadcrumb(index);
+                        }
+                    }
+                }
             }
 
             // 搜索框
@@ -74,6 +91,23 @@ Item {
                 background: Rectangle {
                     color: "#1E1E1E"  // 深灰色背景
                     radius: 5
+                }
+
+                // 防抖机制：延迟 300ms 触发搜索
+                onTextChanged: {
+                    searchTimer.restart();
+                }
+
+                Timer {
+                    id: searchTimer
+                    interval: 300  // 延迟 300ms
+                    onTriggered: {
+                        if (searchBox.text.length > 0) {
+                            fileModel = fileExplorerCtrl.searchFiles(searchBox.text);
+                        } else {
+                            fileModel = fileExplorerCtrl.getFileModel();
+                        }
+                    }
                 }
             }
         }
@@ -133,9 +167,9 @@ Item {
 
                 onClicked: {
                     if (mouse.button === Qt.LeftButton) {
-                        fileExplorerCtrl.openFile(modelData.name)
+                        fileExplorerCtrl.openFile(modelData.name);
                     } else if (mouse.button === Qt.RightButton) {
-                        contextMenu.popup()
+                        contextMenu.popup();
                     }
                 }
             }
@@ -145,11 +179,11 @@ Item {
                 id: contextMenu
                 MenuItem {
                     text: "Delete"
-                    onTriggered: fileExplorerCtrl.deleteFile(modelData.name)
+                    onTriggered: fileExplorerCtrl.deleteFile(modelData.name);
                 }
                 MenuItem {
                     text: "Rename"
-                    onTriggered: renameDialog.open()
+                    onTriggered: renameDialog.open();
                 }
             }
         }
@@ -175,6 +209,6 @@ Item {
         }
 
         standardButtons: Dialog.Ok | Dialog.Cancel
-        onAccepted: fileExplorerCtrl.renameFile(modelData.name, newNameField.text)
+        onAccepted: fileExplorerCtrl.renameFile(modelData.name, newNameField.text);
     }
 }
