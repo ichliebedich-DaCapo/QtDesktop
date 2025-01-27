@@ -44,6 +44,11 @@ void FileExplorerCtrl::goUp() {
     }
 }
 
+void FileExplorerCtrl::goHome() {
+    currentDir.setPath(QDir::homePath()); // 设置当前目录为 Home 目录
+    emit fileModelChanged(); // 通知 QML 更新文件列表
+}
+
 QString FileExplorerCtrl::getCurrentPath() {
     return currentDir.absolutePath();
 }
@@ -83,32 +88,6 @@ QVariantList FileExplorerCtrl::searchFiles(const QString &keyword) {
     }
 
     return result;
-}
-
-QStringList FileExplorerCtrl::getBreadcrumbPaths() {
-    QStringList breadcrumbs;
-    QDir dir = currentDir;
-
-    // 从当前目录向上遍历，直到主目录
-    while (dir != QDir::homePath() && dir.cdUp()) {
-        breadcrumbs.prepend(dir.dirName());
-    }
-
-    breadcrumbs.prepend("Home");  // 添加根目录
-    return breadcrumbs;
-}
-
-void FileExplorerCtrl::navigateToBreadcrumb(int index) {
-    QDir dir = QDir::homePath();
-    QStringList breadcrumbs = getBreadcrumbPaths();
-
-    // 根据索引跳转到对应目录
-    for (int i = 1; i <= index; i++) {
-        dir.cd(breadcrumbs[i]);
-    }
-
-    currentDir = dir;
-    emit fileModelChanged(); // 通知 QML 更新文件列表
 }
 
 QString FileExplorerCtrl::formatFileSize(qint64 bytes) {

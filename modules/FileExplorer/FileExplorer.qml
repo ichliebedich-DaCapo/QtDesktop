@@ -15,8 +15,8 @@ Item {
     FileExplorerCtrl {
         id: fileExplorerCtrl
         onFileModelChanged: {
-            fileModel = fileExplorerCtrl.getFileModel()
-            currentPathText.text = fileExplorerCtrl.getCurrentPath()
+            fileModel = fileExplorerCtrl.getFileModel();
+            currentPathText.text = fileExplorerCtrl.getCurrentPath(); // 更新路径显示
         }
     }
 
@@ -54,40 +54,27 @@ Item {
                 onClicked: fileExplorerCtrl.goUp()
             }
 
+            // Home 按钮
+            Button {
+                text: "Home"
+                font.pixelSize: 16
+                Layout.preferredWidth: 80
+                Layout.preferredHeight: 40
+                background: Rectangle {
+                    color: "#2196F3"  // 蓝色按钮
+                    radius: 5
+                }
+                onClicked: fileExplorerCtrl.goHome() // 调用回到 Home 目录的方法
+            }
+
             // 当前路径显示
             Text {
                 id: currentPathText
-                text: fileExplorerCtrl.getCurrentPath()
+                text: fileExplorerCtrl.getCurrentPath() // 初始路径
                 font.pixelSize: 16
                 color: "#FFFFFF"  // 白色文字
                 Layout.fillWidth: true
-            }
-
-            // 面包屑导航
-            RowLayout {
-                spacing: 5
-                Layout.fillWidth: true
-
-                Repeater {
-                    model: fileExplorerCtrl.getBreadcrumbPaths()
-                    delegate: Button {
-                        text: modelData
-                        font.pixelSize: 16
-                        flat: true
-                        contentItem: Text {
-                            text: parent.text
-                            font: parent.font
-                            color: "#FFFFFF"  // 白色文字
-                            horizontalAlignment: Text.AlignLeft
-                        }
-                        background: Rectangle {
-                            color: "transparent"
-                        }
-                        onClicked: {
-                            fileExplorerCtrl.navigateToBreadcrumb(index);
-                        }
-                    }
-                }
+                elide: Text.ElideMiddle  // 路径过长时省略中间部分
             }
 
             // 搜索框

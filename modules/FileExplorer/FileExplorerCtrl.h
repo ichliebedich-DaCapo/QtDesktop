@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QVariantList>
 #include <QFileInfo>
+#include <QDebug>
 
 class FileExplorerCtrl : public QObject {
 Q_OBJECT
@@ -20,6 +21,9 @@ public:
     // 返回上一级目录
     Q_INVOKABLE void goUp();
 
+    // 回到 Home 目录
+    Q_INVOKABLE void goHome();
+
     // 获取当前路径
     Q_INVOKABLE QString getCurrentPath();
 
@@ -34,12 +38,6 @@ public:
 
     // 搜索文件
     Q_INVOKABLE QVariantList searchFiles(const QString &keyword);
-
-    // 获取面包屑路径
-    Q_INVOKABLE QStringList getBreadcrumbPaths();
-
-    // 跳转到面包屑路径
-    Q_INVOKABLE void navigateToBreadcrumb(int index);
 
 signals:
     // 文件列表更新信号
