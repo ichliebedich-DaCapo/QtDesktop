@@ -1,3 +1,10 @@
+我为嵌入式Linux板开发Qt桌面，使用Qml来完成应用和桌面的交互等。桌面已经做好了，桌面大小为1024*600
+现在准备设计一个xxx应用，
+那么对应的qml和cpp等怎么写？同时由于项目要求，应用不能使用ApplicationWindow，只能使用Item，同时qml里必须要添加下面属性（可以不使用）
+    property var params: {}  // 接收传递的参数
+    property var mainWindow: null  // 接收 mainWindow 的引用
+下面是我的项目架构，应用大小应适配桌面（1024*600）
+
 QDesktop/
 ├── core/                   # C++核心模块
 │   ├── drivers/           # 硬件驱动封装

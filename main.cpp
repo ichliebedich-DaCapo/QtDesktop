@@ -9,6 +9,7 @@
 #include "./modules/Calculator/CalculatorCtrl.h"
 #include "./core/system/SystemMonitor.h"
 #include "modules/FileExplorer/FileExplorerCtrl.h"
+#include "core/system/AlarmManager.h"
 
 #include <QDir>
 #include <QApplication>
@@ -32,6 +33,9 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor", SystemMonitor::singletonProvider);
 
     qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
+
+    // 注册 AlarmManager
+    qmlRegisterType<AlarmManager>("System.Core", 1, 0, "AlarmManager");
 
     QQmlApplicationEngine engine;
 

@@ -125,6 +125,7 @@ Item {
                 components: [
                     {type: "app", name: "计算器", icon: "calc", path: "qrc:/modules/Calculator/Calculator.qml", size: "1x1"},
                     {type: "app", name: "资源管理器", icon: "FileExplorer", path: "qrc:/modules/FileExplorer/FileExplorer.qml", size: "1x1"},
+                    {type: "app", name: "闹钟", icon: "test", path: "modules/AlarmClock/AlarmClock.qml", size: "1x1"},
                     {type: "widget", name: "Clock", component: "qrc:/ui/components/ClockWidget.qml", size: "2x2"}
                 ]
             }, {
