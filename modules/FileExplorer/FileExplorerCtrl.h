@@ -5,7 +5,7 @@
 #include <QDir>
 #include <QVariantList>
 #include <QFileInfo>
-#include <QDebug>
+
 
 class FileExplorerCtrl : public QObject {
 Q_OBJECT

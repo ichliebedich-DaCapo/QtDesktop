@@ -1,7 +1,6 @@
 #include "FileExplorerCtrl.h"
 #include <QDir>
 #include <QFileInfo>
-#include <QDebug>
 
 FileExplorerCtrl::FileExplorerCtrl(QObject *parent) : QObject(parent), currentDir(QDir::homePath()) {}
 
@@ -33,7 +32,7 @@ void FileExplorerCtrl::openFile(const QString &filePath) {
         emit fileModelChanged(); // 通知 QML 更新文件列表
     } else {
         // 如果是文件，执行打开操作
-        qDebug() << "Opening file:" << fileInfo.absoluteFilePath();
+//        qDebug() << "Opening file:" << fileInfo.absoluteFilePath();
         // 在这里实现打开文件的逻辑
     }
 }
@@ -66,7 +65,7 @@ void FileExplorerCtrl::deleteFile(const QString &fileName) {
     if (file.remove()) {
         emit fileModelChanged(); // 通知 QML 更新文件列表
     } else {
-        qDebug() << "Failed to delete file:" << file.errorString();
+//        qDebug() << "Failed to delete file:" << file.errorString();
     }
 }
 
@@ -78,7 +77,7 @@ void FileExplorerCtrl::renameFile(const QString &oldName, const QString &newName
     if (file.rename(newPath)) {
         emit fileModelChanged(); // 通知 QML 更新文件列表
     } else {
-        qDebug() << "Failed to rename file:" << file.errorString();
+//        qDebug() << "Failed to rename file:" << file.errorString();
     }
 }
 
