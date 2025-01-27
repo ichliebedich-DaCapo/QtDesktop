@@ -14,16 +14,16 @@ import QtQuick.Controls.Styles 1.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls 2.5
 //import QtQuick.Controls 2.14
-import fileIO 1.0
+// import fileIO 1.0
 import "../helpbutton"
 Item {
     visible: false
     id : fileView
 
-    FileIO {
-        id: myFile
-        onError: console.log(msg)
-    }
+    // FileIO {
+    //     id: myFile
+    //     onError: console.log(msg)
+    // }
 
     HelpMessages {
         anchors.fill: parent

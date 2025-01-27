@@ -8,86 +8,6 @@ import QtQuick.Controls 1.2
 import Qt.labs.settings 1.0 // 确保导入 Settings 模块
 
 
-// // 主界面容器
-// Window {
-//     id: mainWindow
-//     visible: false  // 先隐藏等待初始化完成
-//     flags: Qt.FramelessWindowHint  // 嵌入式通常无边框
-//     color: Theme.backgroundColor
-//     width: 1024
-//     height: 600
-//
-//     // 1. 预加载资源
-//     FontLoader {
-//         id: mainFont; source: "shared/fonts/Roboto-Light.ttf"
-//     }
-//
-//     // 2. 系统服务初始化
-//     // SystemTray { id: sysTray }
-//
-//     // 3. 桌面视图容器
-//     Loader {
-//         id: desktopLoader
-//         anchors.fill: parent
-//         // source: "desktop/WinStyleDesktop.qml"
-//         source: "ui/Desktop.qml"
-//         active: true
-//         asynchronous: true
-//
-//         onStatusChanged: {
-//             if (status === Loader.Ready) {
-//                 // splashScreen.hide()
-//                 mainWindow.visible = true
-//             }
-//         }
-//     }
-//
-//     // 4. 应用窗口容器
-//     StackView {
-//         id: appStack
-//         anchors.fill: parent
-//     }
-//
-//     // 5. 启动画面
-//     // SplashScreen {
-//     //     id: splashScreen
-//     //     duration: 1500
-//     // }
-//
-//     // 6. 全局事件总线
-//     QtObject {
-//         id: eventBridge
-//
-//         // 应用管理信号
-//         signal launchApp(string qmlPath, var params)
-//
-//         signal closeApp()
-//
-//         // 硬件控制信号
-//         signal gpioChanged(int pin, bool state)
-//     }
-//
-//     // 7. 连接C++信号
-//     Connections {
-//         target: SysMonitor
-//         // onCpuOverload: sysTray.showWarning("CPU过载！")
-//     }
-//
-//     // 8. 应用启动器
-//     function startApplication(qmlPath, initParams) {
-//         appStack.push({
-//             item: Qt.resolvedUrl(qmlPath),
-//             properties: initParams
-//         })
-//     }
-//
-//     // 9. 初始化完成处理
-//     Component.onCompleted: {
-//         KeyboardHandler.registerShortcuts()
-//         eventBridge.launchApp.connect(startApplication)
-//     }
-// }
-
 import "./ui"
 
 // main.qml
@@ -131,15 +51,8 @@ Window {
         border.color: "#16a085"
         border.width: 2
         opacity: 0.9
+        z: 100
 
-        // 阴影效果
-        layer.enabled: true
-        layer.effect: DropShadow {
-            transparentBorder: true
-            radius: 8
-            samples: 16
-            color: "#80000000"
-        }
 
         // 拖拽功能
         MouseArea {
