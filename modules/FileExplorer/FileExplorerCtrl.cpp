@@ -10,11 +10,13 @@ QVariantList FileExplorerCtrl::getFileModel() {
     QStringList files = currentDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
     if (currentDir != QDir::homePath()) {
-        fileList.prepend("..");
+        fileList.append(QVariantMap{{"name", ".."}, {"type", "folder"}});  // 返回上一级
     }
 
     for (const QString &file : files) {
-        fileList.append(file);
+        QFileInfo fileInfo(currentDir, file);
+        QString type = fileInfo.isDir() ? "folder" : "file";
+        fileList.append(QVariantMap{{"name", file}, {"type", type}});
     }
 
     return fileList;

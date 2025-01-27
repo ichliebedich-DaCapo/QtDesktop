@@ -26,7 +26,7 @@ Item {
     // 主背景
     Rectangle {
         anchors.fill: parent
-        color: "#2E2E2E"  // 深灰色背景
+        color: "#1E1E1E"  // 深灰色背景
     }
 
     // 顶部栏
@@ -34,7 +34,7 @@ Item {
         id: topBar
         width: parent.width
         height: 60
-        color: "#404040"  // 浅灰色背景
+        color: "#2D2D2D"  // 浅灰色背景
         z: 1  // 确保顶部栏在最上层
 
         RowLayout {
@@ -72,7 +72,7 @@ Item {
                 color: "#FFFFFF"  // 白色文字
                 Layout.preferredWidth: 200
                 background: Rectangle {
-                    color: "#2E2E2E"  // 深灰色背景
+                    color: "#1E1E1E"  // 深灰色背景
                     radius: 5
                 }
             }
@@ -93,7 +93,7 @@ Item {
             id: fileItem
             width: fileList.width
             height: 60
-            color: mouseArea.containsMouse ? "#505050" : "#404040"  // 悬停时颜色加深
+            color: mouseArea.containsMouse ? "#3A3A3A" : "#2D2D2D"  // 悬停时颜色加深
             radius: 5
 
             // 图标和文件名布局
@@ -104,13 +104,13 @@ Item {
 
                 // 文件夹/文件图标
                 Image {
-                    source: modelData.endsWith("/") ? "qrc:/modules/FileExplorer/assets/folder.png" : "qrc:/modules/FileExplorer/assets/file.png"
+                    source: modelData.type === "folder" ? "qrc:/modules/FileExplorer/assets/folder.png" : "qrc:/modules/FileExplorer/assets/file.png"
                     sourceSize: Qt.size(32, 32)
                 }
 
                 // 文件名
                 Text {
-                    text: modelData
+                    text: modelData.name
                     font.pixelSize: 18
                     color: "#FFFFFF"  // 白色文字
                     Layout.fillWidth: true
@@ -118,10 +118,9 @@ Item {
 
                 // 文件大小（如果是文件）
                 Text {
-                    text: fileExplorerCtrl.getFileSize(modelData)
+                    text: modelData.type === "file" ? fileExplorerCtrl.getFileSize(modelData.name) : ""
                     font.pixelSize: 16
-                    color: "#757575"  // 灰色文字
-                    visible: !modelData.endsWith("/")
+                    color: "#A0A0A0"  // 浅灰色文字
                 }
             }
 
@@ -134,7 +133,7 @@ Item {
 
                 onClicked: {
                     if (mouse.button === Qt.LeftButton) {
-                        fileExplorerCtrl.openFile(modelData)
+                        fileExplorerCtrl.openFile(modelData.name)
                     } else if (mouse.button === Qt.RightButton) {
                         contextMenu.popup()
                     }
@@ -146,7 +145,7 @@ Item {
                 id: contextMenu
                 MenuItem {
                     text: "Delete"
-                    onTriggered: fileExplorerCtrl.deleteFile(modelData)
+                    onTriggered: fileExplorerCtrl.deleteFile(modelData.name)
                 }
                 MenuItem {
                     text: "Rename"
@@ -170,12 +169,12 @@ Item {
             font.pixelSize: 16
             color: "#FFFFFF"  // 白色文字
             background: Rectangle {
-                color: "#2E2E2E"  // 深灰色背景
+                color: "#1E1E1E"  // 深灰色背景
                 radius: 5
             }
         }
 
         standardButtons: Dialog.Ok | Dialog.Cancel
-        onAccepted: fileExplorerCtrl.renameFile(modelData, newNameField.text)
+        onAccepted: fileExplorerCtrl.renameFile(modelData.name, newNameField.text)
     }
 }
