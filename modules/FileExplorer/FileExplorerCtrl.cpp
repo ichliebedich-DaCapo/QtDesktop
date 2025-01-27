@@ -65,13 +65,20 @@ void FileExplorerCtrl::deleteFile(const QString &fileName) {
     QFile file(currentDir.filePath(fileName));
     if (file.remove()) {
         emit fileModelChanged(); // 通知 QML 更新文件列表
+    } else {
+        qDebug() << "Failed to delete file:" << file.errorString();
     }
 }
 
 void FileExplorerCtrl::renameFile(const QString &oldName, const QString &newName) {
-    QFile file(currentDir.filePath(oldName));
-    if (file.rename(newName)) {
+    QString oldPath = currentDir.filePath(oldName);
+    QString newPath = currentDir.filePath(newName);
+
+    QFile file(oldPath);
+    if (file.rename(newPath)) {
         emit fileModelChanged(); // 通知 QML 更新文件列表
+    } else {
+        qDebug() << "Failed to rename file:" << file.errorString();
     }
 }
 

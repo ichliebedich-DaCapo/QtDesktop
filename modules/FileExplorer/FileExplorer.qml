@@ -64,7 +64,7 @@ Item {
                     color: "#2196F3"  // 蓝色按钮
                     radius: 5
                 }
-                onClicked: fileExplorerCtrl.goHome() // 调用回到 Home 目录的方法
+                onClicked: fileExplorerCtrl.goHome()
             }
 
             // 当前路径显示
@@ -118,6 +118,7 @@ Item {
         model: fileModel
         clip: true
         spacing: 2
+        currentIndex: -1 // 初始化为 -1，表示没有选中项
 
         delegate: Rectangle {
             id: fileItem
@@ -163,8 +164,10 @@ Item {
 
                 onClicked: {
                     if (mouse.button === Qt.LeftButton) {
+                        fileList.currentIndex = index; // 设置当前选中项
                         fileExplorerCtrl.openFile(modelData.name);
                     } else if (mouse.button === Qt.RightButton) {
+                        fileList.currentIndex = index; // 设置当前选中项
                         contextMenu.popup();
                     }
                 }
@@ -205,6 +208,10 @@ Item {
         }
 
         standardButtons: Dialog.Ok | Dialog.Cancel
-        onAccepted: fileExplorerCtrl.renameFile(modelData.name, newNameField.text);
+        onAccepted: {
+            var oldName = fileList.model[fileList.currentIndex].name; // 获取当前选中的文件名
+            var newName = newNameField.text; // 获取用户输入的新文件名
+            fileExplorerCtrl.renameFile(oldName, newName); // 调用重命名方法
+        }
     }
 }
