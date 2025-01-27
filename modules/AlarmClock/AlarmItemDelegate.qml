@@ -5,8 +5,8 @@ import QtQuick.Layouts 1.12
 
 Item {
     property alias checked: switchControl.checked
-    signal toggle(bool checked)  // 用于切换闹钟状态
-    signal deleteRequested()     // 修改信号名称，避免使用关键字
+    signal toggle(bool checked)
+    signal deleteRequested()
 
     RowLayout {
         width: parent.width
@@ -14,7 +14,14 @@ Item {
 
         // 显示闹钟时间
         Text {
-            text: model.time
+            text: modelData.time // 确保 modelData.time 存在
+            font.pixelSize: 40
+            color: "white"
+        }
+
+        // 显示闹钟名称
+        Text {
+            text: modelData.label || "未命名" // 如果 modelData.label 未定义，显示默认值
             font.pixelSize: 40
             color: "white"
         }
@@ -22,13 +29,13 @@ Item {
         // 开关控件
         Switch {
             id: switchControl
-            onCheckedChanged: toggle(checked)  // 触发 toggle 信号
+            onCheckedChanged: toggle(checked)
         }
 
         // 删除按钮
         Button {
             text: "删除"
-            onClicked: deleteRequested()  // 触发 deleteRequested 信号
+            onClicked: deleteRequested()
         }
     }
 }

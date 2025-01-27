@@ -6,18 +6,20 @@ AlarmManager::AlarmManager(QObject *parent)
     loadAlarms();
 }
 
-// AlarmManager.cpp
 void AlarmManager::addAlarm(const QTime &time, const QString &label) {
+    // 检查 label 是否为空
+    QString alarmLabel = label.isEmpty() ? "未命名" : label;
+
     AlarmItem newAlarm{
             true,
             time,
             "Once",
-            label,
+            alarmLabel, // 确保 label 不为空
             static_cast<int>(QDateTime::currentSecsSinceEpoch())
     };
     m_alarms.append(newAlarm);
     saveAlarms();
-    emit alarmsChanged(); // 只在数据变化时触发信号
+    emit alarmsChanged();
 }
 
 void AlarmManager::removeAlarm(int id) {
