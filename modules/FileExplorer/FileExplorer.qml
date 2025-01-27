@@ -54,6 +54,15 @@ Item {
                 onClicked: fileExplorerCtrl.goUp()
             }
 
+            // 当前路径显示
+            Text {
+                id: currentPathText
+                text: fileExplorerCtrl.getCurrentPath()
+                font.pixelSize: 16
+                color: "#FFFFFF"  // 白色文字
+                Layout.fillWidth: true
+            }
+
             // 面包屑导航
             RowLayout {
                 spacing: 5
