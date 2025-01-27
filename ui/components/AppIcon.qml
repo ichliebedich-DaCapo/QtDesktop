@@ -25,20 +25,32 @@ Item {
             border.color: "gray"
             border.width: 2
 
+
             // 使用 OpacityMask 裁剪图标
-            OpacityMask {
-                anchors.fill: parent
-                source: Image {
-                    source:"qrc:/ui/icons/" + icon + ".png"
-                    width: iconContainer.width - 10
-                    height: iconContainer.height - 10
-                    fillMode: Image.PreserveAspectFit
-                }
-                maskSource: Rectangle {
-                    width: iconContainer.width
-                    height: iconContainer.height
-                    radius: iconContainer.radius
-                }
+            // OpacityMask {
+            //     anchors.fill: parent
+            //     source: Image {
+            //         source:"qrc:/ui/icons/" + icon + ".png"
+            //         width: iconContainer.width - 10
+            //         height: iconContainer.height - 10
+            //         fillMode: Image.PreserveAspectFit
+            //     }
+            //     maskSource: Rectangle {
+            //         width: iconContainer.width
+            //         height: iconContainer.height
+            //         radius: iconContainer.radius
+            //     }
+            // }
+
+
+            // 由于暂时使用不了OpenGL，暂时使用clip裁剪
+            clip: true  // 启用剪切
+            Image {
+                source: "qrc:/ui/icons/" + icon + ".png"
+                width: iconContainer.width - 10
+                height: iconContainer.height - 10
+                fillMode: Image.PreserveAspectFit
+                anchors.centerIn: parent
             }
 
             // 鼠标区域
