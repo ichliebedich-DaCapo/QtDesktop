@@ -174,7 +174,7 @@ Item {
                     width: 59
                     height: 48
                     opacity: 0.8
-                    source: folderModel.get(index, "fileIsDir") ? "qrc:/fileview/images/folder.png"  : "qrc:/fileview/images/other_file.png.png"
+                    source: folderModel.get(index, "fileIsDir") ? "qrc:/fileview/images/folder.png"  : "qrc:/fileview/images/file.png"
                 }
 
                 Text {

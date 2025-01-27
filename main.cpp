@@ -8,6 +8,7 @@
 // 计算器
 #include "./modules/Calculator/CalculatorCtrl.h"
 #include "./core/system/SystemMonitor.h"
+#include "modules/FileExplorer/FileExplorerCtrl.h"
 
 #include <QDir>
 #include <QApplication>
@@ -28,8 +29,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
 
     // 注册 SystemMonitor 为单例
-    // 注册单例
     qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor", SystemMonitor::singletonProvider);
+
+    qmlRegisterType<FileExplorerCtrl>("com.example.FileExplorer", 1, 0, "FileExplorerCtrl");
 
     QQmlApplicationEngine engine;
 

@@ -4,7 +4,18 @@
 
         <!--        modules /      -->
         <file>modules/Calculator/Calculator.qml</file>
-        <file>modules/Calculator/CalcButton.qml</file>
+        <file>modules/FileExplorer/FileExplorer.qml</file>
+        <file>modules/FileExplorer/assets/file.png</file>
+        <file>modules/FileExplorer/assets/folder.png</file>
+
+        <!--        ui / icons     -->
+        <file>ui/icons/test.png</file>
+        <file>ui/icons/calc.png</file>
+        <file>ui/icons/FileExplorer.png</file>
+
+
+        <!--        shared / styles     -->
+        <file>shared/styles/Theme.qml</file>
 
         <!--        shared / styles     -->
         <file>shared/styles/Theme.qml</file>
@@ -19,9 +30,7 @@
         <file>ui/components/TopBar.qml</file>
         <file>ui/components/SystemTrayItem.qml</file>
         <file>ui/components/IconButton.qml</file>
-        <!--        ui / icons     -->
-        <file>ui/icons/test.png</file>
-        <file>ui/icons/calc.png</file>
+
 
 
 
