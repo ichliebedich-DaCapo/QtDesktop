@@ -5,17 +5,24 @@
 #include <QVector>
 #include <QTime>
 
-class Alarm {
+
+struct Alarm {
 Q_GADGET
-    Q_PROPERTY(QTime time MEMBER time)
+    Q_PROPERTY(QString timeStr READ timeStr)  // 确保存在该属性
     Q_PROPERTY(bool active MEMBER active)
     Q_PROPERTY(QVariantList repeatDays MEMBER repeatDays)
     Q_PROPERTY(QString label MEMBER label)
+
 public:
     QTime time;
     bool active = true;
-    QVariantList repeatDays;  // 改为QVariantList
+    QVariantList repeatDays;
     QString label;
+
+    // 确保该方法实际存在且正确实现
+    QString timeStr() const {
+        return time.isValid() ? time.toString("hh:mm") : "--:--";
+    }
 };
 Q_DECLARE_METATYPE(Alarm)
 

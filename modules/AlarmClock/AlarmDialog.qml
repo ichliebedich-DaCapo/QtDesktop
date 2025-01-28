@@ -20,6 +20,7 @@ Dialog {
             onTextChanged: dialog.label = text
         }
 
+        // 时间选择器部分
         Row {
             spacing: 10
             SpinBox {
@@ -34,6 +35,7 @@ Dialog {
                 id: minuteSpinBox
                 from: 0
                 to: 59
+                stepSize: 1  // 明确步进值
                 value: 0
                 onValueChanged: updateTime()
             }
@@ -52,13 +54,9 @@ Dialog {
         }
     }
 
+    // modules/AlarmClock/AlarmDialog.qml
     function updateTime() {
-        // 原错误代码（错误原因：Dialog的children结构不符合预期）
-        // time = Qt.formatTime(new Date(0,0,0,
-        //    children[1].children[0].value,
-        //    children[1].children[1].value), "hh:mm")
-
-        // 新实现（通过对象ID直接访问）
+        // 简化后的时间更新逻辑
         time = Qt.formatTime(new Date(0,0,0,
             hourSpinBox.value,
             minuteSpinBox.value), "hh:mm")

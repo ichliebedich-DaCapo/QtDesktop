@@ -25,10 +25,12 @@ Item {
 
         Text {
             id: timeText
-            text: "08:00"
+            text: time  // 关键绑定
             font.pixelSize: 40
             verticalAlignment: Text.AlignVCenter
             height: parent.height
+            // 添加颜色区分状态
+            color: modelData.active ? "black" : "gray"
         }
 
         Text {
@@ -44,5 +46,25 @@ Item {
             text: "×"
             onClicked: deleteClicked()
         }
+
+        // modules/AlarmClock/AlarmItemDelegate.qml
+        // Rectangle {
+        //     anchors.fill: parent
+        //     color: active ? "#e3f2fd" : "#f5f5f5"
+        //     radius: 5
+        //
+        //     // 添加按压效果
+        //     states: State {
+        //         name: "pressed"
+        //         when: mouseArea.pressed
+        //         PropertyChanges { target: background; opacity: 0.7 }
+        //     }
+        //
+        //     MouseArea {
+        //         id: mouseArea
+        //         anchors.fill: parent
+        //         onClicked: toggleClicked()
+        //     }
+        // }
     }
 }

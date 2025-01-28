@@ -9,12 +9,16 @@ Item {
 
     Column {
         anchors.fill: parent
-        spacing: 20
+        spacing: 0
+
+        // 添加标题占位空间（高度与TabBar一致）
+        Item { height: 50 }
 
         ListView {
             width: parent.width
-            height: parent.height - 80
+            height: parent.height - 130  // 留出顶部和底部空间
             model: alarmCtrl.alarms
+            clip: true
             delegate: AlarmItemDelegate {
                 time: modelData.time
                 active: modelData.active
@@ -27,6 +31,7 @@ Item {
         }
 
         RoundButton {
+            id: addButton
             text: "+"
             anchors.horizontalCenter: parent.horizontalCenter
             onClicked: alarmDialog.open()
