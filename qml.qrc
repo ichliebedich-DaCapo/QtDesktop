@@ -12,7 +12,7 @@
         <file>modules/AlarmClock/AlarmItemDelegate.qml</file>
         <file>modules/AlarmClock/AlarmDialog.qml</file>
         <file>modules/AlarmClock/AlarmPage.qml</file>
-        <file>modules/AlarmClock/TimePage.qml</file>
+        <file>modules/AlarmClock/ClockPage.qml</file>
 
         <!--        ui / icons     -->
         <file>ui/icons/test.png</file>

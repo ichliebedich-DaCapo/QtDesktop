@@ -9,7 +9,7 @@
 #include "./modules/Calculator/CalculatorCtrl.h"
 #include "./core/system/SystemMonitor.h"
 #include "modules/FileExplorer/FileExplorerCtrl.h"
-#include "modules/AlarmClock/AlarmCtrl.h"
+#include "modules/AlarmClock/AlarmClockCtrl.h"
 
 #include <QDir>
 #include <QApplication>
@@ -17,6 +17,7 @@
 int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
+    qputenv("QML_DEBUG_RENDER_TIMING", "1"); // 开启渲染计时
 
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);// 兼容高DPI屏幕
 
@@ -35,7 +36,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
 
     // 注册 AlarmManager
-    qmlRegisterType<AlarmCtrl>("Alarm", 1, 0, "AlarmCtrl");
+    qmlRegisterType<AlarmClockCtrl>("AlarmClock", 1, 0, "AlarmClockCtrl");
 
 
 

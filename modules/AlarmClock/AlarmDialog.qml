@@ -1,124 +1,61 @@
+// modules/AlarmClock/AlarmDialog.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
 
-Popup {
-    id: root
-    width: 600
-    height: 400
-    modal: true
-    focus: true
-    padding: 20
-    x: (parent.width - width)/2
-    y: (parent.height - height)/2
+Dialog {
+    id: dialog
+    title: "添加闹钟"
+    standardButtons: Dialog.Ok | Dialog.Cancel
 
-    property int selectedHours: hourBox.currentIndex
-    property int selectedMinutes: minuteBox.currentIndex
-    property string selectedDays: getSelectedDays()
-    property alias labelText: labelField.text
+    property string time: "08:00"
+    property var repeatDays: []
+    property string label: ""
 
-    signal accepted()
-    signal rejected()
-
-    background: Rectangle {
-        color: "#2D2D2D"
-        radius: 8
-        border.color: "#4D4D4D"
-    }
-
-    ColumnLayout {
-        anchors.fill: parent
+    Column {
         spacing: 15
 
-        RowLayout {
-            Layout.alignment: Qt.AlignHCenter
-            spacing: 10
-
-            ComboBox {
-                id: hourBox
-                model: 24
-                currentIndex: new Date().getHours()
-                delegate: ItemDelegate {
-                    width: hourBox.width
-                    text: index < 10 ? "0" + index : index.toString()
-                }
-            }
-
-            Text { text: ":"; color: "white"; font.pixelSize: 24 }
-
-            ComboBox {
-                id: minuteBox
-                model: 60
-                currentIndex: new Date().getMinutes()
-                delegate: ItemDelegate {
-                    width: minuteBox.width
-                    text: index < 10 ? "0" + index : index.toString()
-                }
-            }
+        TextField {
+            placeholderText: "标签"
+            onTextChanged: dialog.label = text
         }
 
-        GridLayout {
-            id: daysLayout
-            columns: 4
-            Layout.alignment: Qt.AlignHCenter
+        SpinBox {
+            from: 0
+            to: 23
+            value: 8
+            onValueChanged: updateTime()
+        }
 
+        SpinBox {
+            from: 0
+            to: 59
+            value: 0
+            onValueChanged: updateTime()
+        }
+
+        Flow {
+            spacing: 10
             Repeater {
                 model: 7
-                CheckBox {
-                    text: qsTr(["周一", "周二", "周三", "周四", "周五", "周六", "周日"][index])
+                CheckDelegate {
+                    text: ["一","二","三","四","五","六","日"][index]
                     checked: false
-                    contentItem: Text {
-                        text: parent.text
-                        color: parent.checked ? "#2196F3" : "white"
-                    }
-                }
-            }
-        }
-
-        TextField {
-            id: labelField
-            Layout.fillWidth: true
-            placeholderText: qsTr("闹钟标签")
-            color: "white"
-            background: Rectangle {
-                color: "#3D3D3D"
-                radius: 4
-            }
-        }
-
-        RowLayout {
-            Layout.alignment: Qt.AlignRight
-            spacing: 15
-
-            Button {
-                text: qsTr("取消")
-                onClicked: root.close()
-                background: Rectangle {
-                    color: "#666666"
-                    radius: 4
-                }
-            }
-
-            Button {
-                text: qsTr("确定")
-                onClicked: {
-                    root.accepted()
-                    root.close()
-                }
-                background: Rectangle {
-                    color: "#2196F3"
-                    radius: 4
+                    onToggled: updateRepeatDays(index, checked)
                 }
             }
         }
     }
 
-    function getSelectedDays() {
-        let days = []
-        for (let i = 0; i < 7; i++) {
-            if (daysLayout.children[i].checked)
-                days.push(i+1)
-        }
-        return days.join(",")
+    function updateTime() {
+        time = Qt.formatTime(new Date(0,0,0,
+            children[1].children[0].value,
+            children[1].children[1].value), "hh:mm")
+    }
+
+    function updateRepeatDays(index, checked) {
+        if(checked && !repeatDays.includes(index))
+            repeatDays.push(index)
+        else
+            repeatDays.splice(repeatDays.indexOf(index), 1)
     }
 }

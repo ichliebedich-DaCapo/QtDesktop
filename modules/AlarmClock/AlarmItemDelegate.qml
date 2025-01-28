@@ -1,48 +1,48 @@
 // modules/AlarmClock/AlarmItemDelegate.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-
 
 Item {
-    width: ListView.view.width
-    height: 60
+    property alias time: timeText.text
+    property bool active: true
+    property var repeatDays: []
+    property string label: ""
 
-    signal toggle(bool checked)
-    signal remove()
+    signal deleteClicked()
+    signal toggleClicked()
 
-    Rectangle {
+    height: 80
+
+    Row {
+        spacing: 20
         anchors.fill: parent
-        color: "#333333"
-        radius: 4
+        anchors.margins: 10
 
-        RowLayout {
-            anchors.fill: parent
-            spacing: 20
-            anchors.margins: 10
+        Switch {
+            checked: active
+            onToggled: toggleClicked()
+        }
 
-            Switch {
-                checked: model.enabled
-                onToggled: toggle(checked)
-            }
+        Text {
+            id: timeText
+            text: "08:00"
+            font.pixelSize: 40
+            verticalAlignment: Text.AlignVCenter
+            height: parent.height
+        }
 
-            Text {
-                text: Qt.formatTime(model.time, "hh:mm")
-                color: model.enabled ? "white" : "#666666"
-                font.pixelSize: 24
-                Layout.fillWidth: true
-            }
+        Text {
+            text: label || repeatDays.join(" ") || "仅一次"
+            font.pixelSize: 24
+            verticalAlignment: Text.AlignVCenter
+            height: parent.height
+        }
 
-            Button {
-                text: "×"
-                onClicked: remove()
-                contentItem: Text {
-                    text: parent.text
-                    color: "#FF4444"
-                    font.pixelSize: 24
-                }
-                background: Rectangle { color: "transparent" }
-            }
+        Item { width: parent.width - timeText.width - parent.spacing*3 - 120; height: 1 }
+
+        Button {
+            text: "×"
+            onClicked: deleteClicked()
         }
     }
 }

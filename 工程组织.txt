@@ -1,10 +1,9 @@
-我为嵌入式Linux板开发Qt桌面，使用Qml来完成应用和桌面的交互等。桌面已经做好了，桌面大小为1024*600
+我为嵌入式Linux板开发Qt桌面，使用Qml来完成应用和桌面的交互等，桌面已经做好了
 现在准备设计一个xxx应用，
-那么对应的qml和cpp等怎么写？同时由于项目要求，应用不能使用ApplicationWindow，只能使用Item，同时qml里必须要添加下面属性（可以不使用）
+那么代码怎么写？由于项目要求，应用只能使用Item，同时qml里必须要添加下面属性（可以不使用）
     property var params: {}  // 接收传递的参数
     property var mainWindow: null  // 接收 mainWindow 的引用
 下面是我的项目架构，应用大小应适配桌面（1024*600），注意Qt Quick的版本为2.12,使用的是C++11
-
 QDesktop/
 ├── core/                   # C++核心模块
 │   ├── drivers/           # 硬件驱动封装
@@ -19,6 +18,15 @@ QDesktop/
 │   │   ├── Calculator.qml  # 应用主界面
 │   │   ├── CalculatorCtrl.cpp # 应用专属逻辑
 │   │   └── assets/        # 应用资源
+│   ├── AlarmClock/
+│   │   ├── AlarmClock.qml  # 应用主界面
+│   │   ├── AlarmClockCtrl.cpp
+│   │   ├── AlarmClockCtrl.h
+│   │   ├── ClockPage.qml   # 时钟页面
+│   │   ├── AlarmPage.qml   # 闹钟页面
+│   │   ├── AlarmItemDelegate.qml   # 闹钟项目关键组件
+│   │   ├── AlarmDialog.qml   # 闹钟对话框
+│   │   └── AlarmPage.qml   # 闹钟页面
 ├── shared/                # 公共资源
 │   ├── components/        # 通用QML组件
 │   ├── styles/            # 样式定义 暂时没使用
