@@ -2,7 +2,18 @@
 #include "AlarmClockCtrl.h"
 #include <QTime>
 #include <QVariant>  // 添加这行关键包含
-AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent) {}
+QVariantList AlarmClockCtrl::alarms() const {
+    QVariantList list;
+    for(const auto& alarm : m_alarms) {
+        list.append(QVariant::fromValue(alarm));
+    }
+    return list;
+}
+
+// 在构造函数添加类型注册
+AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent) {
+    qRegisterMetaType<Alarm>("Alarm");
+}
 
 void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString label) {
     Alarm alarm;

@@ -15,22 +15,28 @@ Dialog {
         spacing: 15
 
         TextField {
+            id: labelField
             placeholderText: "标签"
             onTextChanged: dialog.label = text
         }
 
-        SpinBox {
-            from: 0
-            to: 23
-            value: 8
-            onValueChanged: updateTime()
-        }
+        Row {
+            spacing: 10
+            SpinBox {
+                id: hourSpinBox
+                from: 0
+                to: 23
+                value: 8
+                onValueChanged: updateTime()
+            }
 
-        SpinBox {
-            from: 0
-            to: 59
-            value: 0
-            onValueChanged: updateTime()
+            SpinBox {
+                id: minuteSpinBox
+                from: 0
+                to: 59
+                value: 0
+                onValueChanged: updateTime()
+            }
         }
 
         Flow {
@@ -47,9 +53,15 @@ Dialog {
     }
 
     function updateTime() {
+        // 原错误代码（错误原因：Dialog的children结构不符合预期）
+        // time = Qt.formatTime(new Date(0,0,0,
+        //    children[1].children[0].value,
+        //    children[1].children[1].value), "hh:mm")
+
+        // 新实现（通过对象ID直接访问）
         time = Qt.formatTime(new Date(0,0,0,
-            children[1].children[0].value,
-            children[1].children[1].value), "hh:mm")
+            hourSpinBox.value,
+            minuteSpinBox.value), "hh:mm")
     }
 
     function updateRepeatDays(index, checked) {
