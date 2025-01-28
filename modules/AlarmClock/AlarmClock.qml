@@ -1,43 +1,41 @@
 // AlarmClock.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-
-import System.Core 1.0
+import Alarm 1.0
 
 Item {
     id: root
     width: 1024
     height: 600
 
-    AlarmManager {
-        id: alarmManager
-    }
+    property var params: {}
+    property var mainWindow: null
+
+    property alias alarmCtrl: controller
+
+    AlarmCtrl { id: controller }
 
     SwipeView {
-        id: view
+        id: swipeView
         anchors.fill: parent
-        currentIndex: 0
+        currentIndex: tabBar.currentIndex
 
-        // 时钟页面
-        Item {
-            width: view.width
-            height: view.height
+        TimePage { alarmCtrl: controller }
+        AlarmPage { alarmCtrl: controller }
+    }
 
-            ClockPage {
-                anchors.fill: parent
-                alarmManager: alarmManager
-            }
+    TabBar {
+        id: tabBar
+        width: parent.width
+        currentIndex: swipeView.currentIndex
+
+        TabButton {
+            text: qsTr("时钟")
+            width: implicitWidth
         }
-
-        // 闹钟列表页面
-        Item {
-            width: view.width
-            height: view.height
-
-            AlarmListPage {
-                anchors.fill: parent
-                alarmManager: alarmManager
-            }
+        TabButton {
+            text: qsTr("闹钟")
+            width: implicitWidth
         }
     }
 }

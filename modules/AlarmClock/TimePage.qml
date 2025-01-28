@@ -1,17 +1,8 @@
-// ClockPage.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 
 Item {
-    property var alarmManager
-
-    width: parent.width
-    height: parent.height
-
-    Rectangle {
-        anchors.fill: parent
-        color: "lightgray" // 背景颜色
-    }
+    property var alarmCtrl
 
     Column {
         anchors.centerIn: parent
@@ -19,15 +10,15 @@ Item {
 
         Text {
             id: timeText
-            font.pixelSize: 80
-            color: "black" // 字体颜色
+            font.pixelSize: 64
+            color: "white"
             text: Qt.formatDateTime(new Date(), "hh:mm:ss")
         }
 
         Text {
             id: dateText
-            font.pixelSize: 40
-            color: "black" // 字体颜色
+            font.pixelSize: 32
+            color: "white"
             text: Qt.formatDateTime(new Date(), "yyyy-MM-dd dddd")
         }
     }

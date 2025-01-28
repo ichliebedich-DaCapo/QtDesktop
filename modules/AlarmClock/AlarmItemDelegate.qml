@@ -1,41 +1,48 @@
-// AlarmItemDelegate.qml
+// modules/AlarmClock/AlarmItemDelegate.qml
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
+
 Item {
-    property alias checked: switchControl.checked
+    width: ListView.view.width
+    height: 60
+
     signal toggle(bool checked)
-    signal deleteRequested()
+    signal remove()
 
-    RowLayout {
-        width: parent.width
-        spacing: 20
+    Rectangle {
+        anchors.fill: parent
+        color: "#333333"
+        radius: 4
 
-        // 显示闹钟时间
-        Text {
-            text: modelData.time // 确保 modelData.time 存在
-            font.pixelSize: 40
-            color: "white"
-        }
+        RowLayout {
+            anchors.fill: parent
+            spacing: 20
+            anchors.margins: 10
 
-        // 显示闹钟名称
-        Text {
-            text: modelData.label || "未命名" // 如果 modelData.label 未定义，显示默认值
-            font.pixelSize: 40
-            color: "white"
-        }
+            Switch {
+                checked: model.enabled
+                onToggled: toggle(checked)
+            }
 
-        // 开关控件
-        Switch {
-            id: switchControl
-            onCheckedChanged: toggle(checked)
-        }
+            Text {
+                text: Qt.formatTime(model.time, "hh:mm")
+                color: model.enabled ? "white" : "#666666"
+                font.pixelSize: 24
+                Layout.fillWidth: true
+            }
 
-        // 删除按钮
-        Button {
-            text: "删除"
-            onClicked: deleteRequested()
+            Button {
+                text: "×"
+                onClicked: remove()
+                contentItem: Text {
+                    text: parent.text
+                    color: "#FF4444"
+                    font.pixelSize: 24
+                }
+                background: Rectangle { color: "transparent" }
+            }
         }
     }
 }

@@ -9,12 +9,10 @@
         <file>modules/FileExplorer/assets/file.png</file>
         <file>modules/FileExplorer/assets/folder.png</file>
         <file>modules/AlarmClock/AlarmClock.qml</file>
-        <file>modules/AlarmClock/AlarmDialog.qml</file>
         <file>modules/AlarmClock/AlarmItemDelegate.qml</file>
-        <file>modules/AlarmClock/TimeEdit.qml</file>
-        <file>modules/AlarmClock/TimePicker.qml</file>
-        <file>modules/AlarmClock/AlarmListPage.qml</file>
-        <file>modules/AlarmClock/ClockPage.qml</file>
+        <file>modules/AlarmClock/AlarmDialog.qml</file>
+        <file>modules/AlarmClock/AlarmPage.qml</file>
+        <file>modules/AlarmClock/TimePage.qml</file>
 
         <!--        ui / icons     -->
         <file>ui/icons/test.png</file>
