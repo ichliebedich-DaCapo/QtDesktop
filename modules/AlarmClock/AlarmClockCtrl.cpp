@@ -19,12 +19,7 @@ void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString lab
     Alarm alarm;
     alarm.time = QTime::fromString(time, "hh:mm");
     alarm.active = true;
-//    for(auto&& day : repeatDays) alarm.repeatDays.append(day.toInt());
-    for(auto&& day : repeatDays) {
-        bool ok;
-        int dayInt = day.toInt(&ok);
-        if(ok) alarm.repeatDays.append(dayInt);
-    }
+    alarm.repeatDays = repeatDays; // 直接使用QVariantList
     alarm.label = label;
 
     m_alarms.append(alarm);
