@@ -32,7 +32,6 @@ void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString lab
     alarm.repeatDays = repeatDays; // 直接使用QVariantList
     alarm.label = label;
 
-
     m_alarms.append(alarm);
     emit alarmsChanged();
 }
@@ -57,12 +56,26 @@ void AlarmClockCtrl::toggleAlarm(int index)
 
 void AlarmClockCtrl::checkAlarms()
 {
-    QTime current = QTime::currentTime();
-    for (const Alarm &alarm: m_alarms)
-    {
-        if (alarm.active && alarm.time.hour() == current.hour()
-            && alarm.time.minute() == current.minute())
-        {
+    QTime currentTime = QTime::currentTime();
+    QDate currentDate = QDate::currentDate();
+
+    for (const Alarm &alarm : m_alarms) {
+        if (!alarm.active) continue;
+
+        // 获取当前是星期几（Qt 中周日是 7，周一到周六分别是 1-6）
+        int currentDayOfWeek = currentDate.dayOfWeek();
+
+        // 检查是否在 repeatDays 中
+        bool isRepeatDay = false;
+        for (const QVariant &day : alarm.repeatDays) {
+            if (day.toInt() == currentDayOfWeek - 1) { // 因为你的 repeatDays 是从 0 开始的
+                isRepeatDay = true;
+                break;
+            }
+        }
+
+        if (isRepeatDay && alarm.time.hour() == currentTime.hour()
+            && alarm.time.minute() == currentTime.minute()) {
             triggerAlarm(alarm); // 触发闹钟响铃
         }
     }
