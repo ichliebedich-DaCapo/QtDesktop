@@ -16,7 +16,7 @@ Item {
             height: parent.height - 80
             model: alarmCtrl.alarms
             delegate: AlarmItemDelegate {
-                time: modelData.time
+                time: alarmCtrl.formatTime(modelData.time)
                 active: modelData.active
                 repeatDays: modelData.repeatDays
                 label: modelData.label
