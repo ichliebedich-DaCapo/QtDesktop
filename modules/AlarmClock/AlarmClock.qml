@@ -23,7 +23,7 @@ Item {
     TabBar {
         id: tabBar
         width: parent.width
-        height: 80
+        height: 70
         position: TabBar.Header
         currentIndex: swipeView.currentIndex
         background: Rectangle {
@@ -38,11 +38,13 @@ Item {
                 width: tabBar.width / 2
                 height: tabBar.height
 
+
                 contentItem: Text {
                     text: modelData
                     color: parent.checked ? cardColor : Qt.darker(cardColor, 1.2)
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 22  // 增加字体大小
                 }
 
                 background: Rectangle {
