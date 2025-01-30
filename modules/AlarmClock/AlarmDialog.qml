@@ -114,18 +114,33 @@ Dialog {
     SpinBox { id: hourSpinBox; visible: false }
     SpinBox { id: minuteSpinBox; visible: false }
 
+    // 定义时间属性
+    property string time: ""
+    property string label: ""
+    property var repeatDays: []
+
     function updateTime() {
         const hours = hourSpinBox.value.toString().padStart(2, '0')
         const minutes = minuteSpinBox.value.toString().padStart(2, '0')
-        time = `${hours}:${minutes}`
+        dialog.time = `${hours}:${minutes}`
     }
 
     function updateRepeatDays(index, checked) {
-        if(checked && !repeatDays.includes(index)) {
-            repeatDays.push(index)
+        if (checked && !dialog.repeatDays.includes(index)) {
+            dialog.repeatDays.push(index)
         } else {
-            const pos = repeatDays.indexOf(index)
-            if(pos >= 0) repeatDays.splice(pos, 1)
+            const pos = dialog.repeatDays.indexOf(index)
+            if (pos >= 0) dialog.repeatDays.splice(pos, 1)
+        }
+    }
+
+    Connections {
+        target: dialog
+        function onAccepted() {
+            console.log("Time:", dialog.time)
+            console.log("Label:", dialog.label)
+            console.log("Repeat Days:", dialog.repeatDays)
+            // 在这里可以添加保存闹钟的逻辑
         }
     }
 
@@ -171,11 +186,8 @@ Dialog {
         function adjustValue(step) {
             currentValue += step
             currentValue = Math.max(minValue, Math.min(currentValue, maxValue))
-            if (currentValue !== currentValue) {
-                currentValue = currentValue
-                valueChanged(currentValue)
-                updateTime()
-            }
+            valueChanged(currentValue)
+            updateTime()
         }
     }
 
