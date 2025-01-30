@@ -54,6 +54,11 @@ void AlarmClockCtrl::toggleAlarm(int index)
     if (index >= 0 && index < m_alarms.size())
     {
         m_alarms[index].active = !m_alarms[index].active;
+        // 确保在关闭闹钟时停止响铃
+        if(!m_alarms[index].active)
+        {
+            Beep::instance()->setState(false);
+        }
         emit alarmsChanged();
     }
 }
@@ -104,5 +109,6 @@ AlarmClockCtrl::~AlarmClockCtrl()
     }
 
     // 释放Beep
+    Beep::instance()->setState(false);
     Beep::instance()->release();
 }

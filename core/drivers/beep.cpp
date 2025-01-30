@@ -2,7 +2,7 @@
 #include "beep.h"
 #include <fcntl.h>
 #include <QDebug>
-
+#include <unistd.h>
 
 QMutex Beep::m_instanceMutex;
 Beep* Beep::m_instance = nullptr;
@@ -22,7 +22,7 @@ Beep::~Beep()
 
     // 安全关闭设备（即使有未释放的引用）
     if (m_fd != -1) {
-        ::close(m_fd);  // 使用全局命名空间的close
+        close(m_fd);  // 使用全局命名空间的close
         m_fd = -1;
         qDebug() << "Beep device force closed in destructor";
     }
