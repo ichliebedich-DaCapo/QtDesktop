@@ -13,6 +13,7 @@
         <file>modules/AlarmClock/AlarmDialog.qml</file>
         <file>modules/AlarmClock/AlarmPage.qml</file>
         <file>modules/AlarmClock/ClockPage.qml</file>
+        <file>modules/AlarmClock/FloatingActionButton.qml</file>
 
         <!--        ui / icons     -->
         <file>ui/icons/test.png</file>
