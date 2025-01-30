@@ -29,12 +29,6 @@ Item {
             radius: 20
             color: "#ecf0f1"
 
-            layer.enabled: true
-            layer.effect: DropShadow {
-                radius: 8
-                samples: 16
-                color: "#80000000"
-            }
 
             Text {
                 id: timeText

@@ -61,7 +61,7 @@ Item {
 
             Text {
                 id: timeText
-                text: ""
+                text: "8:00"
                 font {
                     pixelSize: 48
                     family: "Roboto Condensed"

@@ -53,13 +53,6 @@ Window {
         opacity: 0.9
         z: 9999  // 确保最高层级
 
-        // 投影效果（可选）
-        layer.enabled: true
-        layer.effect: DropShadow {
-            radius: 8
-            samples: 16
-            color: "#40000000"
-        }
 
         // 拖拽功能（兼容实现）
         MouseArea {

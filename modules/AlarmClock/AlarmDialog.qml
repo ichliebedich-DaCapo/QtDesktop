@@ -120,9 +120,14 @@ Dialog {
     property var repeatDays: []
 
     function updateTime() {
-        const hours = hourSpinBox.value.toString().padStart(2, '0')
-        const minutes = minuteSpinBox.value.toString().padStart(2, '0')
-        dialog.time = `${hours}:${minutes}`
+        // const hours = hourSpinBox.value.toString().padStart(2, '0')
+        // const minutes = minuteSpinBox.value.toString().padStart(2, '0')
+        // dialog.time = `${hours}:${minutes}`
+        // console.log(time)
+        dialog.time = Qt.formatTime(new Date(0,0,0,
+            hourSpinBox.value,
+            minuteSpinBox.value), "hh:mm")
+        console.log(dialog.time)
     }
 
     function updateRepeatDays(index, checked) {
@@ -134,15 +139,6 @@ Dialog {
         }
     }
 
-    Connections {
-        target: dialog
-        function onAccepted() {
-            console.log("Time:", dialog.time)
-            console.log("Label:", dialog.label)
-            console.log("Repeat Days:", dialog.repeatDays)
-            // 在这里可以添加保存闹钟的逻辑
-        }
-    }
 }
 
 

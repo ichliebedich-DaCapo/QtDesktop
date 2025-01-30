@@ -30,6 +30,8 @@ AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent), m_timer(new Q
 
 void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString label)
 {
+    qDebug()<<"addAlarm"<<time<<repeatDays<<label;
+
     Alarm alarm;
     alarm.time = parseTime(time);
     alarm.active = true;

@@ -68,7 +68,7 @@ Item {
                 delegate: AlarmItemDelegate {
                     width: listView.width - 40
                     anchors.horizontalCenter: parent.horizontalCenter
-                    time: alarmCtrl.formatTime(modelData.time)
+                    time:modelData.time
                     active: modelData.active
                     repeatDays: modelData.repeatDays
                     label: modelData.label
@@ -112,6 +112,6 @@ Item {
 
     AlarmDialog {
         id: alarmDialog
-        onAccepted: alarmCtrl.addAlarm(time, repeatDays, label)
+        onAccepted: alarmCtrl.addAlarm(alarmDialog.time, alarmDialog.repeatDays, alarmDialog.label)
     }
 }
