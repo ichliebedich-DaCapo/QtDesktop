@@ -1,6 +1,7 @@
 // modules/AlarmClock/AlarmClockCtrl.cpp
 #include "AlarmClockCtrl.h"
 #include <QDebug>
+#include "./core/drivers/beep.h"
 
 QVariantList AlarmClockCtrl::alarms() const
 {
@@ -22,6 +23,9 @@ AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent), m_timer(new Q
 
     // 设置定时器间隔为1秒（1000毫秒）
     m_timer->start(1000);
+
+    // 获取Beep
+    Beep::instance()->acquire();
 }
 
 void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString label)
@@ -84,6 +88,9 @@ void AlarmClockCtrl::checkAlarms()
 void AlarmClockCtrl::triggerAlarm(const Alarm &alarm)
 {
     qDebug() << "Alarm triggered: " << alarm.label;
+    static bool isAlarmTriggered = false;
+    isAlarmTriggered = !isAlarmTriggered;
+    Beep::instance()->setState(isAlarmTriggered);
 }
 
 
@@ -95,4 +102,7 @@ AlarmClockCtrl::~AlarmClockCtrl()
         m_timer->stop();
         delete m_timer;
     }
+
+    // 释放Beep
+    Beep::instance()->release();
 }

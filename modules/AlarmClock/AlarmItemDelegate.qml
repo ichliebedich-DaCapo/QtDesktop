@@ -25,7 +25,7 @@ Item {
 
         Text {
             id: timeText
-            text: "08:00"
+            text: ""
             font.pixelSize: 40
             verticalAlignment: Text.AlignVCenter
             height: parent.height
