@@ -1,4 +1,4 @@
-// modules/AlarmClock/AlarmItemDelegate.qml
+// AlarmItemDelegate.qml 优化版（仅使用内置组件）
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 
@@ -11,60 +11,135 @@ Item {
     signal deleteClicked()
     signal toggleClicked()
 
-    height: 80
+    height: 120
+
+    // 卡片背景
+    Rectangle {
+        id: card
+        anchors.fill: parent
+        radius: 16
+        color: "#ecf0f1"
+    }
 
     Row {
-        spacing: 20
         anchors.fill: parent
-        anchors.margins: 10
+        anchors.margins: 20
+        spacing: 30
+        layoutDirection: Qt.LeftToRight
 
+        // 开关控制（使用原生Switch）
         Switch {
+            id: toggle
             checked: active
             onToggled: toggleClicked()
+            anchors.verticalCenter: parent.verticalCenter
+
+            // 自定义Switch样式
+            indicator: Rectangle {
+                implicitWidth: 48
+                implicitHeight: 28
+                radius: 14
+                color: toggle.checked ? "#3498db" : "#bdc3c7"
+
+                Rectangle {
+                    x: toggle.checked ? parent.width - width - 2 : 2
+                    width: 24
+                    height: 24
+                    radius: 12
+                    color: "white"
+                    anchors.verticalCenter: parent.verticalCenter
+                    Behavior on x { NumberAnimation { duration: 100 } }
+                }
+            }
         }
 
-        Text {
-            id: timeText
-            text: time  // 关键绑定
-            font.pixelSize: 40
-            verticalAlignment: Text.AlignVCenter
-            height: parent.height
-            // 添加颜色区分状态
-            color: modelData.active ? "black" : "gray"
+        // 时间信息列
+        Column {
+            spacing: 8
+            anchors.verticalCenter: parent.verticalCenter
+            width: 200
+
+            Text {
+                id: timeText
+                text: ""
+                font {
+                    pixelSize: 48
+                    family: "Roboto Condensed"
+                    weight: Font.Light
+                }
+                color: "#2c3e50"
+            }
+
+            Text {
+                visible: label.length > 0
+                text: label
+                font {
+                    pixelSize: 24
+                    family: "Noto Sans CJK SC"
+                }
+                color: "#7f8c8d"
+            }
         }
 
-        Text {
-            text: label || repeatDays.join(" ") || "仅一次"
-            font.pixelSize: 24
-            verticalAlignment: Text.AlignVCenter
-            height: parent.height
+        // 重复日期指示
+        Row {
+            spacing: 10
+            anchors.verticalCenter: parent.verticalCenter
+            visible: repeatDays.length > 0
+
+            Repeater {
+                model: 7
+
+                Rectangle {
+                    width: 30
+                    height: 30
+                    radius: 15
+                    color: repeatDays.includes(index) ? "#e74c3c" : "#bdc3c7"
+
+                    Text {
+                        text: ["一", "二", "三", "四", "五", "六", "日"][index]
+                        font {
+                            pixelSize: 14
+                            bold: repeatDays.includes(index)
+                        }
+                        color: "white"
+                        anchors.centerIn: parent
+                    }
+                }
+            }
         }
 
-        Item { width: parent.width - timeText.width - parent.spacing*3 - 120; height: 1 }
+        // 删除按钮（纯QML实现）
+        Rectangle {
+            width: 40
+            height: 40
+            radius: 20
+            color: mouseArea.pressed ? "#e74c3c" : "transparent"
+            anchors.verticalCenter: parent.verticalCenter
 
-        Button {
-            text: "×"
-            onClicked: deleteClicked()
+            Text {
+                text: "×"
+                font.pixelSize: 32
+                color: "#e74c3c"
+                anchors.centerIn: parent
+            }
+
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                onClicked: deleteClicked()
+            }
         }
+    }
 
-        // modules/AlarmClock/AlarmItemDelegate.qml
-        // Rectangle {
-        //     anchors.fill: parent
-        //     color: active ? "#e3f2fd" : "#f5f5f5"
-        //     radius: 5
-        //
-        //     // 添加按压效果
-        //     states: State {
-        //         name: "pressed"
-        //         when: mouseArea.pressed
-        //         PropertyChanges { target: background; opacity: 0.7 }
-        //     }
-        //
-        //     MouseArea {
-        //         id: mouseArea
-        //         anchors.fill: parent
-        //         onClicked: toggleClicked()
-        //     }
-        // }
+    // // 悬停效果会与悬浮窗冲突，暂不使用
+    // HoverHandler {
+    //     onHoveredChanged: {
+    //         card.scale = hovered ? 1.02 : 1.0
+    //     }
+    // }
+
+    Behavior on scale {
+        NumberAnimation { duration: 150 }
     }
 }

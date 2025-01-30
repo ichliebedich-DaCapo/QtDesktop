@@ -13,6 +13,9 @@
         <file>modules/AlarmClock/AlarmDialog.qml</file>
         <file>modules/AlarmClock/AlarmPage.qml</file>
         <file>modules/AlarmClock/ClockPage.qml</file>
+        <file>modules/AlarmClock/FloatingActionButton.qml</file>
+        <file>modules/AlarmClock/DayToggleButton.qml</file>
+        <file>modules/AlarmClock/TimeWheel.qml</file>
 
         <!--        ui / icons     -->
         <file>ui/icons/test.png</file>

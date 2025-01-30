@@ -7,6 +7,8 @@
 QDesktop/
 ├── core/                   # C++核心模块
 │   ├── drivers/           # 硬件驱动封装
+│   │   ├── Beep.cpp
+│   │   ├── Beep.h
 │   │   ├── GpioDriver.cpp # GPIO控制
 │   │   └── CameraDriver.cpp
 │   ├── system/            # 系统驱动封装

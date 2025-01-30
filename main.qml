@@ -46,42 +46,59 @@ Window {
         id: floatingButton
         width: 60
         height: 60
-        radius: width / 2  // 圆形按钮
-        color: "#1abc9c"  // 更现代的颜色
+        radius: width / 2
+        color: "#1abc9c"
         border.color: "#16a085"
         border.width: 2
         opacity: 0.9
-        z: 100
+        z: 9999  // 确保最高层级
 
-
-        // 拖拽功能
-        MouseArea {
-            anchors.fill: parent
-            drag.target: floatingButton
-            drag.axis: Drag.XAndYAxis
-            drag.minimumX: 0
-            drag.maximumX: mainWindow.width - floatingButton.width
-            drag.minimumY: 0
-            drag.maximumY: mainWindow.height - floatingButton.height
-
-            // 点击功能
-            onClicked: {
-                mainWindow.returnToDesktop();  // 返回主界面
-            }
+        // 投影效果（可选）
+        layer.enabled: true
+        layer.effect: DropShadow {
+            radius: 8
+            samples: 16
+            color: "#40000000"
         }
 
-        // 图标（使用 Unicode 字符或图片）
+        // 拖拽功能（兼容实现）
+        MouseArea {
+            id: dragArea
+            anchors.fill: parent
+            drag.target: parent
+            drag.axis: Drag.XAndYAxis
+            drag.minimumX: 0
+            drag.maximumX: mainWindow.width - width
+            drag.minimumY: 0
+            drag.maximumY: mainWindow.height - height
+            preventStealing: true  // 防止事件被窃取
+
+            // 点击功能
+            onClicked: mainWindow.returnToDesktop()
+        }
+
+        // 图标
         Text {
             anchors.centerIn: parent
-            text: "🏠"  // 使用 Unicode 字符作为图标
+            text: "🏠"
             font.pixelSize: 24
             color: "white"
         }
 
-        // 设置初始位置
+        // 初始位置
         Component.onCompleted: {
-            floatingButton.x = mainWindow.width - floatingButton.width - 20;  // 右侧
-            floatingButton.y = (mainWindow.height - floatingButton.height) / 2;  // 居中
+            x = mainWindow.width - width - 20;
+            y = (mainWindow.height - height) / 2;
+        }
+
+        // 边界限制（兼容写法）
+        onXChanged: {
+            if(x < 0) x = 0;
+            else if(x > mainWindow.width - width) x = mainWindow.width - width;
+        }
+        onYChanged: {
+            if(y < 0) y = 0;
+            else if(y > mainWindow.height - height) y = mainWindow.height - height;
         }
     }
 
@@ -93,8 +110,8 @@ Window {
         } else {
             // 动态创建 Loader
             const loader = Qt.createQmlObject(`
-                import QtQuick 2.9
-                import QtQuick.Controls 2.9
+                import QtQuick 2.12
+                import QtQuick.Controls 2.12
                 Loader {
                     anchors.fill: parent
                     visible: false
