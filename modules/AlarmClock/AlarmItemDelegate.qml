@@ -132,12 +132,12 @@ Item {
         }
     }
 
-    // 悬停效果
-    HoverHandler {
-        onHoveredChanged: {
-            card.scale = hovered ? 1.02 : 1.0
-        }
-    }
+    // // 悬停效果会与悬浮窗冲突，暂不使用
+    // HoverHandler {
+    //     onHoveredChanged: {
+    //         card.scale = hovered ? 1.02 : 1.0
+    //     }
+    // }
 
     Behavior on scale {
         NumberAnimation { duration: 150 }
