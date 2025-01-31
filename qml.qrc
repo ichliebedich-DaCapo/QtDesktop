@@ -16,7 +16,7 @@
         <file>modules/AlarmClock/FloatingActionButton.qml</file>
         <file>modules/AlarmClock/IconButton.qml</file>
         <file>modules/AlarmClock/DayToggle.qml</file>
-        <file>modules/AlarmClock/TimeAdjuster.qml</file>
+<!--        <file>modules/AlarmClock/TimeAdjuster.qml</file>-->
 
 
         <!--        ui / icons     -->

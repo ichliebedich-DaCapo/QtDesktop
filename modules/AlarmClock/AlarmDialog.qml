@@ -55,44 +55,122 @@ Dialog {
             // 时间选择器
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 180
+                Layout.preferredHeight: 200  // 增加高度适应滑动选择器
                 color: cardColor
                 radius: 8
 
-                GridLayout {
+                RowLayout {
                     anchors.fill: parent
-                    anchors.margins: 20
-                    columns: 3
-                    rows: 2
-                    rowSpacing: 15
-                    columnSpacing: 15
+                    spacing: 20
+                    anchors.margins: 15
 
-                    // 小时选择
-                    TimeAdjuster {
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        title: "小时"
-                        minValue: 0
-                        maxValue: 23
-                        currentValue: dialog.selectedHour  // 绑定到自定义属性
-                        onValueChanged: {
-                            dialog.selectedHour = value    // 直接更新属性
-                            dialog.updateTime()
+                    // 小时滑动选择
+                    ColumnLayout {
+                        spacing: 5
+                        Layout.alignment: Qt.AlignHCenter
+
+                        Label {
+                            text: "小时"
+                            color: "#2c3e50"
+                            font.bold: true
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Tumbler {
+                            id: hourTumbler
+                            model: 24
+                            visibleItemCount: 5
+                            Layout.preferredWidth: 150
+                            Layout.preferredHeight: 160
+
+                            delegate: Text {
+                                text: modelData
+                                color: "#2c3e50"
+                                font.pixelSize: 28
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                opacity: 0.4 + Math.max(0, 1 - Math.abs(Tumbler.displacement))
+                                scale: 0.8 + Math.max(0, 1 - Math.abs(Tumbler.displacement)) * 0.4
+                            }
+
+                            onCurrentIndexChanged: {
+                                dialog.selectedHour = currentIndex
+                                dialog.updateTime()
+                            }
+
+                            // 添加滑动指示线
+                            Rectangle {
+                                parent: hourTumbler
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                y: parent.height * 0.4
+                                width: parent.width - 20
+                                height: 2
+                                color: primaryColor
+                            }
+
+                            Rectangle {
+                                parent: hourTumbler
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                y: parent.height * 0.6
+                                width: parent.width - 20
+                                height: 2
+                                color: primaryColor
+                            }
                         }
                     }
 
-                    // 分钟选择
-                    TimeAdjuster {
-                        Layout.columnSpan: 3
-                        Layout.fillWidth: true
-                        title: "分钟"
-                        minValue: 0
-                        maxValue: 55
-                        step: 5
-                        currentValue: dialog.selectedMinute
-                        onValueChanged: {
-                            dialog.selectedMinute = value
-                            dialog.updateTime()
+                    // 分钟滑动选择
+                    ColumnLayout {
+                        spacing: 5
+                        Layout.alignment: Qt.AlignHCenter
+
+                        Label {
+                            text: "分钟"
+                            color: "#2c3e50"
+                            font.bold: true
+                            Layout.alignment: Qt.AlignHCenter
+                        }
+
+                        Tumbler {
+                            id: minuteTumbler
+                            model: 60
+                            visibleItemCount: 5
+                            Layout.preferredWidth: 150
+                            Layout.preferredHeight: 160
+
+                            delegate: Text {
+                                text: modelData.toLocaleString(Qt.locale(), '00')
+                                color: "#2c3e50"
+                                font.pixelSize: 28
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                                opacity: 0.4 + Math.max(0, 1 - Math.abs(Tumbler.displacement))
+                                scale: 0.8 + Math.max(0, 1 - Math.abs(Tumbler.displacement)) * 0.4
+                            }
+
+                            onCurrentIndexChanged: {
+                                dialog.selectedMinute = currentIndex
+                                dialog.updateTime()
+                            }
+
+                            // 添加滑动指示线
+                            Rectangle {
+                                parent: minuteTumbler
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                y: parent.height * 0.4
+                                width: parent.width - 20
+                                height: 2
+                                color: primaryColor
+                            }
+
+                            Rectangle {
+                                parent: minuteTumbler
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                y: parent.height * 0.6
+                                width: parent.width - 20
+                                height: 2
+                                color: primaryColor
+                            }
                         }
                     }
                 }
@@ -125,10 +203,13 @@ Dialog {
 
     // 更新最终时间字符串
     function updateTime() {
-        dialog.time = Qt.formatTime(new Date(0, 0, 0,
-            selectedHour,
-            selectedMinute), "hh:mm")
-        console.log("当前设置时间:", dialog.time)
+        // dialog.time = Qt.formatTime(new Date(0, 0, 0,
+        //     selectedHour,
+        //     selectedMinute), "hh:mm")
+
+        const hours = selectedHour.toString().padStart(2, '0')
+        const minutes = selectedMinute.toString().padStart(2, '0')
+        dialog.time = `${hours}:${minutes}`
     }
 
     // 更新重复日期
