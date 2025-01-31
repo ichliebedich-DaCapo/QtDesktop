@@ -139,7 +139,7 @@ Dialog {
                             Layout.preferredHeight: 160
 
                             delegate: Text {
-                                text: modelData.toLocaleString(Qt.locale(), '00')
+                                text: modelData
                                 color: "#2c3e50"
                                 font.pixelSize: 28
                                 horizontalAlignment: Text.AlignHCenter
