@@ -9,7 +9,7 @@
 
 struct Alarm {
 Q_GADGET
-    Q_PROPERTY(QString timeStr READ timeStr)  // 确保存在该属性
+    Q_PROPERTY(QString timeStr READ timeStr CONSTANT)  // 添加 CONSTANT
     Q_PROPERTY(bool active MEMBER active)
     Q_PROPERTY(QVariantList repeatDays MEMBER repeatDays)
     Q_PROPERTY(QString label MEMBER label)

@@ -9,6 +9,13 @@ Dialog {
     width: 600
     height: 500
 
+    // 自定义属性存储时间
+    property int selectedHour: 8
+    property int selectedMinute: 0
+    property string time: ""
+    property string label: ""
+    property var repeatDays: []
+
     // 现代配色
     property color backgroundColor: "#2c3e50"
     property color cardColor: "#ecf0f1"
@@ -67,8 +74,11 @@ Dialog {
                         title: "小时"
                         minValue: 0
                         maxValue: 23
-                        currentValue: 8
-                        onValueChanged: hourSpinBox.value = value
+                        currentValue: dialog.selectedHour  // 绑定到自定义属性
+                        onValueChanged: {
+                            dialog.selectedHour = value    // 直接更新属性
+                            dialog.updateTime()
+                        }
                     }
 
                     // 分钟选择
@@ -79,8 +89,11 @@ Dialog {
                         minValue: 0
                         maxValue: 55
                         step: 5
-                        currentValue: 0
-                        onValueChanged: minuteSpinBox.value = value
+                        currentValue: dialog.selectedMinute
+                        onValueChanged: {
+                            dialog.selectedMinute = value
+                            dialog.updateTime()
+                        }
                     }
                 }
             }
@@ -102,7 +115,7 @@ Dialog {
                         model: 7
                         DayToggle {
                             dayIndex: index
-                            onToggled: updateRepeatDays(index, isChecked)
+                            onToggled: dialog.updateRepeatDays(index, isChecked)
                         }
                     }
                 }
@@ -110,26 +123,15 @@ Dialog {
         }
     }
 
-    // 隐藏原生SpinBox
-    SpinBox { id: hourSpinBox; visible: false }
-    SpinBox { id: minuteSpinBox; visible: false }
-
-    // 定义时间属性
-    property string time: ""
-    property string label: ""
-    property var repeatDays: []
-
+    // 更新最终时间字符串
     function updateTime() {
-        // const hours = hourSpinBox.value.toString().padStart(2, '0')
-        // const minutes = minuteSpinBox.value.toString().padStart(2, '0')
-        // dialog.time = `${hours}:${minutes}`
-        // console.log(time)
-        dialog.time = Qt.formatTime(new Date(0,0,0,
-            hourSpinBox.value,
-            minuteSpinBox.value), "hh:mm")
-        console.log(dialog.time)
+        dialog.time = Qt.formatTime(new Date(0, 0, 0,
+            selectedHour,
+            selectedMinute), "hh:mm")
+        console.log("当前设置时间:", dialog.time)
     }
 
+    // 更新重复日期
     function updateRepeatDays(index, checked) {
         if (checked && !dialog.repeatDays.includes(index)) {
             dialog.repeatDays.push(index)
@@ -137,9 +139,6 @@ Dialog {
             const pos = dialog.repeatDays.indexOf(index)
             if (pos >= 0) dialog.repeatDays.splice(pos, 1)
         }
+        console.log("当前重复日:", dialog.repeatDays)
     }
-
 }
-
-
-

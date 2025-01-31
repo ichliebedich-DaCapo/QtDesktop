@@ -68,7 +68,7 @@ Item {
                 delegate: AlarmItemDelegate {
                     width: listView.width - 40
                     anchors.horizontalCenter: parent.horizontalCenter
-                    time:modelData.time
+                    time: modelData.timeStr  // 关键修改点
                     active: modelData.active
                     repeatDays: modelData.repeatDays
                     label: modelData.label
