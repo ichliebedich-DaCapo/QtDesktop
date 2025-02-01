@@ -2,7 +2,7 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import Calculator 1.0
+import com.qdesktop.modules.Calculator 1.0
 
 Item {
     width: 1024

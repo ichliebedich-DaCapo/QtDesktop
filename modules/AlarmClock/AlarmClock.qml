@@ -1,7 +1,7 @@
 // AlarmClock.qml 优化版
 import QtQuick 2.12
 import QtQuick.Controls 2.12
-import AlarmClock 1.0
+import com.qdesktop.modules.AlarmClock 1.0
 
 Item {
     id: root

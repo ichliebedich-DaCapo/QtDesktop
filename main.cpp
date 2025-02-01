@@ -9,7 +9,7 @@
 #include "./modules/Calculator/CalculatorCtrl.h"
 #include "./core/system/SystemMonitor.h"
 #include "./modules/FileExplorer/FileExplorerCtrl.h"
-#include "modules/AlarmClock/AlarmClockCtrl.h"
+#include "./modules/AlarmClock/AlarmClockCtrl.h"
 #include "./core/services/ServiceManager.h"
 #include "./core/system/AutoStart.h"
 
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 //        AutoStart::ensureService();
         ServiceManager::instance().startAll();
 
-        qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
+        qmlRegisterType<CalculatorCtrl>("com.qdesktop.modules.Calculator", 1, 0, "CalculatorCtrl");
 
         // 注册 SystemMonitor 为单例
         qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor",
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
 
         // 注册 AlarmManager
-        qmlRegisterType<AlarmClockCtrl>("AlarmClock", 1, 0, "AlarmClockCtrl");
+        qmlRegisterType<AlarmClockCtrl>("com.qdesktop.modules.AlarmClock", 1, 0, "AlarmClockCtrl");
 
 
         QQmlApplicationEngine engine;

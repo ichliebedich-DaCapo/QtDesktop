@@ -25,6 +25,9 @@ SOURCES += \
     main.cpp \
     core/drivers/beep.cpp \
     core/system/SystemMonitor.cpp \
+    core/system/AutoStart.cpp \
+    core/services/AlarmService.cpp \
+    core/services/ServiceManager.cpp  \
     modules/Calculator/CalculatorCtrl.cpp \
     modules/FileExplorer/FileExplorerCtrl.cpp   \
     modules/AlarmClock/AlarmClockCtrl.cpp
@@ -45,7 +48,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     core/system/SystemMonitor.h \
+    core/system/AutoStart.h \
     core/drivers/beep.h \
+    core/services/AlarmService.h \
+    core/services/ServiceManager.h  \
     modules/Calculator/CalculatorCtrl.h \
     modules/FileExplorer/FileExplorerCtrl.h \
     modules/AlarmClock/AlarmClockCtrl.h
