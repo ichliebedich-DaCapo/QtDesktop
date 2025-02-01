@@ -184,6 +184,7 @@ Window {
 
 
     // 4. 应用启动器
+    // mainWindow这个属性可加可不加，现在还不需要
     function startApplication(path, params) {
         if (appInstances[path]) {
             currentLoader = appInstances[path]

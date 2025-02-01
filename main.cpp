@@ -16,6 +16,8 @@
 #include <QDir>
 #include <QApplication>
 
+static void registerTypeToQml();
+
 int main(int argc, char *argv[])
 {
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
@@ -23,7 +25,6 @@ int main(int argc, char *argv[])
 
     // 先判断是否服务模式
     bool isServiceMode = QCoreApplication::arguments().contains("-service");
-
     if (isServiceMode)
     {
         QCoreApplication app(argc, argv);
@@ -32,7 +33,6 @@ int main(int argc, char *argv[])
     }
     else
     {
-
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);// 兼容高DPI屏幕
 
         QApplication app(argc, argv);
@@ -42,20 +42,10 @@ int main(int argc, char *argv[])
         QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
 
         // 确保服务自启动
-//        AutoStart::ensureService();
+        // AutoStart::ensureService();
         ServiceManager::instance().startAll();
 
-        qmlRegisterType<CalculatorCtrl>("com.qdesktop.modules.Calculator", 1, 0, "CalculatorCtrl");
-
-        // 注册 SystemMonitor 为单例
-        qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor",
-                                                SystemMonitor::singletonProvider);
-
-        qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
-
-        // 注册 AlarmManager
-        qmlRegisterType<AlarmClockCtrl>("com.qdesktop.modules.AlarmClock", 1, 0, "AlarmClockCtrl");
-
+        registerTypeToQml();// 注册类型到QML
 
         QQmlApplicationEngine engine;
         engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
@@ -64,6 +54,22 @@ int main(int argc, char *argv[])
 
         return QApplication::exec();
     }
+}
+
+void registerTypeToQml()
+{
+    /***********系统单例注册************/
+    // 注册 SystemMonitor 为单例
+    qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor",
+                                            SystemMonitor::singletonProvider);
+
+    /***********普通应用注册************/
+    qmlRegisterType<CalculatorCtrl>("com.qdesktop.modules.Calculator", 1, 0, "CalculatorCtrl");
+
+    qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
+
+    qmlRegisterType<AlarmClockCtrl>("com.qdesktop.modules.AlarmClock", 1, 0, "AlarmClockCtrl");
+
 }
 
 
