@@ -29,48 +29,57 @@ AlarmClockCtrl::~AlarmClockCtrl()
     Beep::instance()->release();
 }
 
-QString AlarmClockCtrl::getAlarmsFilePath() const {
+QString AlarmClockCtrl::getAlarmsFilePath() const
+{
     QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QDir dir(path);
-    if (!dir.exists()) {
+    if (!dir.exists())
+    {
         dir.mkpath(".");
     }
     return path + "/alarms.json";
 }
 
-void AlarmClockCtrl::saveAlarms() {
+void AlarmClockCtrl::saveAlarms()
+{
     QVariantList alarmsList;
-    for (const auto &alarm : m_alarms) {
+    for (const auto &alarm: m_alarms)
+    {
         QVariantMap alarmMap;
         alarmMap["time"] = alarm.time.toString("hh:mm");
         alarmMap["active"] = alarm.active;
         alarmMap["repeatDays"] = alarm.repeatDays;
         alarmMap["label"] = alarm.label;
+        alarmMap["isTriggered"] = alarm.isTriggered;
         alarmsList.append(alarmMap);
     }
 
     QFile file(getAlarmsFilePath());
-    if (file.open(QIODevice::WriteOnly)) {
+    if (file.open(QIODevice::WriteOnly))
+    {
         QJsonDocument doc(QJsonArray::fromVariantList(alarmsList));
         file.write(doc.toJson());
         file.close();
     }
 }
 
-void AlarmClockCtrl::loadAlarms() {
+void AlarmClockCtrl::loadAlarms()
+{
     QFile file(getAlarmsFilePath());
     if (!file.exists()) return;
 
-    if (!file.open(QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly))
+    {
         qDebug() << "Failed to open alarms file";
         return;
     }
 
-    QJsonParseError parseError;
+    QJsonParseError parseError{};
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll(), &parseError);
     file.close();
 
-    if (parseError.error != QJsonParseError::NoError) {
+    if (parseError.error != QJsonParseError::NoError)
+    {
         qDebug() << "JSON parse error:" << parseError.errorString();
         return;
     }
@@ -79,14 +88,18 @@ void AlarmClockCtrl::loadAlarms() {
 
     m_alarms.clear();
     QVariantList alarmsList = doc.array().toVariantList();
-    for (const QVariant &var : alarmsList) {
+    for (const QVariant &var: alarmsList)
+    {
         QVariantMap alarmMap = var.toMap();
         Alarm alarm;
         alarm.time = QTime::fromString(alarmMap["time"].toString(), "hh:mm");
         if (!alarm.time.isValid()) continue;
+
         alarm.active = alarmMap.value("active", true).toBool();
         alarm.repeatDays = alarmMap.value("repeatDays").toList();
         alarm.label = alarmMap.value("label").toString();
+        alarm.isTriggered = alarmMap.value("isTriggered", false).toBool();
+
         m_alarms.append(alarm);
     }
     emit alarmsChanged();
@@ -97,10 +110,12 @@ void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString lab
 //    qDebug() << "addAlarm" << time << repeatDays << label;
 
     Alarm alarm;
+
     alarm.time = parseTime(time);
     alarm.active = true;
     alarm.repeatDays = repeatDays;
     alarm.label = label;
+    alarm.isTriggered = false;
 
     m_alarms.append(alarm);
     emit alarmsChanged();
@@ -122,7 +137,7 @@ void AlarmClockCtrl::toggleAlarm(int index)
     if (index >= 0 && index < m_alarms.size())
     {
         m_alarms[index].active = !m_alarms[index].active;
-        if(!m_alarms[index].active)
+        if (!m_alarms[index].active)
         {
             // 关闭蜂鸣器，确保不会在响的时候停不下来
             Beep::instance()->setState(false);
@@ -132,36 +147,57 @@ void AlarmClockCtrl::toggleAlarm(int index)
     }
 }
 
-void AlarmClockCtrl::checkAlarms() {
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    QTime currentTime = currentDateTime.time();
-    QDate currentDate = currentDateTime.date();
+void AlarmClockCtrl::checkAlarms()
+{
+    QTime currentTime = QTime::currentTime();
+    QDate currentDate = QDate::currentDate();
 
-    for (const Alarm &alarm : m_alarms) {
+    for (Alarm &alarm: m_alarms)
+    {
         if (!alarm.active) continue;
 
-        bool shouldTrigger = false;
-
-        if (alarm.repeatDays.isEmpty()) {
-            // 非重复闹钟：检查当前时间是否匹配
-            shouldTrigger = (alarm.time.hour() == currentTime.hour()
-                             && alarm.time.minute() == currentTime.minute());
-        } else {
-            // 重复闹钟：原有逻辑
+        bool isTrigger = false;
+        if (alarm.repeatDays.isEmpty())// 仅一次触发
+        {
+            // 检查当前时间是否与闹钟时间相同
+            if (alarm.time.hour() == currentTime.hour() && alarm.time.minute() == currentTime.minute())
+            {
+                isTrigger = true;
+                alarm.isTriggered = true;
+            }
+            else
+            {
+                // 检测是否触发过，如果触发过，那么就关闭
+                if (alarm.isTriggered)
+                {
+                    closeAlarm(alarm);
+                    alarm.isTriggered = false;// 重置触发状态
+                }
+            }
+        }
+        else
+        {        // 检查当前日期是否在重复日期列表中
             int currentDayOfWeek = currentDate.dayOfWeek();
             bool isRepeatDay = false;
-            for (const QVariant &day : alarm.repeatDays) {
-                if (day.toInt() == currentDayOfWeek - 1) {
+            for (const QVariant &day: alarm.repeatDays)
+            {
+                if (day.toInt() == currentDayOfWeek - 1)
+                {
                     isRepeatDay = true;
                     break;
                 }
             }
-            shouldTrigger = isRepeatDay
-                            && alarm.time.hour() == currentTime.hour()
-                            && alarm.time.minute() == currentTime.minute();
+
+            if (isRepeatDay && alarm.time.hour() == currentTime.hour()
+                && alarm.time.minute() == currentTime.minute())
+            {
+                isTrigger = true;
+            }
         }
 
-        if (shouldTrigger) {
+        // 满足触发条件
+        if (isTrigger)
+        {
             triggerAlarm(alarm);
         }
     }
@@ -174,50 +210,18 @@ void AlarmClockCtrl::triggerAlarm(const Alarm &alarm)
     static bool isAlarmTriggered = false;
     isAlarmTriggered = !isAlarmTriggered;
     Beep::instance()->setState(isAlarmTriggered);
-
-    // 如果是非重复闹钟，触发后自动禁用
-    if (alarm.repeatDays.isEmpty()) {
-        const_cast<Alarm&>(alarm).active = false;  // 注意：需要移除const修饰
-        emit alarmsChanged();
-        saveAlarms();
-    }
 }
 
-QDateTime AlarmClockCtrl::getNextTriggerTimeForAlarm(const Alarm &alarm) const {
-    if (!alarm.active) return QDateTime();
 
-    QDateTime now = QDateTime::currentDateTime();
-    QTime alarmTime = alarm.time;
-
-    // 处理非重复闹钟
-    if (alarm.repeatDays.isEmpty()) {
-        QDateTime todayAlarm(now.date(), alarmTime);
-        return (todayAlarm > now) ? todayAlarm : QDateTime();
-    }
-
-    // 处理重复闹钟
-    for (int i = 0; i <= 7; ++i) { // 最多检查7天
-        QDate checkDate = now.date().addDays(i);
-        int dayOfWeek = checkDate.dayOfWeek() - 1; // 转换为0-based (0=周一)
-
-        if (alarm.repeatDays.contains(dayOfWeek)) {
-            QDateTime candidate(checkDate, alarmTime);
-            if (candidate >= now) {
-                return candidate;
-            }
-        }
-    }
-    return QDateTime();
-}
-
-QDateTime AlarmClockCtrl::getNextTriggerTime() const {
-    QDateTime nextTrigger;
-    for (const Alarm &alarm : m_alarms) {
-        if (!alarm.active) continue;
-        QDateTime triggerTime = getNextTriggerTimeForAlarm(alarm);
-        if (triggerTime.isValid() && (!nextTrigger.isValid() || triggerTime < nextTrigger)) {
-            nextTrigger = triggerTime;
-        }
-    }
-    return nextTrigger;
+/**
+ * @brief
+ * @param alarm
+ * @note 包含了闹钟的保存，发送信号更新UI的功能，与翻转闹钟有些相似，但需要区分开
+ */
+void AlarmClockCtrl::closeAlarm(Alarm &alarm)
+{
+    alarm.active = false;
+    Beep::instance()->setState(false);// 关闭闹钟
+    emit alarmsChanged();
+    saveAlarms();
 }

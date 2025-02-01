@@ -19,6 +19,7 @@ Q_GADGET
 public:
     QTime time;
     bool active = true;
+    bool isTriggered = false;// 是否触发过
     QVariantList repeatDays;
     QString label;
 
@@ -27,6 +28,8 @@ public:
     }
 };
 Q_DECLARE_METATYPE(Alarm)
+
+
 
 class AlarmClockCtrl : public QObject {
 Q_OBJECT
@@ -49,6 +52,7 @@ public:
 
     QVariantList alarms() const;
 
+    void closeAlarm(Alarm& alarm);
     void saveAlarms();
     void loadAlarms();
     QDateTime getNextTriggerTime() const;
