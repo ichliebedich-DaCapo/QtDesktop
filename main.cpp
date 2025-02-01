@@ -8,8 +8,10 @@
 // 计算器
 #include "./modules/Calculator/CalculatorCtrl.h"
 #include "./core/system/SystemMonitor.h"
-#include "modules/FileExplorer/FileExplorerCtrl.h"
+#include "./modules/FileExplorer/FileExplorerCtrl.h"
 #include "modules/AlarmClock/AlarmClockCtrl.h"
+#include "./core/services/ServiceManager.h"
+#include "./core/system/AutoStart.h"
 
 #include <QDir>
 #include <QApplication>
@@ -19,33 +21,48 @@ int main(int argc, char *argv[])
     qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     qputenv("QML_DEBUG_RENDER_TIMING", "1"); // 开启渲染计时
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);// 兼容高DPI屏幕
+    // 先判断是否服务模式
+    bool isServiceMode = QCoreApplication::arguments().contains("-service");
 
-    QApplication app(argc, argv);
+    if (isServiceMode)
+    {
+        QCoreApplication app(argc, argv);
+        ServiceManager::instance().startAll();
+        return QCoreApplication::exec();
+    }
+    else
+    {
 
-    QDir::setCurrent(QCoreApplication::applicationDirPath());// 设置当前工作目录
+        QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);// 兼容高DPI屏幕
 
-    QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
+        QApplication app(argc, argv);
 
-    // 注册CalculatorCtrl
-    qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
+        QDir::setCurrent(QCoreApplication::applicationDirPath());// 设置当前工作目录
 
-    // 注册 SystemMonitor 为单例
-    qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor", SystemMonitor::singletonProvider);
+        QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
 
-    qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
+        // 确保服务自启动
+        AutoStart::ensureService();
 
-    // 注册 AlarmManager
-    qmlRegisterType<AlarmClockCtrl>("AlarmClock", 1, 0, "AlarmClockCtrl");
+        qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
+
+        // 注册 SystemMonitor 为单例
+        qmlRegisterSingletonType<SystemMonitor>("com.qdesktop.core.system", 1, 0, "SystemMonitor",
+                                                SystemMonitor::singletonProvider);
+
+        qmlRegisterType<FileExplorerCtrl>("com.qdesktop.modules.FileExplorer", 1, 0, "FileExplorerCtrl");
+
+        // 注册 AlarmManager
+        qmlRegisterType<AlarmClockCtrl>("AlarmClock", 1, 0, "AlarmClockCtrl");
 
 
+        QQmlApplicationEngine engine;
+        engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+        if (engine.rootObjects().isEmpty())
+            return -1;
 
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
-        return -1;
-
-    return QApplication::exec();
+        return QApplication::exec();
+    }
 }
 
 

@@ -49,6 +49,9 @@ public:
 
     QVariantList alarms() const;
 
+    void saveAlarms();
+    void loadAlarms();
+
 public slots:
     void checkAlarms();
     void triggerAlarm(const Alarm &alarm);
@@ -57,8 +60,6 @@ signals:
     void alarmsChanged();
 
 private:
-    void saveAlarms();
-    void loadAlarms();
     QString getAlarmsFilePath() const;
 
     QVector<Alarm> m_alarms;
