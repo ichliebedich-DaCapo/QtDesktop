@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
         QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-8"));// 设置编码格式
 
         // 确保服务自启动
-        AutoStart::ensureService();
+//        AutoStart::ensureService();
+        ServiceManager::instance().startAll();
 
         qmlRegisterType<CalculatorCtrl>("Calculator", 1, 0, "CalculatorCtrl");
 
