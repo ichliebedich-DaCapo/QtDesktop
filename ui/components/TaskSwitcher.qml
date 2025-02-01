@@ -51,13 +51,16 @@ Rectangle {
                         card.opacity = 0.5
                     }
                 }
+                // 修改卡片关闭事件处理
                 onReleased: {
-                    if (mouseY < card.startY - 50) { // 上滑超过50像素
-                        root.closeApp(appPath)
+                    if (mouseY < card.startY - 50) {
+                        root.closeApp(appPath) // 确保传递正确的参数名
                     }
                     card.opacity = 1
                 }
             }
+
+
         }
     }
 
@@ -66,9 +69,11 @@ Rectangle {
         anchors.bottom: parent.bottom
         height: 100
         width: parent.width
-        onPressed: startY = mouseY
+        property real _localStartY: 0 // 改为局部变量
+
+        onPressed: _localStartY = mouseY
         onPositionChanged: {
-            if (mouseY < startY - 50) { // 上滑退出
+            if (mouseY < _localStartY - 50) {
                 root.exitSwitcher()
             }
         }

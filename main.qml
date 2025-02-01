@@ -87,12 +87,12 @@ Window {
 
         // 边界限制（兼容写法）
         onXChanged: {
-            if(x < 0) x = 0;
-            else if(x > mainWindow.width - width) x = mainWindow.width - width;
+            if (x < 0) x = 0;
+            else if (x > mainWindow.width - width) x = mainWindow.width - width;
         }
         onYChanged: {
-            if(y < 0) y = 0;
-            else if(y > mainWindow.height - height) y = mainWindow.height - height;
+            if (y < 0) y = 0;
+            else if (y > mainWindow.height - height) y = mainWindow.height - height;
         }
     }
 
@@ -102,7 +102,7 @@ Window {
         id: taskSwitcher
         anchors.fill: parent
         appModel: taskSwitcherModel
-        onCloseApp: closeApplication(path)
+        onCloseApp: closeApplication(appPath) // 修正参数名
         onExitSwitcher: {
             taskSwitcher.visible = false
             returnToDesktop()
@@ -131,7 +131,9 @@ Window {
     }
 
     // 新增数据模型
-    ListModel { id: taskSwitcherModel }
+    ListModel {
+        id: taskSwitcherModel
+    }
 
     // 新增函数：更新任务切换器模型
     function updateTaskSwitcherModel() {
@@ -149,6 +151,8 @@ Window {
 
     // 修改函数：显示任务切换器
     function showTaskSwitcher() {
+        if (Object.keys(appInstances).length === 0) return
+
         updateTaskSwitcherModel()
         taskSwitcher.visible = true
         desktop.visible = false
@@ -158,10 +162,23 @@ Window {
     // 修改函数：关闭指定应用
     function closeApplication(path) {
         if (appInstances[path]) {
-            if (currentLoader === appInstances[path]) currentLoader = null
+            // 清除当前应用引用
+            if (currentLoader === appInstances[path]) {
+                currentLoader = null
+            }
+
+            // 完全销毁 Loader
+            appInstances[path].source = ""
             appInstances[path].destroy()
             delete appInstances[path]
+
+            // 立即更新模型
             updateTaskSwitcherModel()
+
+            // 如果关闭的是最后一个应用，返回桌面
+            if (Object.keys(appInstances).length === 0) {
+                returnToDesktop()
+            }
         }
     }
 
@@ -194,9 +211,10 @@ Window {
     // 5. 返回主界面（隐藏当前应用）
     function returnToDesktop() {
         if (currentLoader) {
-            currentLoader.visible = false;  // 隐藏当前应用
+            currentLoader.visible = false
         }
-        desktop.visible = true;  // 显示桌面
+        desktop.visible = true
+        taskSwitcher.visible = false // 新增这行
     }
 
     // 6. 清除当前应用
