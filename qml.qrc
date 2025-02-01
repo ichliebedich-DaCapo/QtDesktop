@@ -41,6 +41,7 @@
         <file>ui/components/TopBar.qml</file>
         <file>ui/components/SystemTrayItem.qml</file>
         <file>ui/components/IconButton.qml</file>
+        <file>ui/components/TaskSwitcher.qml</file>
 
 
 

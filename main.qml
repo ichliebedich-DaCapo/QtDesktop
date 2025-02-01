@@ -9,6 +9,7 @@ import Qt.labs.settings 1.0 // 确保导入 Settings 模块
 
 
 import "./ui"
+import "./ui/components"
 
 // main.qml
 
@@ -95,34 +96,99 @@ Window {
         }
     }
 
+
+    // 新增任务切换器
+    TaskSwitcher {
+        id: taskSwitcher
+        anchors.fill: parent
+        appModel: taskSwitcherModel
+        onCloseApp: closeApplication(path)
+        onExitSwitcher: {
+            taskSwitcher.visible = false
+            returnToDesktop()
+        }
+    }
+
+    // 新增手势检测区域
+    MouseArea {
+        id: globalSwipeDetector
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+        height: 100
+        preventStealing: true
+
+        property real startY: 0
+
+        onPressed: startY = mouseY
+        onPositionChanged: {
+            if (mouseY < startY - 50 && !taskSwitcher.visible) {
+                showTaskSwitcher()
+            }
+        }
+    }
+
+    // 新增数据模型
+    ListModel { id: taskSwitcherModel }
+
+    // 新增函数：更新任务切换器模型
+    function updateTaskSwitcherModel() {
+        taskSwitcherModel.clear()
+        for (var path in appInstances) {
+            var appName = getAppNameFromPath(path)
+            taskSwitcherModel.append({appPath: path, appName: appName})
+        }
+    }
+
+    // 新增函数：从路径提取应用名称
+    function getAppNameFromPath(path) {
+        return path.split('/').pop().replace('.qml', '')
+    }
+
+    // 修改函数：显示任务切换器
+    function showTaskSwitcher() {
+        updateTaskSwitcherModel()
+        taskSwitcher.visible = true
+        desktop.visible = false
+        if (currentLoader) currentLoader.visible = false
+    }
+
+    // 修改函数：关闭指定应用
+    function closeApplication(path) {
+        if (appInstances[path]) {
+            if (currentLoader === appInstances[path]) currentLoader = null
+            appInstances[path].destroy()
+            delete appInstances[path]
+            updateTaskSwitcherModel()
+        }
+    }
+
+
     // 4. 应用启动器
     function startApplication(path, params) {
-        // 检查是否已经存在该应用的 Loader 实例
         if (appInstances[path]) {
-            currentLoader = appInstances[path];
+            currentLoader = appInstances[path]
         } else {
-            // 动态创建 Loader
             const loader = Qt.createQmlObject(`
-                import QtQuick 2.12
-                import QtQuick.Controls 2.12
-                Loader {
-                    anchors.fill: parent
-                    visible: false
-                    source: "${path}"
-                    onLoaded: {
-                        item.mainWindow = mainWindow;  // 将 mainWindow 传递给应用
-                    }
-                }
-            `, appContainer);
+            import QtQuick 2.12
+            import QtQuick.Controls 2.12
+            Loader {
+                anchors.fill: parent
+                visible: false
+                source: "${path}"
+                onLoaded: item.mainWindow = mainWindow
+            }`, appContainer)
 
-            // 保存 Loader 实例
-            appInstances[path] = loader;
-            currentLoader = loader;  // 设置当前显示的应用
+            appInstances[path] = loader
+            currentLoader = loader
+            updateTaskSwitcherModel() // 新增：更新任务切换器模型
         }
 
-        // 显示应用，隐藏桌面
-        currentLoader.visible = true;  // 恢复可见性
-        desktop.visible = false;
+        currentLoader.visible = true
+        desktop.visible = false
+        taskSwitcher.visible = false // 新增：确保任务切换器隐藏
     }
 
     // 5. 返回主界面（隐藏当前应用）
