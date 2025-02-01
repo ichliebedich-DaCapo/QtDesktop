@@ -51,6 +51,8 @@ public:
 
     void saveAlarms();
     void loadAlarms();
+    QDateTime getNextTriggerTime() const;
+    QDateTime getNextTriggerTimeForAlarm(const Alarm &alarm) const;
 
 public slots:
     void checkAlarms();
@@ -63,5 +65,4 @@ private:
     QString getAlarmsFilePath() const;
 
     QVector<Alarm> m_alarms;
-    QTimer* m_timer;
 };

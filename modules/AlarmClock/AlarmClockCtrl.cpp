@@ -15,23 +15,16 @@ QVariantList AlarmClockCtrl::alarms() const
     return list;
 }
 
-AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent), m_timer(new QTimer(this))
+AlarmClockCtrl::AlarmClockCtrl(QObject *parent) : QObject(parent)
 {
     qRegisterMetaType<Alarm>("Alarm");
     loadAlarms(); // 加载保存的闹钟
 
-    connect(m_timer, &QTimer::timeout, this, &AlarmClockCtrl::checkAlarms);
-    m_timer->start(1000);
-    Beep::instance()->acquire();
+    Beep::instance()->acquire();// 获取Beep实例,为了确保在闹钟开启时可以关闭蜂鸣器
 }
 
 AlarmClockCtrl::~AlarmClockCtrl()
 {
-    if (m_timer)
-    {
-        m_timer->stop();
-        delete m_timer;
-    }
     Beep::instance()->setState(false);
     Beep::instance()->release();
 }
@@ -101,7 +94,7 @@ void AlarmClockCtrl::loadAlarms() {
 
 void AlarmClockCtrl::addAlarm(QString time, QVariantList repeatDays, QString label)
 {
-    qDebug() << "addAlarm" << time << repeatDays << label;
+//    qDebug() << "addAlarm" << time << repeatDays << label;
 
     Alarm alarm;
     alarm.time = parseTime(time);
@@ -131,6 +124,7 @@ void AlarmClockCtrl::toggleAlarm(int index)
         m_alarms[index].active = !m_alarms[index].active;
         if(!m_alarms[index].active)
         {
+            // 关闭蜂鸣器，确保不会在响的时候停不下来
             Beep::instance()->setState(false);
         }
         emit alarmsChanged();
@@ -138,25 +132,36 @@ void AlarmClockCtrl::toggleAlarm(int index)
     }
 }
 
-void AlarmClockCtrl::checkAlarms()
-{
-    QTime currentTime = QTime::currentTime();
-    QDate currentDate = QDate::currentDate();
+void AlarmClockCtrl::checkAlarms() {
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    QTime currentTime = currentDateTime.time();
+    QDate currentDate = currentDateTime.date();
 
     for (const Alarm &alarm : m_alarms) {
         if (!alarm.active) continue;
 
-        int currentDayOfWeek = currentDate.dayOfWeek();
-        bool isRepeatDay = false;
-        for (const QVariant &day : alarm.repeatDays) {
-            if (day.toInt() == currentDayOfWeek - 1) {
-                isRepeatDay = true;
-                break;
+        bool shouldTrigger = false;
+
+        if (alarm.repeatDays.isEmpty()) {
+            // 非重复闹钟：检查当前时间是否匹配
+            shouldTrigger = (alarm.time.hour() == currentTime.hour()
+                             && alarm.time.minute() == currentTime.minute());
+        } else {
+            // 重复闹钟：原有逻辑
+            int currentDayOfWeek = currentDate.dayOfWeek();
+            bool isRepeatDay = false;
+            for (const QVariant &day : alarm.repeatDays) {
+                if (day.toInt() == currentDayOfWeek - 1) {
+                    isRepeatDay = true;
+                    break;
+                }
             }
+            shouldTrigger = isRepeatDay
+                            && alarm.time.hour() == currentTime.hour()
+                            && alarm.time.minute() == currentTime.minute();
         }
 
-        if (isRepeatDay && alarm.time.hour() == currentTime.hour()
-            && alarm.time.minute() == currentTime.minute()) {
+        if (shouldTrigger) {
             triggerAlarm(alarm);
         }
     }
@@ -165,7 +170,54 @@ void AlarmClockCtrl::checkAlarms()
 void AlarmClockCtrl::triggerAlarm(const Alarm &alarm)
 {
     qDebug() << "Alarm triggered: " << alarm.label;
+
     static bool isAlarmTriggered = false;
     isAlarmTriggered = !isAlarmTriggered;
     Beep::instance()->setState(isAlarmTriggered);
+
+    // 如果是非重复闹钟，触发后自动禁用
+    if (alarm.repeatDays.isEmpty()) {
+        const_cast<Alarm&>(alarm).active = false;  // 注意：需要移除const修饰
+        emit alarmsChanged();
+        saveAlarms();
+    }
+}
+
+QDateTime AlarmClockCtrl::getNextTriggerTimeForAlarm(const Alarm &alarm) const {
+    if (!alarm.active) return QDateTime();
+
+    QDateTime now = QDateTime::currentDateTime();
+    QTime alarmTime = alarm.time;
+
+    // 处理非重复闹钟
+    if (alarm.repeatDays.isEmpty()) {
+        QDateTime todayAlarm(now.date(), alarmTime);
+        return (todayAlarm > now) ? todayAlarm : QDateTime();
+    }
+
+    // 处理重复闹钟
+    for (int i = 0; i <= 7; ++i) { // 最多检查7天
+        QDate checkDate = now.date().addDays(i);
+        int dayOfWeek = checkDate.dayOfWeek() - 1; // 转换为0-based (0=周一)
+
+        if (alarm.repeatDays.contains(dayOfWeek)) {
+            QDateTime candidate(checkDate, alarmTime);
+            if (candidate >= now) {
+                return candidate;
+            }
+        }
+    }
+    return QDateTime();
+}
+
+QDateTime AlarmClockCtrl::getNextTriggerTime() const {
+    QDateTime nextTrigger;
+    for (const Alarm &alarm : m_alarms) {
+        if (!alarm.active) continue;
+        QDateTime triggerTime = getNextTriggerTimeForAlarm(alarm);
+        if (triggerTime.isValid() && (!nextTrigger.isValid() || triggerTime < nextTrigger)) {
+            nextTrigger = triggerTime;
+        }
+    }
+    return nextTrigger;
 }

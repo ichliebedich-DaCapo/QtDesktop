@@ -108,6 +108,7 @@ Item {
             bottomMargin: 20
         }
         onClicked: alarmDialog.open()
+
     }
 
     AlarmDialog {

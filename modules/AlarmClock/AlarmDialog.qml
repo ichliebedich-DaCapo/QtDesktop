@@ -220,6 +220,6 @@ Dialog {
             const pos = dialog.repeatDays.indexOf(index)
             if (pos >= 0) dialog.repeatDays.splice(pos, 1)
         }
-        console.log("当前重复日:", dialog.repeatDays)
+        // console.log("当前重复日:", dialog.repeatDays)
     }
 }
