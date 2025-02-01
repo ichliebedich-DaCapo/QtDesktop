@@ -5,11 +5,13 @@
 #include <QVector>
 #include <QTime>
 #include <QTimer>
-
+#include <QStandardPaths>
+#include <QJsonDocument>
+#include <QDir>
 
 struct Alarm {
 Q_GADGET
-    Q_PROPERTY(QString timeStr READ timeStr CONSTANT)  // 添加 CONSTANT
+    Q_PROPERTY(QString timeStr READ timeStr CONSTANT)
     Q_PROPERTY(bool active MEMBER active)
     Q_PROPERTY(QVariantList repeatDays MEMBER repeatDays)
     Q_PROPERTY(QString label MEMBER label)
@@ -20,7 +22,6 @@ public:
     QVariantList repeatDays;
     QString label;
 
-    // 确保该方法实际存在且正确实现
     QString timeStr() const {
         return time.isValid() ? time.toString("hh:mm") : "--:--";
     }
@@ -29,21 +30,19 @@ Q_DECLARE_METATYPE(Alarm)
 
 class AlarmClockCtrl : public QObject {
 Q_OBJECT
-    Q_PROPERTY(QVariantList alarms READ alarms NOTIFY alarmsChanged) // 改为QVariantList
+    Q_PROPERTY(QVariantList alarms READ alarms NOTIFY alarmsChanged)
 public:
     explicit AlarmClockCtrl(QObject *parent = nullptr);
-    ~AlarmClockCtrl(); // 析构函数
+    ~AlarmClockCtrl();
 
     Q_INVOKABLE void addAlarm(QString time, QVariantList repeatDays, QString label);
     Q_INVOKABLE void removeAlarm(int index);
     Q_INVOKABLE void toggleAlarm(int index);
 
-    // 辅助方法：将 "hh:mm" 字符串转为 QTime
     Q_INVOKABLE QTime parseTime(const QString &timeStr) {
         return QTime::fromString(timeStr, "hh:mm");
     }
 
-    // 辅助方法：将 QTime 转为 "hh:mm" 字符串供 QML 显示
     Q_INVOKABLE QString formatTime(const QTime &time) {
         return time.toString("hh:mm");
     }
@@ -52,12 +51,16 @@ public:
 
 public slots:
     void checkAlarms();
-    void triggerAlarm(const Alarm &alarm); // 假设你已经实现了这个方法
+    void triggerAlarm(const Alarm &alarm);
 
 signals:
     void alarmsChanged();
 
 private:
+    void saveAlarms();
+    void loadAlarms();
+    QString getAlarmsFilePath() const;
+
     QVector<Alarm> m_alarms;
-    QTimer* m_timer; // 添加一个定时器成员变量
+    QTimer* m_timer;
 };
