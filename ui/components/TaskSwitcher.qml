@@ -12,14 +12,15 @@ Rectangle {
 
     signal closeApp(string appPath)  // 关闭应用信号
     signal exitSwitcher()            // 退出任务切换器信号
-    signal appClicked(string appPath) // 新增：点击卡片信号
+    signal appClicked(string appPath) // 点击卡片信号
+    signal clearAllApps()            // 新增：清除所有后台应用信号
 
     // 横向应用列表
     ListView {
         id: listView
         anchors {
             top: parent.top
-            bottom: parent.bottom
+            bottom: clearButton.top // 调整底部锚点，为按钮留出空间
             horizontalCenter: parent.horizontalCenter
         }
         width: Math.min(parent.width, contentWidth)
@@ -93,6 +94,39 @@ Rectangle {
         }
     }
 
+    // 清除所有后台应用的按钮
+    Rectangle {
+        id: clearButton
+        anchors {
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            bottomMargin: 20
+        }
+        width: 60
+        height: 60
+        radius: width / 2
+        color: "#ff4444"
+        border.color: "#cc0000"
+        border.width: 2
+        opacity: 0.9
+        z: 1 // 确保按钮位于顶部
+
+        Text {
+            anchors.centerIn: parent
+            text: "×"
+            font.pixelSize: 36
+            color: "white"
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                console.log("清除按钮被点击！"); // 调试输出
+                root.clearAllApps()
+            }
+        }
+    }
+
     // 退出任务切换器手势区域
     MouseArea {
         anchors.bottom: parent.bottom
@@ -104,6 +138,7 @@ Rectangle {
         onPositionChanged: {
             if (mouseY < _localStartY - 50) {
                 root.exitSwitcher()
+
             }
         }
     }

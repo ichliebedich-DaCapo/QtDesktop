@@ -1,3 +1,4 @@
+// main.qml
 import QtQuick 2.9
 import QtQuick.Window 2.3
 import QtQuick.Controls 2.0
@@ -86,7 +87,7 @@ Window {
         }
     }
 
-    // 新增任务切换器
+    // 任务切换器
     TaskSwitcher {
         id: taskSwitcher
         anchors.fill: parent
@@ -96,13 +97,17 @@ Window {
             taskSwitcher.visible = false
             returnToDesktop()
         }
-        onAppClicked: (appPath) => { // 新增：处理卡片点击事件
+        onAppClicked: (appPath) => { // 处理卡片点击事件
             startApplication(appPath, {})
+            taskSwitcher.visible = false
+        }
+        onClearAllApps: { // 新增：处理清除所有后台应用信号
+            closeAllApplications()
             taskSwitcher.visible = false
         }
     }
 
-    // 新增手势检测区域
+    // 手势检测区域
     MouseArea {
         id: globalSwipeDetector
         anchors {
@@ -123,12 +128,12 @@ Window {
         }
     }
 
-    // 新增数据模型
+    // 后台界面
     ListModel {
         id: taskSwitcherModel
     }
 
-    // 新增函数：更新任务切换器模型
+    // 更新任务切换器模型
     function updateTaskSwitcherModel() {
         taskSwitcherModel.clear()
         for (var path in appInstances) {
@@ -137,12 +142,12 @@ Window {
         }
     }
 
-    // 新增函数：从路径提取应用名称
+    // 从路径提取应用名称
     function getAppNameFromPath(path) {
         return path.split('/').pop().replace('.qml', '')
     }
 
-    // 修改函数：显示任务切换器
+    // 显示任务切换器
     function showTaskSwitcher() {
         if (Object.keys(appInstances).length === 0) return
 
@@ -152,7 +157,7 @@ Window {
         if (currentLoader) currentLoader.visible = false
     }
 
-    // 修改函数：关闭指定应用
+    // 关闭指定应用
     function closeApplication(path) {
         if (appInstances[path]) {
             if (currentLoader === appInstances[path]) {
@@ -219,6 +224,7 @@ Window {
     }
 
     // 7. 清除所有应用
+    // main.qml
     function closeAllApplications() {
         console.log("Closing all applications.");
         for (const path in appInstances) {
@@ -228,6 +234,7 @@ Window {
         }
         appInstances = {};
         currentLoader = null;
+        taskSwitcherModel.clear(); // 新增：清空任务切换器模型
         returnToDesktop();
     }
 }
