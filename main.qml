@@ -5,13 +5,10 @@ import QtQuick.Controls 2.2
 import QtQuick.Controls.Styles 1.4
 import QtGraphicalEffects 1.12
 import QtQuick.Controls 1.2
-import Qt.labs.settings 1.0 // 确保导入 Settings 模块
-
+import Qt.labs.settings 1.0
 
 import "./ui"
 import "./ui/components"
-
-// main.qml
 
 Window {
     id: mainWindow
@@ -23,7 +20,6 @@ Window {
     // 保存所有已启动的应用实例
     property var appInstances: ({})  // 使用对象存储 Loader 实例，以 path 为键
     property var currentLoader: null  // 当前显示的应用
-
 
     // 1. 桌面容器
     Desktop {
@@ -54,8 +50,6 @@ Window {
         opacity: 0.9
         z: 9999  // 确保最高层级
 
-
-        // 拖拽功能（兼容实现）
         MouseArea {
             id: dragArea
             anchors.fill: parent
@@ -67,11 +61,9 @@ Window {
             drag.maximumY: mainWindow.height - height
             preventStealing: true  // 防止事件被窃取
 
-            // 点击功能
             onClicked: mainWindow.returnToDesktop()
         }
 
-        // 图标
         Text {
             anchors.centerIn: parent
             text: "🏠"
@@ -79,13 +71,11 @@ Window {
             color: "white"
         }
 
-        // 初始位置
         Component.onCompleted: {
             x = mainWindow.width - width - 20;
             y = (mainWindow.height - height) / 2;
         }
 
-        // 边界限制（兼容写法）
         onXChanged: {
             if (x < 0) x = 0;
             else if (x > mainWindow.width - width) x = mainWindow.width - width;
@@ -96,7 +86,6 @@ Window {
         }
     }
 
-
     // 新增任务切换器
     TaskSwitcher {
         id: taskSwitcher
@@ -106,6 +95,10 @@ Window {
         onExitSwitcher: {
             taskSwitcher.visible = false
             returnToDesktop()
+        }
+        onAppClicked: (appPath) => { // 新增：处理卡片点击事件
+            startApplication(appPath, {})
+            taskSwitcher.visible = false
         }
     }
 
@@ -162,29 +155,23 @@ Window {
     // 修改函数：关闭指定应用
     function closeApplication(path) {
         if (appInstances[path]) {
-            // 清除当前应用引用
             if (currentLoader === appInstances[path]) {
                 currentLoader = null
             }
 
-            // 完全销毁 Loader
             appInstances[path].source = ""
             appInstances[path].destroy()
             delete appInstances[path]
 
-            // 立即更新模型
             updateTaskSwitcherModel()
 
-            // 如果关闭的是最后一个应用，返回桌面
             if (Object.keys(appInstances).length === 0) {
                 returnToDesktop()
             }
         }
     }
 
-
     // 4. 应用启动器
-    // mainWindow这个属性可加可不加，现在还不需要
     function startApplication(path, params) {
         if (appInstances[path]) {
             currentLoader = appInstances[path]
@@ -201,12 +188,12 @@ Window {
 
             appInstances[path] = loader
             currentLoader = loader
-            updateTaskSwitcherModel() // 新增：更新任务切换器模型
+            updateTaskSwitcherModel()
         }
 
         currentLoader.visible = true
         desktop.visible = false
-        taskSwitcher.visible = false // 新增：确保任务切换器隐藏
+        taskSwitcher.visible = false
     }
 
     // 5. 返回主界面（隐藏当前应用）
@@ -215,7 +202,7 @@ Window {
             currentLoader.visible = false
         }
         desktop.visible = true
-        taskSwitcher.visible = false // 新增这行
+        taskSwitcher.visible = false
     }
 
     // 6. 清除当前应用
@@ -223,31 +210,24 @@ Window {
         console.log("Closing current application.");
         if (currentLoader) {
             console.log("Closing application from path:", currentLoader.source);
-            // 从 appInstances 中移除
             delete appInstances[currentLoader.source];
-            // 销毁 Loader
-            currentLoader.source = "";  // 清空 Loader
-            currentLoader.destroy();    // 销毁实例
-            currentLoader = null;       // 清空当前应用引用
+            currentLoader.source = "";
+            currentLoader.destroy();
+            currentLoader = null;
         }
-
-        // 返回桌面
         returnToDesktop();
     }
 
     // 7. 清除所有应用
     function closeAllApplications() {
         console.log("Closing all applications.");
-        // 遍历并销毁所有应用
         for (const path in appInstances) {
             const loader = appInstances[path];
-            loader.source = "";  // 清空 Loader
-            loader.destroy();    // 销毁实例
+            loader.source = "";
+            loader.destroy();
         }
-        appInstances = {};  // 清空对象
-        currentLoader = null;  // 清空当前应用引用
-
-        // 返回桌面
+        appInstances = {};
+        currentLoader = null;
         returnToDesktop();
     }
 }

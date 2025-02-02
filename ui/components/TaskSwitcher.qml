@@ -5,13 +5,14 @@ import QtQuick.Controls 2.12
 Rectangle {
     id: root
     visible: false
-    color: "#80000000"
+    color: "#80000000" // 半透明黑色背景
     z: 9998  // 确保在悬浮按钮之下
 
     property ListModel appModel
 
-    signal closeApp(string appPath)
-    signal exitSwitcher()
+    signal closeApp(string appPath)  // 关闭应用信号
+    signal exitSwitcher()            // 退出任务切换器信号
+    signal appClicked(string appPath) // 新增：点击卡片信号
 
     // 横向应用列表
     ListView {
@@ -60,6 +61,9 @@ Rectangle {
                         card.opacity = 1
                     }
                 }
+                onClicked: {
+                    root.appClicked(appPath) // 触发点击信号
+                }
             }
 
             // 关闭动画
@@ -69,13 +73,13 @@ Rectangle {
                     target: card
                     property: "opacity"
                     to: 0
-                    duration: 100
+                    duration: 200
                 }
                 NumberAnimation {
                     target: card
                     property: "y"
                     to: card.y - card.height
-                    duration: 100
+                    duration: 200
                 }
                 ScriptAction {
                     script: {
