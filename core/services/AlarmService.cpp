@@ -1,6 +1,6 @@
 #include "AlarmService.h"
 #include <QCoreApplication>
-
+#include <QDebug>
 AlarmService::AlarmService(QObject *parent)
         : QObject(parent),
           m_lock("qdesktop_alarm_service")

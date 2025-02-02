@@ -121,7 +121,7 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                console.log("清除按钮被点击！"); // 调试输出
+                // console.log("清除按钮被点击！"); // 调试输出
                 root.clearAllApps()
             }
         }
