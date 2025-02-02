@@ -34,6 +34,7 @@ Rectangle {
             radius: 10
 
             property real startY: 0
+            property bool isClosing: false
 
             Column {
                 anchors.centerIn: parent
@@ -51,16 +52,40 @@ Rectangle {
                         card.opacity = 0.5
                     }
                 }
-                // 修改卡片关闭事件处理
                 onReleased: {
                     if (mouseY < card.startY - 50) {
-                        root.closeApp(appPath) // 确保传递正确的参数名
+                        card.isClosing = true
+                        closeAnimation.start()
+                    } else {
+                        card.opacity = 1
                     }
-                    card.opacity = 1
                 }
             }
 
-
+            // 关闭动画
+            SequentialAnimation {
+                id: closeAnimation
+                NumberAnimation {
+                    target: card
+                    property: "opacity"
+                    to: 0
+                    duration: 100
+                }
+                NumberAnimation {
+                    target: card
+                    property: "y"
+                    to: card.y - card.height
+                    duration: 100
+                }
+                ScriptAction {
+                    script: {
+                        if (index >= 0 && index < appModel.count) { // 检查索引是否有效
+                            root.closeApp(appPath) // 触发关闭信号
+                            appModel.remove(index) // 从模型中移除该项
+                        }
+                    }
+                }
+            }
         }
     }
 
